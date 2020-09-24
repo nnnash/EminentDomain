@@ -1,0 +1,86 @@
+{
+  "name": "eminent_domain",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "redux": "redux-devtools --hostname=localhost --port=8081 --open=browser",
+    "server": "nodemon",
+    "start": "react-native start",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@react-native-community/masked-view": "0.1.10",
+    "@react-navigation/native": "5.7.3",
+    "@react-navigation/stack": "5.9.0",
+    "express": "4.17.1",
+    "react": "16.13.1",
+    "react-native": "0.63.2",
+    "react-native-gesture-handler": "1.8.0",
+    "react-native-reanimated": "1.13.0",
+    "react-native-safe-area-context": "3.1.8",
+    "react-native-screens": "2.11.0",
+    "react-redux": "7.2.1",
+    "redux-observable": "1.2.0",
+    "redux-socket.io": "1.4.0",
+    "rxjs": "6.6.3",
+    "socket.io-client": "2.3.0",
+    "tsconfig-paths": "3.9.0",
+    "typesafe-actions": "5.1.0"
+  },
+  "devDependencies": {
+    "@babel/core": "7.11.6",
+    "@babel/runtime": "7.11.2",
+    "@react-native-community/eslint-config": "1.1.0",
+    "@types/express": "4.17.8",
+    "@types/jest": "25.2.3",
+    "@types/node": "14.10.1",
+    "@types/react-native": "0.63.18",
+    "@types/react-redux": "7.1.9",
+    "@types/react-test-renderer": "16.9.3",
+    "@types/redux-socket.io": "1.4.0",
+    "@types/remote-redux-devtools": "0.5.4",
+    "@typescript-eslint/eslint-plugin": "2.34.0",
+    "@typescript-eslint/parser": "2.34.0",
+    "babel-jest": "25.5.1",
+    "babel-plugin-module-resolver": "4.0.0",
+    "eslint": "6.8.0",
+    "jest": "25.5.4",
+    "metro-react-native-babel-preset": "0.59.0",
+    "nodemon": "2.0.4",
+    "react-test-renderer": "16.13.1",
+    "redux-devtools-cli": "1.0.0-4",
+    "redux-devtools-extension": "2.13.8",
+    "remote-redux-devtools": "0.5.16",
+    "ts-node": "9.0.0",
+    "typescript": "3.9.7"
+  },
+  "jest": {
+    "preset": "react-native",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "**/*.test.ts",
+      "**/*.spec.ts",
+      ".git",
+      "node_modules"
+    ],
+    "watch": [
+      "server",
+      "common",
+      "typings"
+    ],
+    "exec": "node -r tsconfig-paths/register -r ts-node/register ./server/index.ts",
+    "ext": "ts, js"
+  }
+}
