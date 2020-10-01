@@ -1,8 +1,11 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {Text, StyleSheet, TouchableOpacity} from 'react-native'
-import {useNavigation} from '@react-navigation/native'
+import {useDispatch} from 'react-redux'
 
 import {GameShort} from '@types'
+import Modal from './Modal'
+import {useUser} from '../../utils'
+import {rejoinGame} from '@actions/lobby'
 
 interface GameProps {
   game: GameShort
@@ -35,11 +38,18 @@ const styles = StyleSheet.create({
 })
 
 const Game: React.FC<GameProps> = ({game}) => {
-  const {navigate} = useNavigation()
+  const dispatch = useDispatch()
+  const [modalOpen, setModalOpen] = useState(false)
+  const user = useUser()
+  const onPress = () => {
+    if (game.players.includes(user.id)) dispatch(rejoinGame.request({gameId: game.id, playerId: user.id}))
+    else setModalOpen(true)
+  }
   return (
-    <TouchableOpacity style={styles.container} onPress={() => navigate('Game', {name: game.name, id: game.id})}>
+    <TouchableOpacity style={styles.container} onPress={onPress}>
       <Text style={styles.name}>{game.name}</Text>
-      <Text style={styles.players}>Players number: {game.players}</Text>
+      <Text style={styles.players}>Players number: {game.players.length}</Text>
+      <Modal isOpen={modalOpen} setOpen={setModalOpen} gameName={game.name} gameId={game.id} />
     </TouchableOpacity>
   )
 }

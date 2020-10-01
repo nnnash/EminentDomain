@@ -5,6 +5,7 @@ import {filter, tap, ignoreElements} from 'rxjs/operators'
 import {init} from '@actions/index'
 import {CustomEpic} from './types'
 import * as lobby from './lobby'
+import * as user from './user'
 
 const initEpic: CustomEpic = (action$, store, {setNav}) =>
   action$.pipe(
@@ -13,6 +14,6 @@ const initEpic: CustomEpic = (action$, store, {setNav}) =>
     ignoreElements(),
   )
 
-const epics = [{initEpic}, lobby].reduce((acc, epic: {}) => acc.concat(Object.values(epic)), [])
+const epics = [{initEpic}, lobby, user].reduce((acc, epic: {}) => acc.concat(Object.values(epic)), [])
 
 export default combineEpics(...epics)

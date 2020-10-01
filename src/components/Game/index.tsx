@@ -2,20 +2,26 @@ import React, {useEffect} from 'react'
 import {Text} from 'react-native'
 import {RouteProp} from '@react-navigation/native'
 import {StackScreenProps} from '@react-navigation/stack'
-import {useDispatch} from 'react-redux'
+import {useDispatch, useSelector, shallowEqual} from 'react-redux'
 
 import {getGame} from '@actions/game'
 import PageWrapper from '../common/PageWrapper'
 import {RootStackParamList} from '../../types'
+import {GlobalState} from '@reducers/index'
+import {GameState} from '@reducers/game'
 
 const Game: React.FC<StackScreenProps<RootStackParamList, 'Game'>> = ({route}) => {
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch(getGame.request(route.params.id))
   }, [dispatch, route.params.id])
+  const game = useSelector<GlobalState, GameState>(state => state.game, shallowEqual)
+
   return (
     <PageWrapper>
-      <Text>it is a game</Text>
+      {Object.values(game.players).map((player, ind) => (
+        <Text key={ind}>{JSON.stringify(player)}</Text>
+      ))}
     </PageWrapper>
   )
 }

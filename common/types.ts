@@ -34,7 +34,7 @@ export interface Game extends GameBase {
   }
 }
 export interface GameShort extends GameBase {
-  players: number
+  players: Array<Player['id']>
 }
 
 export interface TState {

@@ -3,7 +3,7 @@ import {catchError, filter, switchMap, map, tap, ignoreElements} from 'rxjs/oper
 import {from, of} from 'rxjs'
 
 import {CustomEpic} from './types'
-import {createGame, getGames} from '@actions/lobby'
+import {createGame, getGames, joinGame} from '@actions/lobby'
 
 export const getGamesEpic: CustomEpic = (action$, store, {api}) =>
   action$.pipe(
@@ -19,9 +19,9 @@ export const getGamesEpic: CustomEpic = (action$, store, {api}) =>
     ),
   )
 
-export const createGameSuccessEpic: CustomEpic = (action$, store, {nav}) =>
+export const createOrJoinGameSuccessEpic: CustomEpic = (action$, store, {nav}) =>
   action$.pipe(
-    filter(isActionOf(createGame.success)),
+    filter(isActionOf([createGame.success, joinGame.success])),
     tap(({payload: {name, id}}) => {
       nav().navigate('Game', {name, id})
     }),

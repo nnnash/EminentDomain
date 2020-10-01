@@ -1,23 +1,29 @@
 import socketIO, {Socket} from 'socket.io'
 
-import {createGame, getGames} from '@actions/lobby'
-import {State, getGame} from '../models'
-import {createReducer} from './utils'
+import {createGame, getGames, joinGame} from '@actions/lobby'
+import {getGame as gg} from '@actions/game'
+import {State, getGame, getPlayer} from '../models'
+import {createReducer, getShortGame} from './utils'
 
 const lobbyStateReducers = (io: ReturnType<typeof socketIO>, socket: Socket) => ({
-  ...createReducer(createGame.request, ({playerName, gameName}) => {
-    const newGame = getGame(gameName, playerName)
+  ...createReducer(createGame.request, ({playerName, gameName, playerId}) => {
+    const newGame = getGame(gameName, playerName, playerId)
     State.games = {...State.games, [newGame.id]: newGame}
-    socket.emit(
-      'action',
-      getGames.success(
-        Object.values(State.games).map(game => ({
-          ...game,
-          players: Object.keys(game.players).length,
-        })),
-      ),
-    )
-    socket.emit('action', createGame.success({...newGame, players: Object.keys(newGame.players).length}))
+    io.emit('action', getGames.success(Object.values(State.games).map(getShortGame)))
+    socket.emit('action', createGame.success(getShortGame(newGame)))
+    socket.join(newGame.id)
+  }),
+  ...createReducer(joinGame.request, ({gameId, playerId, playerName}) => {
+    const game = State.games[gameId]
+    if (!game) {
+      socket.emit('action', joinGame.failure())
+    } else {
+      game.players = {...game.players, [playerId]: getPlayer(playerName, playerId)}
+      io.emit('action', getGames.success(Object.values(State.games).map(getShortGame)))
+      io.to(gameId).emit('action', gg.success(game))
+      socket.emit('action', joinGame.success(getShortGame(game)))
+      socket.join(game.id)
+    }
   }),
 })
 
