@@ -1,8 +1,10 @@
 import {combineReducers} from 'redux'
 
 import {lobby} from './lobby'
+import {game} from './game'
 
 const reducersMap = {
+  game,
   lobby,
 }
 

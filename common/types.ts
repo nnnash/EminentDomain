@@ -3,10 +3,12 @@ export enum Card {
   colonization = 'colonization',
   search = 'search',
   industry = 'industry',
+  politics = 'politics',
 }
 
 export interface Player {
   id: string
+  name: string
   cards: {
     hand: Array<Card>
     pile: Array<Card>
@@ -36,5 +38,5 @@ export interface GameShort extends GameBase {
 }
 
 export interface TState {
-  games: Array<Game>
+  games: {[key: string]: Game}
 }

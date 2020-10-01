@@ -40,7 +40,7 @@
     "baseUrl": "./",                       /* Base directory to resolve non-absolute module names. */
     "paths": {
       "@types": ["./common/types.ts"],
-      "@actions/*": ["./common/redux/actions/*"],
+      "@actions/*": ["./common/redux/actions/*", "./common/redux/actions/index"],
       "@reducers/*": ["./common/redux/reducers/*"]
     },                           /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */
     // "rootDirs": [],                        /* List of root folders whose combined content represents the structure of the project at runtime. */

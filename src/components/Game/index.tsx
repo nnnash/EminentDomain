@@ -1,11 +1,18 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import {Text} from 'react-native'
 import {RouteProp} from '@react-navigation/native'
+import {StackScreenProps} from '@react-navigation/stack'
+import {useDispatch} from 'react-redux'
 
+import {getGame} from '@actions/game'
 import PageWrapper from '../common/PageWrapper'
 import {RootStackParamList} from '../../types'
 
-const Game = () => {
+const Game: React.FC<StackScreenProps<RootStackParamList, 'Game'>> = ({route}) => {
+  const dispatch = useDispatch()
+  useEffect(() => {
+    dispatch(getGame.request(route.params.id))
+  }, [dispatch, route.params.id])
   return (
     <PageWrapper>
       <Text>it is a game</Text>

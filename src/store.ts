@@ -1,5 +1,6 @@
 import {createStore, applyMiddleware} from 'redux'
 import {createEpicMiddleware} from 'redux-observable'
+import {NavigationContainerRef} from '@react-navigation/native'
 import {ajax} from 'rxjs/ajax'
 import {composeWithDevTools} from 'redux-devtools-extension'
 import createSocketIoMiddleware from 'redux-socket.io'
@@ -15,9 +16,22 @@ const location = process.env.HOST || 'http://localhost:8000'
 const socket = io(location)
 const socketIoMiddleware = createSocketIoMiddleware(socket, 'socket/')
 
+const navContainer = {
+  nav: {} as NavigationContainerRef,
+  setNav(nav: NavigationContainerRef) {
+    Object.assign(this, {nav})
+  },
+}
+
 const epicMiddleware = createEpicMiddleware({
   dependencies: {
     api: ajax,
+    setNav(nav: NavigationContainerRef) {
+      navContainer.setNav(nav)
+    },
+    nav(): NavigationContainerRef {
+      return navContainer.nav
+    },
   },
 })
 

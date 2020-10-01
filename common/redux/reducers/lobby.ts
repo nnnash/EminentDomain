@@ -2,8 +2,8 @@ import {createReducer} from 'typesafe-actions'
 
 import {GameShort} from '@types'
 
-import {getGames} from '../actions/lobby'
-import {RootAction} from '../actions/index'
+import {getGames} from '@actions/lobby'
+import {RootAction} from '@actions/index'
 
 export interface LobbyState {
   games: Array<GameShort>

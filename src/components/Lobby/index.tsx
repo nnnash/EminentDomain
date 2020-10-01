@@ -1,12 +1,13 @@
-import React, {useEffect} from 'react'
-import {useDispatch, useSelector, shallowEqual} from 'react-redux'
+import React, {useState} from 'react'
+import {useSelector, shallowEqual} from 'react-redux'
 import {StyleSheet, View, Text} from 'react-native'
 
-import {getGames} from '../../../common/redux/actions/lobby'
-import {GlobalState} from '../../../common/redux/reducers/index'
-import {LobbyState} from '../../../common/redux/reducers/lobby'
+import {GlobalState} from '@reducers/index'
+import {LobbyState} from '@reducers/lobby'
 import PageWrapper from '../common/PageWrapper'
+import Button from '../common/Button'
 import Game from './Game'
+import Modal from './Modal'
 
 const styles = StyleSheet.create({
   header: {
@@ -38,14 +39,16 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     margin: 20,
   },
+  buttonContainer: {
+    flexDirection: 'row-reverse',
+    marginTop: 20,
+    marginLeft: 20,
+  },
 })
 
 const Lobby = () => {
-  const dispatch = useDispatch()
-  useEffect(() => {
-    dispatch(getGames.request())
-  }, [dispatch])
   const {games} = useSelector<GlobalState, LobbyState>(state => state.lobby, shallowEqual)
+  const [modalOpen, setModalOpen] = useState(false)
 
   return (
     <PageWrapper>
@@ -53,11 +56,15 @@ const Lobby = () => {
         <Text style={[styles.eminent, styles.text]}>eminent</Text>
         <Text style={[styles.domain, styles.text]}>domain</Text>
       </View>
+      <View style={styles.buttonContainer}>
+        <Button title="+ New game" onClick={() => setModalOpen(true)} />
+      </View>
       <View style={styles.gamesContainer}>
         {games.map((game, ind) => (
           <Game key={`game-${ind}`} game={game} />
         ))}
       </View>
+      <Modal isOpen={modalOpen} setOpen={setModalOpen} />
     </PageWrapper>
   )
 }

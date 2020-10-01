@@ -1,9 +1,9 @@
 import {isActionOf} from 'typesafe-actions'
-import {catchError, filter, switchMap, map} from 'rxjs/operators'
+import {catchError, filter, switchMap, map, tap, ignoreElements} from 'rxjs/operators'
 import {from, of} from 'rxjs'
 
 import {CustomEpic} from './types'
-import {getGames} from '../actions/lobby'
+import {createGame, getGames} from '@actions/lobby'
 
 export const getGamesEpic: CustomEpic = (action$, store, {api}) =>
   action$.pipe(
@@ -17,4 +17,13 @@ export const getGamesEpic: CustomEpic = (action$, store, {api}) =>
         }),
       ),
     ),
+  )
+
+export const createGameSuccessEpic: CustomEpic = (action$, store, {nav}) =>
+  action$.pipe(
+    filter(isActionOf(createGame.success)),
+    tap(({payload: {name, id}}) => {
+      nav().navigate('Game', {name, id})
+    }),
+    ignoreElements(),
   )

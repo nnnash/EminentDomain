@@ -16,6 +16,8 @@
     "@react-navigation/native": "5.7.3",
     "@react-navigation/stack": "5.9.0",
     "express": "4.17.1",
+    "lodash": "^4.17.20",
+    "random-js": "^2.1.0",
     "react": "16.13.1",
     "react-native": "0.63.2",
     "react-native-gesture-handler": "1.8.0",
@@ -26,9 +28,11 @@
     "redux-observable": "1.2.0",
     "redux-socket.io": "1.4.0",
     "rxjs": "6.6.3",
+    "socket.io": "^2.3.0",
     "socket.io-client": "2.3.0",
     "tsconfig-paths": "3.9.0",
-    "typesafe-actions": "5.1.0"
+    "typesafe-actions": "5.1.0",
+    "uuid": "^8.3.0"
   },
   "devDependencies": {
     "@babel/core": "7.11.6",
@@ -42,6 +46,8 @@
     "@types/react-test-renderer": "16.9.3",
     "@types/redux-socket.io": "1.4.0",
     "@types/remote-redux-devtools": "0.5.4",
+    "@types/socket.io": "^2.1.11",
+    "@types/uuid": "^8.3.0",
     "@typescript-eslint/eslint-plugin": "2.34.0",
     "@typescript-eslint/parser": "2.34.0",
     "babel-jest": "25.5.1",

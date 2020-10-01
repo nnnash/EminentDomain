@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
 const Game: React.FC<GameProps> = ({game}) => {
   const {navigate} = useNavigation()
   return (
-    <TouchableOpacity style={styles.container} onPress={() => navigate('Game', {name: game.name})}>
+    <TouchableOpacity style={styles.container} onPress={() => navigate('Game', {name: game.name, id: game.id})}>
       <Text style={styles.name}>{game.name}</Text>
       <Text style={styles.players}>Players number: {game.players}</Text>
     </TouchableOpacity>
