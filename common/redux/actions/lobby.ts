@@ -1,5 +1,5 @@
-import {createAsyncAction} from 'typesafe-actions'
-import {GameShort} from '@types'
+import {createAsyncAction, createAction} from 'typesafe-actions'
+import {Game, GameShort, Player} from '@types'
 
 export const getGames = createAsyncAction('GET_GAMES', 'GET_GAMES_SUCCESS', 'GET_GAMES_ERROR')<
   undefined,
@@ -24,3 +24,5 @@ export const rejoinGame = createAsyncAction('socket/REJOIN_GAME', 'REJOIN_GAME_S
   GameShort,
   undefined
 >()
+
+export const leaveGame = createAction('socket/LEAVE_GAME')<{gameId: Game['id']; playerId: Player['id']}>()

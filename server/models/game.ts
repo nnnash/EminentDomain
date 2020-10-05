@@ -1,10 +1,10 @@
 import {v4} from 'uuid'
 
 import {Game, GameStage} from '@types'
-import {getPlayer} from './player'
+import {createPlayer} from './player'
 
-export const getGame = (gameName: string, hostName: string, hostId: string): Game => {
-  const player = getPlayer(hostName, hostId)
+export const createGame = (gameName: string, hostName: string, hostId: string): Game => {
+  const player = createPlayer(hostName, hostId)
   return {
     stage: GameStage.new,
     name: gameName,

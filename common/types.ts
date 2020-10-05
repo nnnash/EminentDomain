@@ -6,15 +6,69 @@ export enum Card {
   politics = 'politics',
 }
 
+export enum Action {
+  attack = 'attack',
+  colonization = 'colonization',
+  search = 'search',
+  produce = 'produce',
+  sell = 'sell',
+}
+
+export enum PlayerStatus {
+  in = 'in',
+  away = 'away',
+}
+
+export enum PlanetType {
+  prestige = 'prestige',
+  metal = 'metal',
+  developed = 'developed',
+  fertile = 'fertile',
+  utopia = 'utopia',
+}
+
+export enum Resource {
+  water = 'water',
+  wheat = 'wheat',
+  coal = 'coal',
+  iron = 'iron',
+}
+
+export interface Planet {
+  cost: {
+    attack: number
+    colonize: number
+  }
+  type: PlanetType
+  points: number
+  action: Action
+  resources: Array<Resource>
+  cardCapacity: boolean
+}
+
+export interface ExploredPlanet extends Planet {
+  colonies: number
+}
+
+export interface OccupiedPlanet extends Planet {
+  production: Array<{type: Resource; produced: boolean}>
+}
+
 export interface Player {
   id: string
   name: string
+  status: PlayerStatus
   cards: {
     hand: Array<Card>
     pile: Array<Card>
     deck: Array<Card>
   }
   capacity: number
+  points: number
+  planets: {
+    occupied: Array<OccupiedPlanet>
+    explored: Array<ExploredPlanet>
+  }
 }
 
 export enum GameStage {
