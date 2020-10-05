@@ -4,7 +4,7 @@ import {createGame as createGameAction, getGames, joinGame, leaveGame, rejoinGam
 import {getGame} from '@actions/game'
 import {createGame, createPlayer, State} from '../models'
 import {createReducer, getShortGame} from './utils'
-import {PlayerStatus} from '@types'
+import {Planet, PlayerStatus} from '@types'
 
 const lobbyStateReducers = (io: ReturnType<typeof socketIO>, socket: Socket) => ({
   ...createReducer(createGameAction.request, ({playerName, gameName, playerId}) => {
@@ -19,7 +19,10 @@ const lobbyStateReducers = (io: ReturnType<typeof socketIO>, socket: Socket) => 
     if (!game) {
       socket.emit('action', joinGame.failure())
     } else {
-      game.players = {...game.players, [playerId]: createPlayer(playerName, playerId)}
+      game.players = {
+        ...game.players,
+        [playerId]: createPlayer(playerName, playerId, game.startPlanets.pop() as Planet),
+      }
       io.emit('action', getGames.success(Object.values(State.games).map(getShortGame)))
       io.to(gameId).emit('action', getGame.success(game))
       socket.emit('action', joinGame.success(getShortGame(game)))

@@ -6,3 +6,9 @@ export const getGame = createAsyncAction('socket/GET_GAME', 'GET_GAME_SUCCESS', 
   Game,
   undefined
 >()
+
+export const startGame = createAsyncAction('socket/START_GAME', 'START_GAME_SUCCESS', 'START_GAME_ERROR')<
+  Game['id'],
+  Game,
+  undefined
+>()

@@ -3,7 +3,7 @@ import {times, take, slice} from 'lodash'
 
 import {Card, Player} from '@types'
 
-export const getDecks = (capacity: number): Player['cards'] => {
+export const getPlayerDecks = (capacity: number): Player['cards'] => {
   const deck = shuffle(nativeMath, [
     ...times(2, () => Card.colonization),
     ...times(2, () => Card.industry),

@@ -41,7 +41,7 @@ export interface Planet {
   }
   type: PlanetType
   points: number
-  action: Action
+  action?: Action
   resources: Array<Resource>
   cardCapacity: boolean
 }
@@ -69,6 +69,7 @@ export interface Player {
     occupied: Array<OccupiedPlanet>
     explored: Array<ExploredPlanet>
   }
+  spaceships: number
 }
 
 export enum GameStage {
@@ -86,6 +87,9 @@ export interface Game extends GameBase {
   players: {
     [key: string]: Player
   }
+  startPlanets: Array<Planet>
+  cards: Record<Exclude<Card, Card.politics>, number>
+  activePlayer: Player['id']
 }
 export interface GameShort extends GameBase {
   players: Array<Player['id']>
