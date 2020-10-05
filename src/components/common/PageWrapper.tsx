@@ -1,8 +1,9 @@
 import React from 'react'
-import {SafeAreaView, ScrollView, ImageBackground, View, StyleSheet} from 'react-native'
+import {SafeAreaView, ScrollView, ImageBackground, View} from 'react-native'
 import {useHeaderHeight} from '@react-navigation/stack'
+import EStyle from 'react-native-extended-stylesheet'
 
-const style = StyleSheet.create({
+const style = EStyle.create({
   header: {
     borderBottomColor: 'white',
     borderBottomWidth: 1,

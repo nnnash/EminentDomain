@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
 import {useSelector, shallowEqual} from 'react-redux'
-import {StyleSheet, View, Text} from 'react-native'
+import {View, Text} from 'react-native'
+import EStyle from 'react-native-extended-stylesheet'
 
 import {GlobalState} from '@reducers/index'
 import {LobbyState} from '@reducers/lobby'
@@ -9,16 +10,16 @@ import Button from '../common/Button'
 import Game from './Game'
 import Modal from './Modal'
 
-const styles = StyleSheet.create({
+const styles = EStyle.create({
   header: {
     marginTop: 40,
     width: '100%',
   },
   text: {
     textAlign: 'center',
-    color: 'white',
+    color: '$textColor',
     textTransform: 'uppercase',
-    textShadowColor: 'rgb(190,253,255)',
+    textShadowColor: '$shadowColor',
   },
   eminent: {
     fontSize: 40,

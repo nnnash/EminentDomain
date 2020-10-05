@@ -1,7 +1,8 @@
 import React from 'react'
-import {StyleSheet, Text, TouchableHighlight} from 'react-native'
+import {Text, TouchableHighlight} from 'react-native'
+import EStyle from 'react-native-extended-stylesheet'
 
-const styles = StyleSheet.create({
+const styles = EStyle.create({
   button: {
     borderWidth: 1,
     borderRadius: 4,
@@ -9,7 +10,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   buttonText: {
-    color: 'white',
+    color: '$textColor',
     fontWeight: '300',
   },
 })

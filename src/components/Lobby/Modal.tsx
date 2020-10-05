@@ -1,13 +1,14 @@
 import React, {useState} from 'react'
 import {useDispatch} from 'react-redux'
-import {StyleSheet, View, Text, SafeAreaView, Modal as RNModal, TextInput} from 'react-native'
+import {View, Text, SafeAreaView, Modal as RNModal, TextInput} from 'react-native'
+import EStyle from 'react-native-extended-stylesheet'
 
 import Button from '../common/Button'
 import {createGame, joinGame} from '@actions/lobby'
 import {useUser} from '../../utils'
 import {Game} from '@types'
 
-const styles = StyleSheet.create({
+const styles = EStyle.create({
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -21,7 +22,7 @@ const styles = StyleSheet.create({
   },
   title: {
     textAlign: 'center',
-    color: 'white',
+    color: '$textColor',
     textTransform: 'uppercase',
     textShadowColor: 'white',
     fontSize: 20,
@@ -30,7 +31,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   label: {
-    color: 'white',
+    color: '$textColor',
     marginBottom: 5,
   },
   input: {
@@ -39,7 +40,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     marginBottom: 20,
     backgroundColor: 'rgba(255,255,255,0.1)',
-    color: 'white',
+    color: '$textColor',
     padding: 10,
   },
   buttons: {

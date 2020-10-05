@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
-import {Text, StyleSheet, TouchableOpacity} from 'react-native'
+import {Text, TouchableOpacity} from 'react-native'
 import {useDispatch} from 'react-redux'
+import EStyle from 'react-native-extended-stylesheet'
 
 import {GameShort} from '@types'
 import Modal from './Modal'
@@ -11,7 +12,7 @@ interface GameProps {
   game: GameShort
 }
 
-const styles = StyleSheet.create({
+const styles = EStyle.create({
   container: {
     backgroundColor: 'rgba(255, 255, 255, .05)',
     borderRadius: 4,
@@ -25,14 +26,14 @@ const styles = StyleSheet.create({
     width: '47%',
   },
   name: {
-    color: 'white',
+    color: '$textColor',
     textTransform: 'uppercase',
-    textShadowColor: 'rgb(190,253,255)',
+    textShadowColor: '$shadowColor',
     textShadowRadius: 2,
     textAlign: 'center',
   },
   players: {
-    color: 'white',
+    color: '$textColor',
     marginTop: 5,
   },
 })

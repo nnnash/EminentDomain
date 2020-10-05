@@ -4,6 +4,7 @@ import {Provider, useDispatch} from 'react-redux'
 import {NavigationContainer, NavigationContainerRef} from '@react-navigation/native'
 import {createStackNavigator} from '@react-navigation/stack'
 import {StatusBar} from 'react-native'
+import EStyle from 'react-native-extended-stylesheet'
 
 import {init} from '@actions/index'
 import store from './store'
@@ -28,6 +29,11 @@ const Nav = () => {
     </NavigationContainer>
   )
 }
+
+EStyle.build({
+  $textColor: 'white',
+  $shadowColor: 'rgb(190,253,255)',
+})
 
 const App = () => {
   return (
