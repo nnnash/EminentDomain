@@ -1,22 +1,20 @@
-import socketIO, {Socket} from 'socket.io'
+import {Socket} from 'socket.io'
 
-import {getGame, startGame} from '@actions/game'
-import {State, startGame as sg} from '../models'
-import {createReducer} from './utils'
+import {reqGetGame, reqStartGame, sendGame} from '@actions/game'
+import {startGame} from '../models'
+import {createReducer, safeGameCallback, emitAction, IOType} from './utils'
 
-const gameStateReducers = (io: ReturnType<typeof socketIO>, socket: Socket) => ({
-  ...createReducer(getGame.request, gameId => {
-    const game = State.games[gameId]
-    socket.emit('action', game ? getGame.success(game) : getGame.failure())
+const gameStateReducers = (io: IOType, socket: Socket) => ({
+  ...createReducer(reqGetGame, gameId => {
+    safeGameCallback(socket, gameId, game => {
+      emitAction(socket, sendGame(game))
+    })
   }),
-  ...createReducer(startGame.request, gameId => {
-    const game = State.games[gameId]
-    if (!game) {
-      socket.emit('action', startGame.failure())
-    } else {
-      sg(game)
-      io.to(gameId).emit('action', getGame.success(game))
-    }
+  ...createReducer(reqStartGame, gameId => {
+    safeGameCallback(socket, gameId, game => {
+      startGame(game)
+      emitAction(io.to(gameId), sendGame(game))
+    })
   }),
 })
 

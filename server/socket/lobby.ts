@@ -1,52 +1,45 @@
-import socketIO, {Socket} from 'socket.io'
+import {Socket} from 'socket.io'
 
-import {createGame as createGameAction, getGames, joinGame, leaveGame, rejoinGame} from '@actions/lobby'
-import {getGame} from '@actions/game'
-import {createGame, createPlayer, State} from '../models'
-import {createReducer, getShortGame} from './utils'
 import {Planet, PlayerStatus} from '@types'
+import {reqCreateGame, reqJoinGame, reqRejoinGame, reqLeaveGame, sendShortGameToJoin, sendGames} from '@actions/lobby'
+import {sendGame} from '@actions/game'
+import {createGame, createPlayer, State} from '../models'
+import {createReducer, getShortGame, IOType, emitAction, safeGameCallback} from './utils'
 
-const lobbyStateReducers = (io: ReturnType<typeof socketIO>, socket: Socket) => ({
-  ...createReducer(createGameAction.request, ({playerName, gameName, playerId}) => {
+const lobbyStateReducers = (io: IOType, socket: Socket) => ({
+  ...createReducer(reqCreateGame, ({playerName, gameName, playerId}) => {
     const newGame = createGame(gameName, playerName, playerId)
     State.games = {...State.games, [newGame.id]: newGame}
-    io.emit('action', getGames.success(Object.values(State.games).map(getShortGame)))
-    socket.emit('action', createGameAction.success(getShortGame(newGame)))
+    emitAction(io, sendGames(Object.values(State.games).map(getShortGame)))
+    emitAction(socket, sendShortGameToJoin(getShortGame(newGame)))
     socket.join(newGame.id)
   }),
-  ...createReducer(joinGame.request, ({gameId, playerId, playerName}) => {
-    const game = State.games[gameId]
-    if (!game) {
-      socket.emit('action', joinGame.failure())
-    } else {
+  ...createReducer(reqJoinGame, ({gameId, playerId, playerName}) => {
+    safeGameCallback(socket, gameId, game => {
       game.players = {
         ...game.players,
         [playerId]: createPlayer(playerName, playerId, game.startPlanets.pop() as Planet),
       }
-      io.emit('action', getGames.success(Object.values(State.games).map(getShortGame)))
-      io.to(gameId).emit('action', getGame.success(game))
-      socket.emit('action', joinGame.success(getShortGame(game)))
+      emitAction(io, sendGames(Object.values(State.games).map(getShortGame)))
+      emitAction(io.to(gameId), sendGame(game))
+      emitAction(socket, sendShortGameToJoin(getShortGame(game)))
       socket.join(game.id)
-    }
+    })
   }),
-  ...createReducer(rejoinGame.request, ({gameId, playerId}) => {
-    const game = State.games[gameId]
-    if (!game) {
-      socket.emit('action', rejoinGame.failure())
-    } else {
+  ...createReducer(reqRejoinGame, ({gameId, playerId}) => {
+    safeGameCallback(socket, gameId, game => {
       game.players[playerId].status = PlayerStatus.in
-      io.to(gameId).emit('action', getGame.success(game))
-      socket.emit('action', rejoinGame.success(getShortGame(game)))
+      emitAction(io.to(gameId), sendGame(game))
+      emitAction(socket, sendShortGameToJoin(getShortGame(game)))
       socket.join(game.id)
-    }
+    })
   }),
-  ...createReducer(leaveGame, ({playerId, gameId}) => {
-    const game = State.games[gameId]
-    if (game) {
+  ...createReducer(reqLeaveGame, ({playerId, gameId}) => {
+    safeGameCallback(socket, gameId, game => {
       game.players[playerId].status = PlayerStatus.away
-      io.to(gameId).emit('action', getGame.success(game))
+      emitAction(io.to(gameId), sendGame(game))
       socket.leave(gameId)
-    }
+    })
   }),
 })
 

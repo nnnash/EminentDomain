@@ -1,14 +1,9 @@
-import {createAsyncAction} from 'typesafe-actions'
+import {createAction} from 'typesafe-actions'
 import {Game} from '@types'
 
-export const getGame = createAsyncAction('socket/GET_GAME', 'GET_GAME_SUCCESS', 'GET_GAME_ERROR')<
-  Game['id'],
-  Game,
-  undefined
->()
+export const reqGetGame = createAction('socket/GET_GAME')<Game['id']>()
+export const reqStartGame = createAction('socket/START_GAME')<Game['id']>()
 
-export const startGame = createAsyncAction('socket/START_GAME', 'START_GAME_SUCCESS', 'START_GAME_ERROR')<
-  Game['id'],
-  Game,
-  undefined
->()
+export const sendGame = createAction('resp/SEND_GAME')<Game>()
+
+export const sendGameError = createAction('resp/GAME_ERROR')<string | undefined>()

@@ -6,8 +6,8 @@ import {shallowEqual, useDispatch, useSelector} from 'react-redux'
 import EStyle from 'react-native-extended-stylesheet'
 
 import {GameStage} from '@types'
-import {getGame, startGame} from '@actions/game'
-import {leaveGame} from '@actions/lobby'
+import {reqGetGame, reqStartGame} from '@actions/game'
+import {reqLeaveGame} from '@actions/lobby'
 import {GlobalState} from '@reducers/index'
 import {GameState} from '@reducers/game'
 import PageWrapper from '../common/PageWrapper'
@@ -27,12 +27,13 @@ const Game: React.FC<StackScreenProps<RootStackParamList, 'Game'>> = ({route}) =
   const dispatch = useDispatch()
   const user = useUser()
   useEffect(() => {
-    dispatch(getGame.request(route.params.id))
+    dispatch(reqGetGame(route.params.id))
     return () => {
-      dispatch(leaveGame({gameId: route.params.id, playerId: user.id}))
+      dispatch(reqLeaveGame({gameId: route.params.id, playerId: user.id}))
     }
   }, [dispatch, route.params.id, user.id])
   const game = useSelector<GlobalState, GameState>(state => state.game, shallowEqual)
+  if (!game.id) return null
 
   return (
     <PageWrapper>
@@ -41,7 +42,7 @@ const Game: React.FC<StackScreenProps<RootStackParamList, 'Game'>> = ({route}) =
       </View>
       {game.stage === GameStage.new && (
         <View style={styles.section}>
-          <Button title="Start game" onClick={() => dispatch(startGame.request(game.id))} />
+          <Button title="Start game" onClick={() => dispatch(reqStartGame(game.id))} />
         </View>
       )}
     </PageWrapper>

@@ -3,10 +3,11 @@ import {Server} from 'http'
 
 import {State} from '../models'
 import {RootAction} from '@actions/index'
-import {getGames} from '@actions/lobby'
+import {sendGames} from '@actions/lobby'
 import {getShortGame} from './utils'
 import lobbyStateReducers from './lobby'
 import gameStateReducers from './game'
+import {emitAction} from './utils'
 
 const socketInit = (server: Server) => {
   const io = socketIO(server)
@@ -17,7 +18,7 @@ const socketInit = (server: Server) => {
       ...gameStateReducers(io, socket),
     }
 
-    socket.emit('action', getGames.success(Object.values(State.games).map(getShortGame)))
+    emitAction(socket, sendGames(Object.values(State.games).map(getShortGame)))
 
     socket.on('action', (action: RootAction) => {
       if (!reducers[action.type]) return

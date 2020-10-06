@@ -3,10 +3,10 @@ import {useDispatch} from 'react-redux'
 import {View, Text, SafeAreaView, Modal as RNModal, TextInput} from 'react-native'
 import EStyle from 'react-native-extended-stylesheet'
 
-import Button from '../common/Button'
-import {createGame, joinGame} from '@actions/lobby'
-import {useUser} from '../../utils'
 import {Game} from '@types'
+import {reqCreateGame, reqJoinGame} from '@actions/lobby'
+import Button from '../common/Button'
+import {useUser} from '../../utils'
 
 const styles = EStyle.create({
   container: {
@@ -83,7 +83,7 @@ const Modal: React.FC<ModalProps> = ({isOpen, setOpen, gameName, gameId}) => {
                 title="Create"
                 onClick={() => {
                   setOpen(false)
-                  dispatch(createGame.request({gameName: game, playerName: player, playerId: user.id}))
+                  dispatch(reqCreateGame({gameName: game, playerName: player, playerId: user.id}))
                 }}
               />
             ) : (
@@ -91,7 +91,7 @@ const Modal: React.FC<ModalProps> = ({isOpen, setOpen, gameName, gameId}) => {
                 title="Join"
                 onClick={() => {
                   setOpen(false)
-                  dispatch(joinGame.request({gameId: gameId, playerName: player, playerId: user.id}))
+                  dispatch(reqJoinGame({gameId: gameId, playerName: player, playerId: user.id}))
                 }}
               />
             )}

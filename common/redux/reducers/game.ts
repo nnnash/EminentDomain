@@ -1,21 +1,17 @@
 import {createReducer} from 'typesafe-actions'
 
-import {Game, GameStage} from '@types'
+import {Game} from '@types'
 import {RootAction} from '@actions/index'
-import {getGame} from '@actions/game'
+import {reqGetGame, sendGame, sendGameError} from '@actions/game'
 
 export interface GameState extends Game {
   loading: boolean
 }
-export const initialGameState: GameState = {
-  id: '',
-  players: {},
-  name: '',
-  stage: GameStage.new,
+export const initialGameState: GameState = ({
   loading: false,
-}
+} as unknown) as GameState
 
 export const game = createReducer<GameState, RootAction>(initialGameState)
-  .handleAction(getGame.request, (state): GameState => ({...state, loading: true}))
-  .handleAction(getGame.success, (state, {payload: gameState}): GameState => ({...state, loading: false, ...gameState}))
-  .handleAction(getGame.failure, (state): GameState => ({...state, loading: false}))
+  .handleAction(reqGetGame, (state): GameState => ({...state, loading: true}))
+  .handleAction(sendGame, (state, {payload: gameState}): GameState => ({...state, loading: false, ...gameState}))
+  .handleAction(sendGameError, (state): GameState => ({...state, loading: false}))

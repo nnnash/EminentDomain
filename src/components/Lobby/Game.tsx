@@ -6,7 +6,7 @@ import EStyle from 'react-native-extended-stylesheet'
 import {GameShort} from '@types'
 import Modal from './Modal'
 import {useUser} from '../../utils'
-import {rejoinGame} from '@actions/lobby'
+import {reqRejoinGame} from '@actions/lobby'
 
 interface GameProps {
   game: GameShort
@@ -43,7 +43,7 @@ const Game: React.FC<GameProps> = ({game}) => {
   const [modalOpen, setModalOpen] = useState(false)
   const user = useUser()
   const onPress = () => {
-    if (game.players.includes(user.id)) dispatch(rejoinGame.request({gameId: game.id, playerId: user.id}))
+    if (game.players.includes(user.id)) dispatch(reqRejoinGame({gameId: game.id, playerId: user.id}))
     else setModalOpen(true)
   }
   return (

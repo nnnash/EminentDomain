@@ -30,10 +30,11 @@ export const startGame = (game: Game) => {
   game.stage = GameStage.inPlay
   const playersIds = Object.keys(game.players)
   game.activePlayer = pick(nativeMath, playersIds)
+  const playerLen = playersIds.length
   game.cards = {
-    [Card.attack]: game.cards[Card.attack] - playersIds.length,
-    [Card.colonization]: game.cards[Card.colonization] - playersIds.length,
-    [Card.industry]: game.cards[Card.industry] - playersIds.length,
-    [Card.search]: game.cards[Card.search] - playersIds.length,
+    [Card.attack]: game.cards[Card.attack] - playerLen,
+    [Card.colonization]: game.cards[Card.colonization] - playerLen * 2,
+    [Card.industry]: game.cards[Card.industry] - playerLen * 2,
+    [Card.search]: game.cards[Card.search] - playerLen * 2,
   }
 }

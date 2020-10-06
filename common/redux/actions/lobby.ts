@@ -7,22 +7,20 @@ export const getGames = createAsyncAction('GET_GAMES', 'GET_GAMES_SUCCESS', 'GET
   undefined
 >()
 
-export const createGame = createAsyncAction('socket/CREATE_GAME', 'CREATE_GAME_SUCCESS', 'CREATE_GAME_ERROR')<
-  {gameName: string; playerName: string; playerId: string},
-  GameShort,
-  undefined
->()
+export const reqCreateGame = createAction('socket/CREATE_GAME')<{
+  gameName: string
+  playerName: string
+  playerId: string
+}>()
+export const reqJoinGame = createAction('socket/JOIN_GAME')<{
+  gameId: string
+  playerName: string
+  playerId: string
+}>()
+export const reqRejoinGame = createAction('socket/REJOIN_GAME')<{gameId: string; playerId: string}>()
+export const reqLeaveGame = createAction('socket/LEAVE_GAME')<{gameId: Game['id']; playerId: Player['id']}>()
 
-export const joinGame = createAsyncAction('socket/JOIN_GAME', 'JOIN_GAME_SUCCESS', 'JOIN_GAME_ERROR')<
-  {gameId: string; playerName: string; playerId: string},
-  GameShort,
-  undefined
->()
+export const sendGames = createAction('resp/GET_GAMES')<Array<GameShort>>()
+export const sendShortGameToJoin = createAction('resp/JOIN_GAME')<GameShort>()
 
-export const rejoinGame = createAsyncAction('socket/REJOIN_GAME', 'REJOIN_GAME_SUCCESS', 'REJOIN_GAME_ERROR')<
-  {gameId: string; playerId: string},
-  GameShort,
-  undefined
->()
-
-export const leaveGame = createAction('socket/LEAVE_GAME')<{gameId: Game['id']; playerId: Player['id']}>()
+export const sendError = createAction('resp/ERROR')<string | undefined>()
