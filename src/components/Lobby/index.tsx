@@ -12,7 +12,7 @@ import Modal from './Modal'
 
 const styles = EStyle.create({
   header: {
-    marginTop: 40,
+    marginTop: 20,
     width: '100%',
   },
   text: {

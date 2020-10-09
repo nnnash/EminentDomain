@@ -1,7 +1,8 @@
 import React from 'react'
-import {SafeAreaView, ScrollView, ImageBackground, View} from 'react-native'
+import {ScrollView, ImageBackground, View} from 'react-native'
 import {useHeaderHeight} from '@react-navigation/stack'
 import EStyle from 'react-native-extended-stylesheet'
+import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context'
 
 const style = EStyle.create({
   header: {
@@ -14,15 +15,30 @@ const style = EStyle.create({
     },
     shadowOpacity: 1,
   },
+  safeView: {
+    flex: 1,
+  },
+  content: {
+    flexGrow: 1,
+    marginBottom: 10,
+  },
 })
 
-const PageWrapper: React.FC<{}> = ({children}) => {
+interface PageWrapperProps {
+  scrollable?: boolean
+}
+const PageWrapper: React.FC<PageWrapperProps> = ({children, scrollable = true}) => {
   const headerHeight = useHeaderHeight()
+  const {top, bottom} = useSafeAreaInsets()
   return (
     <ImageBackground source={require('../../img/ed.jpg')} style={{flex: 1}}>
-      <View style={{height: headerHeight, ...(headerHeight ? style.header : null)}} />
-      <SafeAreaView style={{marginBottom: headerHeight}}>
-        <ScrollView contentInsetAdjustmentBehavior="automatic">{children}</ScrollView>
+      <SafeAreaView style={{...style.safeView, marginBottom: bottom}}>
+        <View style={{height: top, ...(headerHeight ? style.header : null)}} />
+        {scrollable ? (
+          <ScrollView contentInsetAdjustmentBehavior="automatic">{children}</ScrollView>
+        ) : (
+          <View style={style.content}>{children}</View>
+        )}
       </SafeAreaView>
     </ImageBackground>
   )

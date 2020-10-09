@@ -5,6 +5,7 @@ import {NavigationContainer, NavigationContainerRef} from '@react-navigation/nat
 import {createStackNavigator} from '@react-navigation/stack'
 import {StatusBar} from 'react-native'
 import EStyle from 'react-native-extended-stylesheet'
+import {SafeAreaProvider} from 'react-native-safe-area-context'
 
 import {init} from '@actions/index'
 import store from './store'
@@ -37,10 +38,12 @@ EStyle.build({
 
 const App = () => {
   return (
-    <Provider store={store}>
-      <StatusBar barStyle="light-content" />
-      <Nav />
-    </Provider>
+    <SafeAreaProvider>
+      <Provider store={store}>
+        <StatusBar barStyle="light-content" />
+        <Nav />
+      </Provider>
+    </SafeAreaProvider>
   )
 }
 
