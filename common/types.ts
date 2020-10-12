@@ -1,15 +1,15 @@
 export enum Card {
-  attack = 'attack',
+  warfare = 'warfare',
   colonization = 'colonization',
-  search = 'search',
+  envoy = 'envoy',
   industry = 'industry',
   politics = 'politics',
 }
 
 export enum Action {
-  attack = 'attack',
+  warfare = 'warfare',
   colonization = 'colonization',
-  search = 'search',
+  envoy = 'envoy',
   produce = 'produce',
   sell = 'sell',
 }
@@ -36,7 +36,7 @@ export enum Resource {
 
 export interface Planet {
   cost: {
-    attack: number
+    warfare: number
     colonize: number
   }
   type: PlanetType

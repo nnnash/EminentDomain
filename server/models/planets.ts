@@ -14,7 +14,7 @@ export const createPlanet = ({
   action,
   cardCapacity,
   cost: cost || {
-    attack: 2,
+    warfare: 2,
     colonize: 2,
   },
   points,

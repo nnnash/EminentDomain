@@ -17,10 +17,10 @@ export const createGame = (gameName: string, hostName: string, hostId: string): 
     },
     startPlanets,
     cards: {
-      [Card.attack]: 16,
+      [Card.warfare]: 16,
       [Card.colonization]: 20,
       [Card.industry]: 16,
-      [Card.search]: 20,
+      [Card.envoy]: 20,
     },
     activePlayer: player.id,
   }
@@ -32,9 +32,9 @@ export const startGame = (game: Game) => {
   game.activePlayer = pick(nativeMath, playersIds)
   const playerLen = playersIds.length
   game.cards = {
-    [Card.attack]: game.cards[Card.attack] - playerLen,
+    [Card.warfare]: game.cards[Card.warfare] - playerLen,
     [Card.colonization]: game.cards[Card.colonization] - playerLen * 2,
     [Card.industry]: game.cards[Card.industry] - playerLen * 2,
-    [Card.search]: game.cards[Card.search] - playerLen * 2,
+    [Card.envoy]: game.cards[Card.envoy] - playerLen * 2,
   }
 }

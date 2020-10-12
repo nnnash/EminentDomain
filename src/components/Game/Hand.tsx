@@ -1,11 +1,12 @@
 import React from 'react'
-import {View, Text, ScrollView} from 'react-native'
+import {View, ScrollView} from 'react-native'
 import {useSelector, shallowEqual} from 'react-redux'
 import EStyle from 'react-native-extended-stylesheet'
 
 import {GlobalState} from '@reducers/index'
 import {GameState} from '@reducers/game'
 import {useUser} from '../../utils'
+import Card from './Card'
 
 const styles = EStyle.create({
   root: {
@@ -31,9 +32,7 @@ const Hand: React.FC<{}> = () => {
     <ScrollView horizontal>
       <View style={styles.root}>
         {player.cards.hand.map((card, ind) => (
-          <View style={styles.card} key={`player-card-${ind}`}>
-            <Text>{card}</Text>
-          </View>
+          <Card type={card} key={`player-card-${ind}`} />
         ))}
       </View>
     </ScrollView>
