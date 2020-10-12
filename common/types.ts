@@ -1,6 +1,6 @@
 export enum Card {
   warfare = 'warfare',
-  colonization = 'colonization',
+  colonize = 'colonize',
   envoy = 'envoy',
   industry = 'industry',
   politics = 'politics',
@@ -8,7 +8,7 @@ export enum Card {
 
 export enum Action {
   warfare = 'warfare',
-  colonization = 'colonization',
+  colonize = 'colonize',
   envoy = 'envoy',
   produce = 'produce',
   sell = 'sell',

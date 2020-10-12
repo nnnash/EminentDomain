@@ -18,7 +18,7 @@ export const createGame = (gameName: string, hostName: string, hostId: string): 
     startPlanets,
     cards: {
       [Card.warfare]: 16,
-      [Card.colonization]: 20,
+      [Card.colonize]: 20,
       [Card.industry]: 16,
       [Card.envoy]: 20,
     },
@@ -33,7 +33,7 @@ export const startGame = (game: Game) => {
   const playerLen = playersIds.length
   game.cards = {
     [Card.warfare]: game.cards[Card.warfare] - playerLen,
-    [Card.colonization]: game.cards[Card.colonization] - playerLen * 2,
+    [Card.colonize]: game.cards[Card.colonize] - playerLen * 2,
     [Card.industry]: game.cards[Card.industry] - playerLen * 2,
     [Card.envoy]: game.cards[Card.envoy] - playerLen * 2,
   }

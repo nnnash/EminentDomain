@@ -32,7 +32,7 @@ const Hand: React.FC<{}> = () => {
     <ScrollView horizontal>
       <View style={styles.root}>
         {player.cards.hand.map((card, ind) => (
-          <Card type={card} key={`player-card-${ind}`} />
+          <Card type={card} key={`player-card-${ind}`} style={{marginLeft: ind ? -66 : 0}} />
         ))}
       </View>
     </ScrollView>
