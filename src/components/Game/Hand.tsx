@@ -14,13 +14,6 @@ const styles = EStyle.create({
     flexDirection: 'row',
     marginTop: 20,
   },
-  card: {
-    borderWidth: 1,
-    borderColor: 'white',
-    borderRadius: 4,
-    padding: 10,
-    height: 200,
-  },
 })
 
 const MIN_MARGIN = -110

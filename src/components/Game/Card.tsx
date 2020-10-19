@@ -27,12 +27,12 @@ const styles = EStyle.create({
     borderRadius: '$borderRadius',
   },
   titleContainer: {
-    marginTop: 4,
+    marginTop: '3%',
     width: '100%',
   },
   smallIconContainer: {
     position: 'absolute',
-    left: 4,
+    left: '3%',
     top: 0,
   },
   title: {
@@ -41,7 +41,6 @@ const styles = EStyle.create({
     textTransform: 'uppercase',
     textShadowColor: '$shadowColor',
     textShadowRadius: 15,
-    fontSize: 12,
   },
   mainIconContainer: {
     marginTop: '16%',
@@ -76,17 +75,21 @@ const cardProps = {
 
 interface CardProps {
   type: TCard
-  margin: Animated.AnimatedDivision
-  index: number
+  margin?: Animated.AnimatedDivision
+  width?: number
+  index?: number
 }
-const Card: React.FC<CardProps> = ({type, index, margin}) => {
+const Card: React.FC<CardProps> = ({type, index, margin, width = 142}) => {
   const {colors, icons} = cardProps[type]
+  const height = width * 1.4
   return (
     <Animated.View
       style={[
         styles.root,
         {
-          marginLeft: index ? margin : 0,
+          width,
+          height,
+          marginLeft: index && !!margin ? margin : 0,
         },
       ]}>
       <View style={{...styles.bg, backgroundColor: colors[0]}}>
@@ -107,20 +110,23 @@ const Card: React.FC<CardProps> = ({type, index, margin}) => {
         <View style={styles.titleContainer}>
           <View style={styles.smallIconContainer}>
             {icons.length === 1 ? (
-              <Icon image={icons[0]} color={colors[0]} />
+              <Icon image={icons[0]} color={colors[0]} width={width / 2} />
             ) : (
-              <DoubleIcon icon1={{color: colors[0], image: icons[0]}} icon2={{color: colors[1], image: icons[1]}} />
+              <DoubleIcon
+                icon1={{color: colors[0], image: icons[0], width: width / 2}}
+                icon2={{color: colors[1], image: icons[1], width: width / 2}}
+              />
             )}
           </View>
-          <Text style={styles.title}>{type}</Text>
+          <Text style={[styles.title, {fontSize: width / 11}]}>{type}</Text>
         </View>
         <View style={styles.mainIconContainer}>
           {icons.length === 1 ? (
-            <Icon image={icons[0]} size="big" color={colors[0]} />
+            <Icon image={icons[0]} size="big" color={colors[0]} width={width / 2} />
           ) : (
             <DoubleIcon
-              icon1={{color: colors[0], image: icons[0]}}
-              icon2={{color: colors[1], image: icons[1]}}
+              icon1={{color: colors[0], image: icons[0], width: width / 2}}
+              icon2={{color: colors[1], image: icons[1], width: width / 2}}
               middle
             />
           )}

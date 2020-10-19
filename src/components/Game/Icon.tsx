@@ -22,10 +22,11 @@ interface IconProps {
   image: ImageSourcePropType
   style?: StyleProp<ViewStyle>
   size?: 'big' | 'middle'
+  width?: number
 }
-const Icon: React.FC<IconProps> = ({image, size, color, style}) => {
-  const iconSize = size === 'big' ? 70 : size === 'middle' ? 54 : 22
-  const wrapperPadding = size ? 20 : 4
+const Icon: React.FC<IconProps> = ({image, size, color, style, width = 70}) => {
+  const iconSize = size === 'big' ? width : width / (size === 'middle' ? 1.3 : 3.2)
+  const wrapperPadding = width / (size ? 3.5 : 17.5)
   return (
     <View
       style={[

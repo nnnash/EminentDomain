@@ -3,7 +3,7 @@ import {Socket} from 'socket.io'
 import {Planet, PlayerStatus} from '@types'
 import {reqCreateGame, reqJoinGame, reqRejoinGame, reqLeaveGame, sendShortGameToJoin, sendGames} from '@actions/lobby'
 import {sendGame} from '@actions/game'
-import {createGame, createPlayer, State} from '../models'
+import {addPlayer, createGame, createPlayer, State} from '../models'
 import {createReducer, getShortGame, IOType, emitAction, safeGameCallback} from './utils'
 
 const lobbyStateReducers = (io: IOType, socket: Socket) => ({
@@ -16,10 +16,7 @@ const lobbyStateReducers = (io: IOType, socket: Socket) => ({
   }),
   ...createReducer(reqJoinGame, ({gameId, playerId, playerName}) => {
     safeGameCallback(socket, gameId, game => {
-      game.players = {
-        ...game.players,
-        [playerId]: createPlayer(playerName, playerId, game.startPlanets.pop() as Planet),
-      }
+      addPlayer(game, createPlayer(playerName, playerId, game.startPlanets.pop() as Planet))
       emitAction(io, sendGames(Object.values(State.games).map(getShortGame)))
       emitAction(io.to(gameId), sendGame(game))
       emitAction(socket, sendShortGameToJoin(getShortGame(game)))

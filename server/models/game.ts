@@ -1,7 +1,7 @@
 import {v4} from 'uuid'
 import {pick, nativeMath} from 'random-js'
 
-import {Card, Game, GameStage, Planet} from '@types'
+import {Card, Game, GameStage, Planet, Player} from '@types'
 import {createPlayer} from './player'
 import {getStartPlanets} from './planets'
 
@@ -17,12 +17,25 @@ export const createGame = (gameName: string, hostName: string, hostId: string): 
     },
     startPlanets,
     cards: {
-      [Card.warfare]: 16,
-      [Card.colonize]: 20,
-      [Card.industry]: 16,
-      [Card.envoy]: 20,
+      [Card.warfare]: 15,
+      [Card.colonize]: 18,
+      [Card.industry]: 15,
+      [Card.envoy]: 18,
     },
     activePlayer: player.id,
+  }
+}
+
+export const addPlayer = (game: Game, player: Player) => {
+  game.players = {
+    ...game.players,
+    [player.id]: player,
+  }
+  game.cards = {
+    [Card.warfare]: game.cards[Card.warfare] - 1,
+    [Card.colonize]: game.cards[Card.colonize] - 2,
+    [Card.industry]: game.cards[Card.industry] - 2,
+    [Card.envoy]: game.cards[Card.envoy] - 2,
   }
 }
 
@@ -30,11 +43,4 @@ export const startGame = (game: Game) => {
   game.stage = GameStage.inPlay
   const playersIds = Object.keys(game.players)
   game.activePlayer = pick(nativeMath, playersIds)
-  const playerLen = playersIds.length
-  game.cards = {
-    [Card.warfare]: game.cards[Card.warfare] - playerLen,
-    [Card.colonize]: game.cards[Card.colonize] - playerLen * 2,
-    [Card.industry]: game.cards[Card.industry] - playerLen * 2,
-    [Card.envoy]: game.cards[Card.envoy] - playerLen * 2,
-  }
 }
