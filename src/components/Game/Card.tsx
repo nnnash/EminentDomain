@@ -1,5 +1,5 @@
 import React from 'react'
-import {View, Text, ImageBackground, StyleProp, ViewStyle} from 'react-native'
+import {View, Text, ImageBackground, Animated} from 'react-native'
 import EStyle from 'react-native-extended-stylesheet'
 
 import {Card as TCard} from '@types'
@@ -76,12 +76,19 @@ const cardProps = {
 
 interface CardProps {
   type: TCard
-  style: StyleProp<ViewStyle>
+  margin: Animated.AnimatedDivision
+  index: number
 }
-const Card: React.FC<CardProps> = ({type, style}) => {
+const Card: React.FC<CardProps> = ({type, index, margin}) => {
   const {colors, icons} = cardProps[type]
   return (
-    <View style={[style, styles.root]}>
+    <Animated.View
+      style={[
+        styles.root,
+        {
+          marginLeft: index ? margin : 0,
+        },
+      ]}>
       <View style={{...styles.bg, backgroundColor: colors[0]}}>
         {colors.length > 1 &&
           Array.from({length: 100}).map((_, ind) => (
@@ -119,7 +126,7 @@ const Card: React.FC<CardProps> = ({type, style}) => {
           )}
         </View>
       </ImageBackground>
-    </View>
+    </Animated.View>
   )
 }
 

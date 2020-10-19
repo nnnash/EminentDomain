@@ -1,7 +1,8 @@
-import React from 'react'
-import {View, ScrollView} from 'react-native'
-import {useSelector, shallowEqual} from 'react-redux'
+import React, {useRef} from 'react'
+import {Animated} from 'react-native'
+import {shallowEqual, useSelector} from 'react-redux'
 import EStyle from 'react-native-extended-stylesheet'
+import {PinchGestureHandler, PinchGestureHandlerStateChangeEvent, State} from 'react-native-gesture-handler'
 
 import {GlobalState} from '@reducers/index'
 import {GameState} from '@reducers/game'
@@ -22,20 +23,40 @@ const styles = EStyle.create({
   },
 })
 
+const MIN_MARGIN = -110
 const Hand: React.FC<{}> = () => {
   const {players} = useSelector<GlobalState, GameState>(state => state.game, shallowEqual)
   const user = useUser()
   const player = players[user.id]
+  const baseScale = useRef(new Animated.Value(1)).current
+  const pinchScale = useRef(new Animated.Value(1)).current
+  const scale = Animated.multiply(baseScale, pinchScale)
+  const initMargin = useRef(new Animated.Value(-66)).current
+  const margin = Animated.divide(initMargin, scale).interpolate({
+    inputRange: [-1000, MIN_MARGIN, 0],
+    outputRange: [MIN_MARGIN, MIN_MARGIN, 0],
+  })
+  const onPinchGestureEvent = Animated.event([{nativeEvent: {scale: pinchScale}}], {
+    useNativeDriver: false,
+  })
+  const onPinchHandlerStateChange = (event: PinchGestureHandlerStateChangeEvent) => {
+    if (event.nativeEvent.oldState === State.ACTIVE) {
+      baseScale.setValue(event.nativeEvent.scale)
+    }
+  }
+
   if (!player) return null
 
   return (
-    <ScrollView horizontal>
-      <View style={styles.root}>
-        {player.cards.hand.map((card, ind) => (
-          <Card type={card} key={`player-card-${ind}`} style={{marginLeft: ind ? -66 : 0}} />
-        ))}
-      </View>
-    </ScrollView>
+    <PinchGestureHandler onGestureEvent={onPinchGestureEvent} onHandlerStateChange={onPinchHandlerStateChange}>
+      <Animated.ScrollView horizontal>
+        <Animated.View style={styles.root}>
+          {player.cards.hand.map((card, ind) => (
+            <Card type={card} key={`player-card-${ind}`} index={ind} margin={margin} />
+          ))}
+        </Animated.View>
+      </Animated.ScrollView>
+    </PinchGestureHandler>
   )
 }
 
