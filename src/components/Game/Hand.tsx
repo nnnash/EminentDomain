@@ -1,4 +1,4 @@
-import React, {useRef} from 'react'
+import React, {useRef, useState} from 'react'
 import {Animated} from 'react-native'
 import {shallowEqual, useSelector} from 'react-redux'
 import EStyle from 'react-native-extended-stylesheet'
@@ -25,6 +25,7 @@ const Hand: React.FC<{}> = () => {
   const pinchScale = useRef(new Animated.Value(1)).current
   const scale = Animated.multiply(baseScale, pinchScale)
   const initMargin = useRef(new Animated.Value(-66)).current
+  const [lastScale, setLastScale] = useState(1)
   const margin = Animated.divide(initMargin, scale).interpolate({
     inputRange: [-1000, MIN_MARGIN, 0],
     outputRange: [MIN_MARGIN, MIN_MARGIN, 0],
@@ -34,6 +35,8 @@ const Hand: React.FC<{}> = () => {
   })
   const onPinchHandlerStateChange = (event: PinchGestureHandlerStateChangeEvent) => {
     if (event.nativeEvent.oldState === State.ACTIVE) {
+      pinchScale.setValue(lastScale)
+      setLastScale(event.nativeEvent.scale)
       baseScale.setValue(event.nativeEvent.scale)
     }
   }
