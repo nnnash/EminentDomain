@@ -1,6 +1,9 @@
 import React from 'react'
-import {View, Image, ImageSourcePropType, StyleProp, ViewStyle} from 'react-native'
+import {View, Image, StyleProp, ViewStyle} from 'react-native'
 import EStyle from 'react-native-extended-stylesheet'
+
+import {Action} from '@types'
+import {actionProps} from './cardConfigs'
 
 const styles = EStyle.create({
   centered: {
@@ -17,14 +20,14 @@ const styles = EStyle.create({
   },
 })
 
-interface IconProps {
-  color: string
-  image: ImageSourcePropType
+export interface IconProps {
+  action: Action
   style?: StyleProp<ViewStyle>
   size?: 'big' | 'middle'
   width?: number
 }
-const Icon: React.FC<IconProps> = ({image, size, color, style, width = 70}) => {
+const Icon: React.FC<IconProps> = ({action, size, style, width = 70}) => {
+  const {icon, color} = actionProps[action]
   const iconSize = size === 'big' ? width : width / (size === 'middle' ? 1.3 : 3.2)
   const wrapperPadding = width / (size ? 3.5 : 17.5)
   return (
@@ -51,7 +54,7 @@ const Icon: React.FC<IconProps> = ({image, size, color, style, width = 70}) => {
           backgroundColor: color,
           borderWidth: size ? 4 : 2,
         }}>
-        <Image source={image} style={{height: '70%', width: '70%'}} />
+        <Image source={icon} style={{height: '70%', width: '70%'}} />
       </View>
     </View>
   )

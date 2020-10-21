@@ -12,6 +12,7 @@ export enum Action {
   envoy = 'envoy',
   produce = 'produce',
   sell = 'sell',
+  politics = 'politics',
 }
 
 export enum PlayerStatus {

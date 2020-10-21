@@ -3,7 +3,9 @@ import {View, Text, ImageBackground, Animated} from 'react-native'
 import EStyle from 'react-native-extended-stylesheet'
 
 import {Card as TCard} from '@types'
-import Icon, {DoubleIcon} from './Icon'
+import Icon, {DoubleIcon} from '../Icon'
+import Info from './Info'
+import {cardProps, actionProps} from '../cardConfigs'
 
 const styles = EStyle.create({
   $borderRadius: 8,
@@ -48,30 +50,13 @@ const styles = EStyle.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  infoContainer: {
+    marginTop: '10%',
+    flexGrow: 1,
+    justifyContent: 'center',
+    padding: 10,
+  },
 })
-
-const cardProps = {
-  [TCard.envoy]: {
-    colors: ['#6C9648'],
-    icons: [require('../../img/radar.png')],
-  },
-  [TCard.warfare]: {
-    colors: ['#9B3844'],
-    icons: [require('../../img/arm-target.png')],
-  },
-  [TCard.politics]: {
-    colors: ['#6A6D4E'],
-    icons: [require('../../img/temple.png')],
-  },
-  [TCard.industry]: {
-    colors: ['#B49C36', '#4B2E79'],
-    icons: [require('../../img/factory.png'), require('../../img/refresh.png')],
-  },
-  [TCard.colonize]: {
-    colors: ['#BC8635'],
-    icons: [require('../../img/planet-earth.png')],
-  },
-}
 
 interface CardProps {
   type: TCard
@@ -80,8 +65,10 @@ interface CardProps {
   index?: number
 }
 const Card: React.FC<CardProps> = ({type, index, margin, width = 142}) => {
-  const {colors, icons} = cardProps[type]
+  const {actions} = cardProps[type]
+  const actionConfigs = actions.map(a => actionProps[a])
   const height = width * 1.4
+  const baseIconWidth = width / 2
   return (
     <Animated.View
       style={[
@@ -92,44 +79,47 @@ const Card: React.FC<CardProps> = ({type, index, margin, width = 142}) => {
           marginLeft: index && !!margin ? margin : 0,
         },
       ]}>
-      <View style={{...styles.bg, backgroundColor: colors[0]}}>
-        {colors.length > 1 &&
+      <View style={{...styles.bg, backgroundColor: actionConfigs[0].color}}>
+        {actions.length > 1 &&
           Array.from({length: 100}).map((_, ind) => (
             <View
               key={`grad-${ind}`}
               style={{
                 height: '100%',
                 width: '1%',
-                backgroundColor: colors[1],
+                backgroundColor: actionConfigs[1].color,
                 opacity: ind / 100,
               }}
             />
           ))}
       </View>
-      <ImageBackground source={require('../../img/card.png')} style={{flex: 1}} imageStyle={styles.image}>
+      <ImageBackground source={require('../../../img/card.png')} style={{flex: 1}} imageStyle={styles.image}>
         <View style={styles.titleContainer}>
           <View style={styles.smallIconContainer}>
-            {icons.length === 1 ? (
-              <Icon image={icons[0]} color={colors[0]} width={width / 2} />
+            {actions.length === 1 ? (
+              <Icon action={actions[0]} width={baseIconWidth} />
             ) : (
               <DoubleIcon
-                icon1={{color: colors[0], image: icons[0], width: width / 2}}
-                icon2={{color: colors[1], image: icons[1], width: width / 2}}
+                icon1={{action: actions[0], width: baseIconWidth}}
+                icon2={{action: actions[1], width: baseIconWidth}}
               />
             )}
           </View>
           <Text style={[styles.title, {fontSize: width / 11}]}>{type}</Text>
         </View>
         <View style={styles.mainIconContainer}>
-          {icons.length === 1 ? (
-            <Icon image={icons[0]} size="big" color={colors[0]} width={width / 2} />
+          {actions.length === 1 ? (
+            <Icon action={actions[0]} size="big" width={baseIconWidth} />
           ) : (
             <DoubleIcon
-              icon1={{color: colors[0], image: icons[0], width: width / 2}}
-              icon2={{color: colors[1], image: icons[1], width: width / 2}}
+              icon1={{action: actions[0], width: baseIconWidth}}
+              icon2={{action: actions[1], width: baseIconWidth}}
               middle
             />
           )}
+        </View>
+        <View style={styles.infoContainer}>
+          <Info type={type} />
         </View>
       </ImageBackground>
     </Animated.View>

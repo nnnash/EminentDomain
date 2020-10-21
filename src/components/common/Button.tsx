@@ -12,6 +12,7 @@ const styles = EStyle.create({
   buttonText: {
     color: '$textColor',
     fontWeight: '300',
+    textAlign: 'center',
   },
 })
 
