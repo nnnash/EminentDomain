@@ -23,7 +23,7 @@ export enum PlayerStatus {
 export enum PlanetType {
   prestige = 'prestige',
   metal = 'metal',
-  developed = 'developed',
+  advanced = 'advanced',
   fertile = 'fertile',
   utopia = 'utopia',
 }

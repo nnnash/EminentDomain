@@ -17,6 +17,7 @@ import {useUser} from '../../utils'
 import Players from './Players'
 import Board from './Board'
 import Hand from './Hand'
+import Explored from './Explored'
 
 const styles = EStyle.create({
   root: {
@@ -60,6 +61,7 @@ const Game: React.FC<StackScreenProps<RootStackParamList, 'Game'>> = ({route}) =
           <Board />
         </View>
         <View style={styles.playerSection}>
+          <Explored />
           <Hand />
         </View>
       </View>

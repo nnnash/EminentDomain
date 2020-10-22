@@ -24,7 +24,7 @@ export const createPlanet = ({
 
 export const getStartPlanets = (): Array<Planet> =>
   shuffle(nativeMath, [
-    ...times(2, () => createPlanet({type: PlanetType.developed, resources: [Resource.coal]})),
+    ...times(2, () => createPlanet({type: PlanetType.advanced, resources: [Resource.coal]})),
     ...times(2, () => createPlanet({type: PlanetType.metal, resources: [Resource.iron]})),
     createPlanet({resources: [Resource.water]}),
     createPlanet({resources: [Resource.wheat]}),
