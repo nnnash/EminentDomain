@@ -9,7 +9,7 @@ const styles = EStyle.create({
     alignItems: 'center',
   },
   modal: {
-    backgroundColor: 'rgba(0,0,0,0.7)',
+    backgroundColor: 'rgba(0,0,0,0.8)',
     borderRadius: 6,
     padding: 20,
     width: 300,

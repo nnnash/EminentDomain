@@ -7,6 +7,8 @@ import {cardProps} from '../cardConfigs'
 import Button from '../../common/Button'
 import Modal from '../../common/Modal'
 import Icon from '../Icon'
+import PointIcon from '../PointIcon'
+import FighterIcon from '../FighterIcon'
 
 const styles = EStyle.create({
   info: {
@@ -20,7 +22,7 @@ const styles = EStyle.create({
   },
   text: {
     color: '$textColor',
-    lineHeight: 20,
+    lineHeight: 28,
   },
   title: {
     lineHeight: 20,
@@ -66,7 +68,11 @@ const infoContent = {
   },
   [Action.warfare]: {
     icon: <Icon action={Action.warfare} />,
-    action: <Txt>Attack 1 planet OR collect 1 fighter</Txt>,
+    action: (
+      <Txt>
+        Attack 1 planet OR collect 1 <FighterIcon />
+      </Txt>
+    ),
     role: (
       <Txt>
         Collect 1 fighter per <Icon action={Action.warfare} />
@@ -99,7 +105,11 @@ const infoContent = {
   },
   [Action.sell]: {
     icon: <Icon action={Action.sell} />,
-    action: <Txt>Trade 1 resource for Point</Txt>,
+    action: (
+      <Txt>
+        Trade 1 resource for <PointIcon />
+      </Txt>
+    ),
     role: (
       <Txt>
         Trade 1 resource per <Icon action={Action.sell} /> for Point each
