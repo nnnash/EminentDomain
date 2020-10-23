@@ -3,7 +3,7 @@ import {View, Text, ImageBackground, Animated} from 'react-native'
 import EStyle from 'react-native-extended-stylesheet'
 
 import {Card as TCard} from '@types'
-import Icon, {DoubleIcon} from '../Icon'
+import Icon, {DoubleIcon} from '../Icons/Icon'
 import Info from './Info'
 import {cardProps, actionProps} from '../cardConfigs'
 

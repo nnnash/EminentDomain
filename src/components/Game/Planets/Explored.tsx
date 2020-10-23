@@ -1,15 +1,16 @@
-import React from 'react'
-import {Image, ScrollView, Text, View} from 'react-native'
+import React, {useState} from 'react'
+import {Image, ScrollView, Text, View, TouchableOpacity} from 'react-native'
 import {shallowEqual, useSelector} from 'react-redux'
 import EStyle from 'react-native-extended-stylesheet'
 
-import {Action} from '@types'
+import {Action, Planet} from '@types'
 import {GlobalState} from '@reducers/index'
 import {GameState} from '@reducers/game'
-import {useUser} from '../../utils'
+import {useUser} from '../../../utils'
 import {planetProps} from './planetConfigs'
-import FighterIcon from './FighterIcon'
-import Icon from './Icon'
+import FighterIcon from '../Icons/FighterIcon'
+import Icon from '../Icons/Icon'
+import Info from './Info'
 
 const styles = EStyle.create({
   $planetSize: 60,
@@ -54,6 +55,7 @@ const Explored: React.FC<{}> = () => {
   const {players} = useSelector<GlobalState, GameState>(state => state.game, shallowEqual)
   const user = useUser()
   const player = players[user.id]
+  const [openPlanet, setOpenPlanet] = useState<null | Planet>(null)
 
   if (!player) return null
 
@@ -71,10 +73,13 @@ const Explored: React.FC<{}> = () => {
                 {!!planet.colonies && <Text style={styles.colonies}>{planet.colonies}</Text>}
               </Text>
             </View>
-            <Image source={planetProps[planet.type]} style={styles.image} />
+            <TouchableOpacity onPress={() => setOpenPlanet(planet)}>
+              <Image source={planetProps[planet.type]} style={styles.image} />
+            </TouchableOpacity>
           </View>
         ))}
       </View>
+      <Info open={!!openPlanet} onClose={() => setOpenPlanet(null)} planet={openPlanet} />
     </ScrollView>
   )
 }

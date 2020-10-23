@@ -3,7 +3,7 @@ import {View, Image, StyleProp, ViewStyle} from 'react-native'
 import EStyle from 'react-native-extended-stylesheet'
 
 import {Action} from '@types'
-import {actionProps} from './cardConfigs'
+import {actionProps} from '../cardConfigs'
 
 const styles = EStyle.create({
   centered: {

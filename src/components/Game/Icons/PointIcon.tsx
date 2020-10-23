@@ -23,7 +23,7 @@ export interface IconProps {
   amount?: number
 }
 const PointIcon: React.FC<IconProps> = ({amount = 1}) => (
-  <ImageBackground source={require('../../img/point.png')} style={styles.root}>
+  <ImageBackground source={require('../../../img/point.png')} style={styles.root}>
     <Text style={styles.number}>{amount}</Text>
   </ImageBackground>
 )

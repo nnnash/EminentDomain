@@ -18,6 +18,6 @@ const styles = EStyle.create({
   },
 })
 
-const FighterIcon: React.FC<{}> = () => <Image source={require('../../img/aircraft.png')} style={styles.root} />
+const FighterIcon: React.FC<{}> = () => <Image source={require('../../../img/aircraft.png')} style={styles.root} />
 
 export default FighterIcon

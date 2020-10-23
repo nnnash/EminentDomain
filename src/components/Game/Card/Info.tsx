@@ -6,9 +6,9 @@ import {Action, Card as TCard} from '@types'
 import {cardProps} from '../cardConfigs'
 import Button from '../../common/Button'
 import Modal from '../../common/Modal'
-import Icon from '../Icon'
-import PointIcon from '../PointIcon'
-import FighterIcon from '../FighterIcon'
+import Icon from '../Icons/Icon'
+import PointIcon from '../Icons/PointIcon'
+import FighterIcon from '../Icons/FighterIcon'
 
 const styles = EStyle.create({
   info: {
@@ -75,7 +75,7 @@ const infoContent = {
     ),
     role: (
       <Txt>
-        Collect 1 fighter per <Icon action={Action.warfare} />
+        Collect 1 <FighterIcon /> per <Icon action={Action.warfare} />
       </Txt>
     ),
     leader: <Txt>May attack 1 planet instead</Txt>,
