@@ -3,6 +3,7 @@ import {Text, View} from 'react-native'
 import EStyle from 'react-native-extended-stylesheet'
 
 import {Player} from '@types'
+import {useUser} from '../../utils'
 
 const styles = EStyle.create({
   container: {
@@ -19,10 +20,8 @@ const styles = EStyle.create({
     shadowOpacity: 1,
     shadowRadius: 6,
     flexGrow: 1,
-    marginRight: 20,
-  },
-  'tile:last-child': {
-    marginRight: 0,
+    marginRight: 10,
+    marginLeft: 10,
   },
   name: {
     color: '$textColor',
@@ -52,26 +51,31 @@ const Amount: React.FC<AmountProps> = ({children, amount}) => (
 interface PlayersProps {
   players: Array<Player>
 }
-const Players: React.FC<PlayersProps> = ({players}) => (
-  <View style={styles.container}>
-    {players.map((player, ind) => (
-      <View key={`player-${player.id}`} style={EStyle.child(styles, 'tile', ind, players.length)}>
-        <Text style={styles.name}>{player.name}</Text>
-        <Amount amount={player.points}>
-          <Text style={styles.amountText}>Points</Text>
-        </Amount>
-        <Amount amount={player.spaceships}>
-          <Text style={styles.amountText}>Spaceships</Text>
-        </Amount>
-        <Amount amount={player.planets.explored.length}>
-          <Text style={styles.amountText}>Explored</Text>
-        </Amount>
-        <Amount amount={player.planets.occupied.length}>
-          <Text style={styles.amountText}>Occupied</Text>
-        </Amount>
-      </View>
-    ))}
-  </View>
-)
+const Players: React.FC<PlayersProps> = ({players}) => {
+  const user = useUser()
+  return (
+    <View style={styles.container}>
+      {players.map(player =>
+        user.id !== player.id ? (
+          <View key={`player-${player.id}`} style={styles.tile}>
+            <Text style={styles.name}>{player.name}</Text>
+            <Amount amount={player.points}>
+              <Text style={styles.amountText}>Points</Text>
+            </Amount>
+            <Amount amount={player.spaceships}>
+              <Text style={styles.amountText}>Spaceships</Text>
+            </Amount>
+            <Amount amount={player.planets.explored.length}>
+              <Text style={styles.amountText}>Explored</Text>
+            </Amount>
+            <Amount amount={player.planets.occupied.length}>
+              <Text style={styles.amountText}>Occupied</Text>
+            </Amount>
+          </View>
+        ) : null,
+      )}
+    </View>
+  )
+}
 
 export default Players

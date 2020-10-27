@@ -1,5 +1,5 @@
 import React from 'react'
-import {View, Text} from 'react-native'
+import {View, Text, ScrollView} from 'react-native'
 import {useSelector, shallowEqual} from 'react-redux'
 import EStyle from 'react-native-extended-stylesheet'
 
@@ -9,9 +9,10 @@ import {GameState} from '@reducers/game'
 import Card from './Card'
 
 const styles = EStyle.create({
-  root: {
+  container: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    minWidth: '100%',
   },
   card: {
     borderWidth: 0,
@@ -39,16 +40,18 @@ const Board: React.FC<{}> = () => {
   const {cards} = useSelector<GlobalState, GameState>(state => state.game, shallowEqual)
 
   return (
-    <View style={styles.root}>
-      {Object.entries(cards).map(([card, amount]) => (
-        <View style={styles.card} key={`deck-${card}`}>
-          <Card type={card as TCard} width={90} />
-          <View style={styles.badge}>
-            <Text style={styles.badgeText}>× {amount}</Text>
+    <ScrollView horizontal style={{overflow: 'visible'}}>
+      <View style={styles.container}>
+        {Object.entries(cards).map(([card, amount]) => (
+          <View style={styles.card} key={`deck-${card}`}>
+            <Card type={card as TCard} isBoard />
+            <View style={styles.badge}>
+              <Text style={styles.badgeText}>× {amount}</Text>
+            </View>
           </View>
-        </View>
-      ))}
-    </View>
+        ))}
+      </View>
+    </ScrollView>
   )
 }
 

@@ -1,7 +1,7 @@
 import {v4} from 'uuid'
-import {pick, nativeMath} from 'random-js'
+import {nativeMath, pick} from 'random-js'
 
-import {Card, Game, GameStage, Planet, Player} from '@types'
+import {Card, Game, GameStatus, Phase, Planet, Player} from '@types'
 import {createPlayer} from './player'
 import {getStartPlanets} from './planets'
 
@@ -9,7 +9,7 @@ export const createGame = (gameName: string, hostName: string, hostId: string): 
   const startPlanets = getStartPlanets()
   const player = createPlayer(hostName, hostId, startPlanets.pop() as Planet)
   return {
-    stage: GameStage.new,
+    status: GameStatus.new,
     name: gameName,
     id: v4(),
     players: {
@@ -23,6 +23,7 @@ export const createGame = (gameName: string, hostName: string, hostId: string): 
       [Card.envoy]: 18,
     },
     activePlayer: player.id,
+    playersPhase: Phase.action,
   }
 }
 
@@ -40,7 +41,7 @@ export const addPlayer = (game: Game, player: Player) => {
 }
 
 export const startGame = (game: Game) => {
-  game.stage = GameStage.inPlay
+  game.status = GameStatus.inPlay
   const playersIds = Object.keys(game.players)
   game.activePlayer = pick(nativeMath, playersIds)
 }

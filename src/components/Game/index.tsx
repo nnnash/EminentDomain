@@ -1,18 +1,18 @@
 import React, {useEffect} from 'react'
-import {Button as RNButton, View} from 'react-native'
+import {Button as RNButton, Text, View} from 'react-native'
 import {RouteProp} from '@react-navigation/native'
 import {StackScreenProps} from '@react-navigation/stack'
 import {shallowEqual, useDispatch, useSelector} from 'react-redux'
 import EStyle from 'react-native-extended-stylesheet'
 
-import {GameStage} from '@types'
+import {GameStatus} from '@types'
 import {reqGetGame, reqStartGame} from '@actions/game'
 import {reqLeaveGame} from '@actions/lobby'
 import {GlobalState} from '@reducers/index'
 import {GameState} from '@reducers/game'
 import PageWrapper from '../common/PageWrapper'
 import {RootStackParamList} from '../../types'
-import {useUser} from '../../utils'
+import {useUser, useYourTurn} from '../../utils'
 
 import Players from './Players'
 import Board from './Board'
@@ -28,13 +28,18 @@ const styles = EStyle.create({
     padding: 20,
     paddingBottom: 0,
   },
-  playerSection: {},
+  turnText: {
+    color: '$textColor',
+    fontWeight: 'bold',
+    fontSize: 20,
+    textAlign: 'center',
+  },
 })
 
 const StartGameBtn = () => {
   const dispatch = useDispatch()
   const game = useSelector<GlobalState, GameState>(state => state.game, shallowEqual)
-  if (!game.id || Object.keys(game.players).length < 2 || game.stage !== GameStage.new) return null
+  if (!game.id || Object.keys(game.players).length < 2 || game.status !== GameStatus.new) return null
 
   return <RNButton title="Start game" onPress={() => dispatch(reqStartGame(game.id))} color="white" />
 }
@@ -49,11 +54,19 @@ const Game: React.FC<StackScreenProps<RootStackParamList, 'Game'>> = ({route}) =
     }
   }, [dispatch, route.params.id, user.id])
   const game = useSelector<GlobalState, GameState>(state => state.game, shallowEqual)
+  const playersTurn = useYourTurn()
   if (!game.id) return null
 
   return (
     <PageWrapper scrollable={false}>
       <View style={styles.root}>
+        {game.status === GameStatus.inPlay && (
+          <View style={styles.section}>
+            <Text style={styles.turnText}>
+              {playersTurn ? 'Your' : `${game.players[game.activePlayer].name}'s`} turn ({game.playersPhase})
+            </Text>
+          </View>
+        )}
         <View style={styles.section}>
           <Players players={Object.values(game.players)} />
         </View>
