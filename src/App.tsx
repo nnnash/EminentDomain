@@ -34,6 +34,7 @@ const Nav = () => {
 EStyle.build({
   $textColor: 'white',
   $shadowColor: 'rgb(190,253,255)',
+  $cardCorner: 8,
 })
 
 const App = () => {

@@ -73,16 +73,22 @@ export interface Player {
   spaceships: number
 }
 
-export enum GameStage {
+export enum GameStatus {
   new = 'new',
   inPlay = 'inPlay',
   ended = 'ended',
 }
 
+export enum Phase {
+  action = 'action',
+  role = 'role',
+  cleanup = 'cleanup',
+}
+
 export interface GameBase {
   id: string
   name: string
-  stage: GameStage
+  status: GameStatus
 }
 export interface Game extends GameBase {
   players: {
@@ -91,6 +97,8 @@ export interface Game extends GameBase {
   startPlanets: Array<Planet>
   cards: Record<Exclude<Card, Card.politics>, number>
   activePlayer: Player['id']
+  playersPhase: Phase
+  rolePlayer?: Player['id']
 }
 export interface GameShort extends GameBase {
   players: Array<Player['id']>

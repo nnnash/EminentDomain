@@ -45,7 +45,7 @@ const Hand: React.FC<{}> = () => {
 
   return (
     <PinchGestureHandler onGestureEvent={onPinchGestureEvent} onHandlerStateChange={onPinchHandlerStateChange}>
-      <Animated.ScrollView horizontal>
+      <Animated.ScrollView horizontal style={{overflow: 'visible'}}>
         <Animated.View style={styles.root}>
           {player.cards.hand.map((card, ind) => (
             <Card type={card} key={`player-card-${ind}`} index={ind} margin={margin} />
