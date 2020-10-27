@@ -68,7 +68,7 @@ const CardContent: React.FC<CardProps> = ({type, width}) => {
 
   return (
     <>
-      <View style={{...styles.bg, backgroundColor: actionConfigs[0].color, width: '100%'}}>
+      <View style={{...styles.bg, backgroundColor: actionConfigs[0].color}}>
         {actions.length > 1 &&
           Array.from({length: 100}).map((_, ind) => (
             <View
