@@ -1,5 +1,5 @@
 import React from 'react'
-import {Text, ImageBackground} from 'react-native'
+import {Text, ImageBackground, StyleProp, ImageStyle} from 'react-native'
 import EStyle from 'react-native-extended-stylesheet'
 
 const styles = EStyle.create({
@@ -21,9 +21,10 @@ const styles = EStyle.create({
 
 export interface IconProps {
   amount?: number
+  style?: StyleProp<ImageStyle>
 }
-const PointIcon: React.FC<IconProps> = ({amount = 1}) => (
-  <ImageBackground source={require('../../../img/point.png')} style={styles.root}>
+const PointIcon: React.FC<IconProps> = ({amount = 1, style}) => (
+  <ImageBackground source={require('../../../img/point.png')} style={[styles.root, style]}>
     <Text style={styles.number}>{amount}</Text>
   </ImageBackground>
 )

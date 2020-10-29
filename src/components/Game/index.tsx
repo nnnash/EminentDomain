@@ -17,7 +17,7 @@ import {useUser, useYourTurn} from '../../utils'
 import Players from './Players'
 import Board from './Board'
 import Hand from './Hand'
-import Fighters from './Fighters'
+import PlayerTokens from './PlayerTokens'
 import Planets from './Planets'
 import OptionsModal from './OptionsModal'
 
@@ -87,7 +87,7 @@ const Game: React.FC<StackScreenProps<RootStackParamList, 'Game'>> = ({route}) =
         </View>
         <View style={styles.playerSection}>
           <Planets />
-          <Fighters />
+          <PlayerTokens />
           <Hand />
         </View>
       </View>

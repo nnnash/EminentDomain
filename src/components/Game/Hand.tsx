@@ -12,7 +12,7 @@ import Card from './Card'
 const styles = EStyle.create({
   root: {
     flexDirection: 'row',
-    marginTop: 20,
+    marginTop: 10,
   },
 })
 
