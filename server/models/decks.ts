@@ -17,3 +17,14 @@ export const getPlayerDecks = (capacity: number): Player['cards'] => {
     pile: [],
   }
 }
+
+export const fixDeck = (cards: Player['cards']) => {
+  cards.deck = cards.deck.concat(shuffle(nativeMath, cards.pile))
+  cards.pile = []
+}
+
+export const takeCards = (cards: Player['cards'], amount: number) => {
+  if (cards.deck.length < amount) fixDeck(cards)
+  cards.hand = cards.hand.concat(take(cards.deck, amount))
+  cards.deck = slice(cards.deck, amount)
+}

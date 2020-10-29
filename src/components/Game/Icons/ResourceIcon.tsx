@@ -1,5 +1,5 @@
 import React from 'react'
-import {View, Image, ImageSourcePropType} from 'react-native'
+import {View, Image, ImageSourcePropType, StyleProp, ViewStyle} from 'react-native'
 import EStyle from 'react-native-extended-stylesheet'
 
 import {Resource} from '@types'
@@ -60,11 +60,12 @@ const resourceProps: Record<Resource, {icon: ImageSourcePropType; color: string}
 
 export interface IconProps {
   resource: Resource
+  style?: StyleProp<ViewStyle>
 }
-const ResourceIcon: React.FC<IconProps> = ({resource}) => {
+const ResourceIcon: React.FC<IconProps> = ({resource, style}) => {
   const {icon, color} = resourceProps[resource]
   return (
-    <View style={[styles.centered, styles.container]}>
+    <View style={[styles.centered, styles.container, style]}>
       <View
         style={[
           styles.centered,

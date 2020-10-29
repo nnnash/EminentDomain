@@ -1,7 +1,7 @@
 import {Socket} from 'socket.io'
 
-import {reqGetGame, reqStartGame, sendGame} from '@actions/game'
-import {startGame} from '../models'
+import {reqGetGame, reqPlayAction, reqStartGame, sendGame} from '@actions/game'
+import {playAction, startGame} from '../models'
 import {createReducer, safeGameCallback, emitAction, IOType} from './utils'
 
 const gameStateReducers = (io: IOType, socket: Socket) => ({
@@ -14,6 +14,12 @@ const gameStateReducers = (io: IOType, socket: Socket) => ({
     safeGameCallback(socket, gameId, game => {
       startGame(game)
       emitAction(io.to(gameId), sendGame(game))
+    })
+  }),
+  ...createReducer(reqPlayAction, payload => {
+    safeGameCallback(socket, payload.gameId, game => {
+      playAction(game, payload)
+      emitAction(io.to(payload.gameId), sendGame(game))
     })
   }),
 })

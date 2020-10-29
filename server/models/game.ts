@@ -1,9 +1,16 @@
 import {v4} from 'uuid'
-import {nativeMath, pick} from 'random-js'
 
-import {Card, Game, GameStatus, Phase, Planet, Player} from '@types'
-import {createPlayer} from './player'
+import {Action, Card, Game, GameStatus, Phase, Planet, Player} from '@types'
+import {
+  createPlayer,
+  playColonizeAction,
+  playEnvoyAction,
+  playPoliticsAction,
+  playProduceAction,
+  playWarfareAction,
+} from './player'
 import {getStartPlanets} from './planets'
+import {ActionPayload} from '@actions/game'
 
 export const createGame = (gameName: string, hostName: string, hostId: string): Game => {
   const startPlanets = getStartPlanets()
@@ -43,5 +50,33 @@ export const addPlayer = (game: Game, player: Player) => {
 export const startGame = (game: Game) => {
   game.status = GameStatus.inPlay
   const playersIds = Object.keys(game.players)
-  game.activePlayer = pick(nativeMath, playersIds)
+  // game.activePlayer = pick(nativeMath, playersIds)
+  game.activePlayer = playersIds[1] // TODO return the previous one
+}
+
+export const playAction = (game: Game, payload: ActionPayload) => {
+  const activePlayer = game.players[game.activePlayer]
+  switch (payload.type) {
+    case Action.politics:
+      playPoliticsAction(activePlayer, payload.card, payload.cardIndex)
+      game.cards[payload.card] -= 1
+      break
+    case Action.envoy:
+      playEnvoyAction(activePlayer, payload.cardIndex)
+      break
+    case Action.colonize:
+      playColonizeAction(activePlayer, payload.planetIndex, payload.cardIndex)
+      break
+    case Action.warfare:
+      playWarfareAction(activePlayer, payload.planetIndex, payload.cardIndex)
+      break
+    case Action.produce:
+      playProduceAction(activePlayer, payload.cardIndex)
+      break
+    case Action.sell:
+      playProduceAction(activePlayer, payload.cardIndex)
+      break
+    default:
+  }
+  game.playersPhase = Phase.role
 }

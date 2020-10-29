@@ -1,5 +1,5 @@
 import React from 'react'
-import {Image} from 'react-native'
+import {Image, ImageStyle, StyleProp} from 'react-native'
 import EStyle from 'react-native-extended-stylesheet'
 
 const styles = EStyle.create({
@@ -18,6 +18,8 @@ const styles = EStyle.create({
   },
 })
 
-const FighterIcon: React.FC<{}> = () => <Image source={require('../../../img/aircraft.png')} style={styles.root} />
+const FighterIcon: React.FC<{style?: StyleProp<ImageStyle>}> = ({style}) => (
+  <Image source={require('../../../img/aircraft.png')} style={[styles.root, style]} />
+)
 
 export default FighterIcon

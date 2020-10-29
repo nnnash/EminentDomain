@@ -17,7 +17,9 @@ import {useUser, useYourTurn} from '../../utils'
 import Players from './Players'
 import Board from './Board'
 import Hand from './Hand'
-import Explored from './Planets/Explored'
+import Fighters from './Fighters'
+import Planets from './Planets'
+import OptionsModal from './OptionsModal'
 
 const styles = EStyle.create({
   root: {
@@ -33,6 +35,16 @@ const styles = EStyle.create({
     fontWeight: 'bold',
     fontSize: 20,
     textAlign: 'center',
+  },
+  fighters: {
+    borderColor: 'white',
+    borderRadius: 8,
+    padding: 4,
+  },
+  fightersText: {
+    color: '$textColor',
+    fontSize: 20,
+    fontWeight: 'bold',
   },
 })
 
@@ -74,10 +86,12 @@ const Game: React.FC<StackScreenProps<RootStackParamList, 'Game'>> = ({route}) =
           <Board />
         </View>
         <View style={styles.playerSection}>
-          <Explored />
+          <Planets />
+          <Fighters />
           <Hand />
         </View>
       </View>
+      <OptionsModal />
     </PageWrapper>
   )
 }

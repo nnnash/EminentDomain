@@ -6,6 +6,8 @@ import {init} from '@actions/index'
 import {CustomEpic} from './types'
 import * as lobby from './lobby'
 import * as user from './user'
+import * as game from './game'
+import * as ui from './ui'
 
 const initEpic: CustomEpic = (action$, store, {setNav}) =>
   action$.pipe(
@@ -14,6 +16,6 @@ const initEpic: CustomEpic = (action$, store, {setNav}) =>
     ignoreElements(),
   )
 
-const epics = [{initEpic}, lobby, user].reduce((acc, epic: {}) => acc.concat(Object.values(epic)), [])
+const epics = [{initEpic}, lobby, user, game, ui].reduce((acc, epic: {}) => acc.concat(Object.values(epic)), [])
 
 export default combineEpics(...epics)

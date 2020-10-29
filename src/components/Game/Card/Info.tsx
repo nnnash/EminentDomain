@@ -6,6 +6,7 @@ import {Action, Card as TCard} from '@types'
 import {cardProps} from '../cardConfigs'
 import Button from '../../common/Button'
 import Modal from '../../common/Modal'
+import ModalInfoBlock from '../../common/ModalInfoBlock'
 import Icon from '../Icons/Icon'
 import PointIcon from '../Icons/PointIcon'
 import FighterIcon from '../Icons/FighterIcon'
@@ -140,22 +141,20 @@ const Info: React.FC<InfoProps> = ({type}) => {
                   {a} {action.icon}
                 </Title>
               </View>
-              <Title>Action</Title>
-              <View style={styles.infoBlock}>{action.action}</View>
+              <ModalInfoBlock title="Action" column>
+                {action.action}
+              </ModalInfoBlock>
               {'role' in action && (
-                <>
-                  <Title>Role</Title>
-                  <View style={styles.infoBlock}>
-                    {action.role}
-                    {'leader' in action && (
-                      <View>
-                        <Txt>
-                          <Text style={{color: 'yellow'}}>Leader:</Text> {action.leader}
-                        </Txt>
-                      </View>
-                    )}
-                  </View>
-                </>
+                <ModalInfoBlock title="Role" column>
+                  {action.role}
+                  {'leader' in action && (
+                    <View>
+                      <Txt>
+                        <Text style={{color: 'yellow'}}>Leader:</Text> {action.leader}
+                      </Txt>
+                    </View>
+                  )}
+                </ModalInfoBlock>
               )}
             </View>
           )

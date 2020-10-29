@@ -1,7 +1,7 @@
 import {nativeMath, shuffle} from 'random-js'
 import {times} from 'lodash'
 
-import {ExploredPlanet, Planet, PlanetType, Resource} from '@types'
+import {ExploredPlanet, OccupiedPlanet, Planet, PlanetType, Resource} from '@types'
 
 export const createPlanet = ({
   action,
@@ -33,4 +33,9 @@ export const getStartPlanets = (): Array<Planet> =>
 export const getAddedPlanet = (planet: Planet): ExploredPlanet => ({
   ...planet,
   colonies: 0,
+})
+
+export const setPlanetOccupied = ({colonies, ...planet}: ExploredPlanet): OccupiedPlanet => ({
+  ...planet,
+  production: planet.resources.map(type => ({type, produced: false})),
 })

@@ -3,10 +3,12 @@ import {combineReducers} from 'redux'
 import {lobby} from './lobby'
 import {game} from './game'
 import {user} from './user'
+import {ui} from './ui'
 
 const reducersMap = {
   game,
   lobby,
+  ui,
   user,
 }
 

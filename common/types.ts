@@ -6,6 +6,8 @@ export enum Card {
   politics = 'politics',
 }
 
+export type BoardCard = Exclude<Card, 'politics'>
+
 export enum Action {
   warfare = 'warfare',
   colonize = 'colonize',
