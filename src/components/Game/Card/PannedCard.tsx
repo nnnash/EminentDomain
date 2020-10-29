@@ -4,7 +4,7 @@ import {shallowEqual, useDispatch, useSelector} from 'react-redux'
 import EStyle from 'react-native-extended-stylesheet'
 import {PanGestureHandler, PanGestureHandlerStateChangeEvent, State} from 'react-native-gesture-handler'
 
-import {Action, BoardCard, Card as TCard, Game} from '@types'
+import {Action, BoardCard, Card as TCard, Game, Phase} from '@types'
 import CardContent from './CardContent'
 import {RootAction} from '@actions/index'
 import {setColonizeActive, setIndustryActive, setPoliticsActive, setWarfareActive} from '@actions/ui'
@@ -23,19 +23,22 @@ const styles = EStyle.create({
   },
 })
 
-const actionCallbacks = (type: TCard, dispatch: Dispatch<RootAction>, gameId: Game['id'], index: number) => {
+const actionCallbacks = (type: TCard, dispatch: Dispatch<RootAction>, game: Game, index: number) => {
+  const player = game.players[game.activePlayer]
   switch (type) {
     case TCard.politics:
       dispatch(setPoliticsActive(index))
       break
     case TCard.envoy:
-      dispatch(reqPlayAction({type: Action.envoy, gameId, cardIndex: index}))
+      dispatch(reqPlayAction({type: Action.envoy, gameId: game.id, cardIndex: index}))
       break
     case TCard.colonize:
       dispatch(setColonizeActive(index))
       break
     case TCard.warfare:
-      dispatch(setWarfareActive(index))
+      if (player.spaceships && !!player.planets.explored.find(p => p.cost.warfare <= player.spaceships))
+        dispatch(setWarfareActive(index))
+      else dispatch(reqPlayAction({type: Action.warfare, gameId: game.id, cardIndex: index}))
       break
     case TCard.industry:
       dispatch(setIndustryActive(index))
@@ -75,15 +78,17 @@ const PannedCard: React.FC<CardProps> = ({type, width, height, isBoard, index}) 
   const dispatch = useDispatch()
   const {
     ui: {activePolitics, clearFlag},
-    game: {id},
+    game,
   } = useSelector<GlobalState, GlobalState>(s => s, shallowEqual)
   const {translate, onPanGestureEvent, touchY, mult} = useCardTranslate(!!isBoard)
   const onPanHandlerStateChange = (event: PanGestureHandlerStateChangeEvent) => {
     if (event.nativeEvent.oldState === State.ACTIVE) {
       if (Math.abs(event.nativeEvent.translationY) >= MAX_TRANSLATE) {
-        if (!isBoard) actionCallbacks(type, dispatch, id, index)
-        else if (activePolitics !== undefined)
-          dispatch(reqPlayAction({type: Action.politics, card: type as BoardCard, gameId: id, cardIndex: index}))
+        if (game.playersPhase === Phase.action) {
+          if (!isBoard) actionCallbacks(type, dispatch, game, index)
+          else if (activePolitics !== undefined)
+            dispatch(reqPlayAction({type: Action.politics, card: type as BoardCard, gameId: game.id, cardIndex: index}))
+        }
       } else Animated.spring(touchY, {toValue: 0, useNativeDriver: false}).start()
     }
   }

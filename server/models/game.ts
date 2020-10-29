@@ -7,6 +7,7 @@ import {
   playEnvoyAction,
   playPoliticsAction,
   playProduceAction,
+  playSellAction,
   playWarfareAction,
 } from './player'
 import {getStartPlanets} from './planets'
@@ -74,7 +75,7 @@ export const playAction = (game: Game, payload: ActionPayload) => {
       playProduceAction(activePlayer, payload.cardIndex)
       break
     case Action.sell:
-      playProduceAction(activePlayer, payload.cardIndex)
+      playSellAction(activePlayer, payload.cardIndex)
       break
     default:
   }

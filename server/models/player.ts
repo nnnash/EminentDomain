@@ -29,14 +29,21 @@ export const playEnvoyAction = ({cards}: Player, index: number) => {
   takeCards(cards, 2)
 }
 
+const occupyPlanet = (player: Player, planetIndex: number) => {
+  const planets = player.planets
+  const activePlanet = player.planets.explored[planetIndex]
+  planets.occupied.push(setPlanetOccupied(activePlanet))
+  planets.explored.splice(planetIndex, 1)
+  player.points += activePlanet.points
+  if (activePlanet.cardCapacity) player.capacity++
+}
+
 export const playColonizeAction = (player: Player, planetIndex: number, cardIndex: number) => {
   const {planets, cards} = player
   const {explored} = planets
   const active = explored[planetIndex]
   if (active.cost.colonize === active.colonies) {
-    planets.occupied.push(setPlanetOccupied(active))
-    planets.explored.splice(planetIndex, 1)
-    player.points += active.points
+    occupyPlanet(player, planetIndex)
     cards.pile = cards.pile.concat(times(active.colonies, () => Card.colonize))
   } else {
     active.colonies++
@@ -48,10 +55,8 @@ export const playWarfareAction = (player: Player, planetIndex: number | undefine
   if (planetIndex === undefined) {
     player.spaceships++
   } else {
+    occupyPlanet(player, planetIndex)
     const activePlanet = player.planets.explored[planetIndex]
-    player.planets.occupied.push(setPlanetOccupied(activePlanet))
-    player.planets.explored.splice(planetIndex, 1)
-    player.points += activePlanet.points
     player.spaceships -= activePlanet.cost.warfare
   }
   player.cards.hand.splice(cardIndex, 1)
