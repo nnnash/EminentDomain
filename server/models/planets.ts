@@ -1,7 +1,8 @@
 import {nativeMath, shuffle} from 'random-js'
-import {times} from 'lodash'
+import {times, omit} from 'lodash'
 
-import {ExploredPlanet, OccupiedPlanet, Planet, PlanetType, Resource} from '@types'
+import {ExploredPlanet, Game, OccupiedPlanet, Planet, PlanetType, Resource} from '@types'
+import planets from '../planets'
 
 export const createPlanet = ({
   action,
@@ -30,12 +31,20 @@ export const getStartPlanets = (): Array<Planet> =>
     createPlanet({resources: [Resource.wheat]}),
   ])
 
+export const getPlanetsDeck = (): Array<Planet> => shuffle(nativeMath, planets)
+
 export const getAddedPlanet = (planet: Planet): ExploredPlanet => ({
   ...planet,
   colonies: 0,
 })
 
-export const setPlanetOccupied = ({colonies, ...planet}: ExploredPlanet): OccupiedPlanet => ({
-  ...planet,
+export const setPlanetOccupied = (planet: ExploredPlanet): OccupiedPlanet => ({
+  ...omit(planet, 'colonies'),
   production: planet.resources.map(type => ({type, produced: false})),
 })
+
+export const pickPlanet = (game: Game, amount: number, planetIndex: number) => {
+  const planetsToSelect = game.planetsDeck.slice(0, amount)
+  game.planetsDeck = game.planetsDeck.slice(amount)
+  return planetsToSelect[planetIndex]
+}

@@ -5,11 +5,20 @@ import EStyle from 'react-native-extended-stylesheet'
 import {PanGestureHandler, PanGestureHandlerStateChangeEvent, State} from 'react-native-gesture-handler'
 
 import {Action, BoardCard, Card as TCard, Game, Phase} from '@types'
-import CardContent from './CardContent'
 import {RootAction} from '@actions/index'
-import {setColonizeActive, setIndustryActive, setPoliticsActive, setWarfareActive} from '@actions/ui'
+import {
+  setColonizeActive,
+  setEnvoyActive,
+  setIndustryActive,
+  setOptionsModalOpen,
+  setPoliticsActive,
+  setWarfareActive,
+} from '@actions/ui'
+import {reqPlayAction, reqPlayRole} from '@actions/game'
 import {GlobalState} from '@reducers/index'
-import {reqPlayAction} from '@actions/game'
+import {UserState} from '@reducers/user'
+import {getRange, useUser} from '../../../utils'
+import CardContent from './CardContent'
 
 const styles = EStyle.create({
   root: {
@@ -33,17 +42,60 @@ const actionCallbacks = (type: TCard, dispatch: Dispatch<RootAction>, game: Game
       dispatch(reqPlayAction({type: Action.envoy, gameId: game.id, cardIndex: index}))
       break
     case TCard.colonize:
-      dispatch(setColonizeActive(index))
+      if (player.planets.explored.length === 1)
+        dispatch(reqPlayAction({type: Action.colonize, cardIndex: index, gameId: game.id, planetIndex: 0}))
+      else dispatch(setColonizeActive({cardIndex: index, isAction: true}))
       break
     case TCard.warfare:
       if (player.spaceships && !!player.planets.explored.find(p => p.cost.warfare <= player.spaceships))
-        dispatch(setWarfareActive(index))
+        dispatch(setWarfareActive({cardIndex: index, isAction: true}))
       else dispatch(reqPlayAction({type: Action.warfare, gameId: game.id, cardIndex: index}))
       break
     case TCard.industry:
-      dispatch(setIndustryActive(index))
+      dispatch(setIndustryActive({isAction: true, cardIndex: index}))
       break
     default:
+  }
+}
+
+const roleCallbacks = (type: TCard, dispatch: Dispatch<RootAction>, game: Game, userId: UserState['id']) => {
+  if (type === TCard.industry) {
+    dispatch(setIndustryActive({isAction: false, isLeader: true}))
+    return
+  }
+  const player = game.players[userId]
+  const {typeCards, planetSymbols, ...range} = getRange(game, userId, type, true)
+  switch (type) {
+    case TCard.colonize:
+      if (player.planets.explored.length === 1) {
+        const planet = player.planets.explored[0]
+        dispatch(
+          setOptionsModalOpen({
+            open: true,
+            range: {from: range.from, to: Math.min(range.to, planet.cost.colonize - planet.colonies)},
+            action: Action.colonize,
+            planetIndex: 0,
+          }),
+        )
+      } else dispatch(setColonizeActive({isAction: false, isLeader: true}))
+      break
+    case TCard.warfare:
+      if (player.spaceships && !!player.planets.explored.find(p => p.cost.warfare <= player.spaceships))
+        dispatch(setWarfareActive({isAction: false, isLeader: true}))
+      else {
+        if (typeCards) dispatch(setOptionsModalOpen({open: true, range, action: Action.warfare}))
+        else dispatch(reqPlayRole({type: Action.warfare, gameId: game.id, amount: 1 + planetSymbols}))
+      }
+      break
+    case TCard.envoy:
+      if (typeCards) {
+        dispatch(setOptionsModalOpen({open: true, action: Action.envoy, range}))
+      } else {
+        if (planetSymbols) {
+          dispatch(setEnvoyActive({amount: planetSymbols + 1}))
+        } else dispatch(reqPlayRole({type: Action.envoy, amount: 1, gameId: game.id, planetIndex: 0}))
+      }
+      break
   }
 }
 
@@ -81,13 +133,23 @@ const PannedCard: React.FC<CardProps> = ({type, width, height, isBoard, index}) 
     game,
   } = useSelector<GlobalState, GlobalState>(s => s, shallowEqual)
   const {translate, onPanGestureEvent, touchY, mult} = useCardTranslate(!!isBoard)
+  const user = useUser()
   const onPanHandlerStateChange = (event: PanGestureHandlerStateChangeEvent) => {
     if (event.nativeEvent.oldState === State.ACTIVE) {
       if (Math.abs(event.nativeEvent.translationY) >= MAX_TRANSLATE) {
         if (game.playersPhase === Phase.action) {
           if (!isBoard) actionCallbacks(type, dispatch, game, index)
           else if (activePolitics !== undefined)
-            dispatch(reqPlayAction({type: Action.politics, card: type as BoardCard, gameId: game.id, cardIndex: index}))
+            dispatch(
+              reqPlayAction({
+                type: Action.politics,
+                card: type as BoardCard,
+                gameId: game.id,
+                cardIndex: activePolitics,
+              }),
+            )
+        } else if (game.playersPhase === Phase.role) {
+          roleCallbacks(type, dispatch, game, user.id)
         }
       } else Animated.spring(touchY, {toValue: 0, useNativeDriver: false}).start()
     }

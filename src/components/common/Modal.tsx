@@ -18,7 +18,7 @@ const styles = EStyle.create({
 
 const Modal: React.FC<ModalProps> = ({children, ...rest}) => {
   return (
-    <RNModal {...rest}>
+    <RNModal transparent {...rest}>
       <SafeAreaView style={styles.container}>
         <View style={styles.modal}>{children}</View>
       </SafeAreaView>

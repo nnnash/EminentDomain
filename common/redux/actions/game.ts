@@ -42,4 +42,36 @@ export type ActionPayload =
   | SellPayload
 export const reqPlayAction = createAction('socket/PLAY_ACTION')<ActionPayload>()
 
+interface RolePayloadBase {
+  gameId: Game['id']
+  type: Action
+  amount: number
+}
+interface WarfarePayloadRole extends RolePayloadBase {
+  type: Action.warfare
+  planetIndex?: number
+}
+interface ColonizePayloadRole extends RolePayloadBase {
+  type: Action.colonize
+  planetIndex: number
+}
+interface EnvoyPayloadRole extends RolePayloadBase {
+  type: Action.envoy
+  planetIndex: number // this planet belongs to deck yet
+}
+interface ProducePayloadRole extends RolePayloadBase {
+  type: Action.produce
+}
+interface SellPayloadRole extends RolePayloadBase {
+  type: Action.sell
+}
+
+export type RolePayload =
+  | WarfarePayloadRole
+  | ColonizePayloadRole
+  | EnvoyPayloadRole
+  | ProducePayloadRole
+  | SellPayloadRole
+export const reqPlayRole = createAction('socket/PLAY_ROLE')<RolePayload>()
+
 export const sendGameError = createAction('resp/GAME_ERROR')<string | undefined>()

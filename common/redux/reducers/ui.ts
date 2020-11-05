@@ -8,16 +8,23 @@ import {
   setWarfareActive,
   setIndustryActive,
   setOptionsModalOpen,
+  setEnvoyActive,
+  ActiveUI,
 } from '@actions/ui'
+import {Action} from '@types'
 
 export interface UiState {
-  activeColonize?: number
-  activeIndustry?: number
+  activeColonize?: ActiveUI
+  activeIndustry?: ActiveUI
   activePolitics?: number
-  activeWarfare?: number
+  activeWarfare?: ActiveUI
   clearFlag: boolean
   optionsModalOpen: boolean
   optionsModalIndustry?: boolean
+  optionsModalRange?: {from: number; to: number}
+  optionsModalRole?: Action
+  optionsModalPlanet?: number
+  optionsModalEnvoyAmount?: number
 }
 export const initialUiState: UiState = {
   clearFlag: false,
@@ -31,6 +38,21 @@ export const ui = createReducer<UiState, RootAction>(initialUiState)
   .handleAction(setIndustryActive, (state, {payload: activeIndustry}): UiState => ({...state, activeIndustry}))
   .handleAction(
     setOptionsModalOpen,
-    (state, {payload: {industryChoose}}): UiState => ({...state, optionsModalIndustry: industryChoose}),
+    (state, {payload: {industryChoose, range, open, action, planetIndex}}): UiState => ({
+      ...state,
+      optionsModalIndustry: industryChoose,
+      optionsModalOpen: open,
+      optionsModalRange: range,
+      optionsModalRole: action,
+      optionsModalPlanet: planetIndex,
+    }),
+  )
+  .handleAction(
+    setEnvoyActive,
+    (state, {payload: {amount}}): UiState => ({
+      ...initialUiState,
+      optionsModalOpen: true,
+      optionsModalEnvoyAmount: amount,
+    }),
   )
   .handleAction(clearUi, (state): UiState => ({...initialUiState, clearFlag: !state.clearFlag}))

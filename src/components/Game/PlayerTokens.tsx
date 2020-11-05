@@ -7,7 +7,9 @@ import {GlobalState} from '@reducers/index'
 import FighterIcon from './Icons/FighterIcon'
 import PointIcon from './Icons/PointIcon'
 import {reqPlayAction} from '@actions/game'
-import {Action} from '@types'
+import {Action, Card} from '@types'
+import {setOptionsModalOpen} from '@actions/ui'
+import {getRange} from '../../utils'
 
 const styles = EStyle.create({
   root: {
@@ -33,15 +35,21 @@ const styles = EStyle.create({
 
 const Fighters: React.FC<{}> = () => {
   const {
-    game: {players, id: gameId},
+    game,
     user: {id: userId},
     ui: {activeWarfare},
   } = useSelector<GlobalState, GlobalState>(s => s, shallowEqual)
+  const {players, id: gameId} = game
   const dispatch = useDispatch()
-  const isActive = activeWarfare !== undefined
+  const isActive = activeWarfare?.isAction || activeWarfare?.isLeader
   const onPress = () => {
     if (!isActive) return
-    dispatch(reqPlayAction({type: Action.warfare, cardIndex: activeWarfare || 0, gameId}))
+    if (activeWarfare?.isAction)
+      dispatch(reqPlayAction({type: Action.warfare, cardIndex: activeWarfare.cardIndex || 0, gameId}))
+    else
+      dispatch(
+        setOptionsModalOpen({action: Action.warfare, open: true, range: getRange(game, userId, Card.warfare, true)}),
+      )
   }
 
   return (

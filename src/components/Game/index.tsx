@@ -87,8 +87,8 @@ const Game: React.FC<StackScreenProps<RootStackParamList, 'Game'>> = ({route}) =
         </View>
         <View style={styles.playerSection}>
           <Planets />
-          <PlayerTokens />
           <Hand />
+          <PlayerTokens />
         </View>
       </View>
       <OptionsModal />

@@ -3,14 +3,15 @@ import {Image, Text, TouchableOpacity, View} from 'react-native'
 import {shallowEqual, useDispatch, useSelector} from 'react-redux'
 import EStyle from 'react-native-extended-stylesheet'
 
-import {Action, Planet} from '@types'
+import {Action, Card, Planet} from '@types'
 import {GlobalState} from '@reducers/index'
 import {useUser} from '../../../utils'
 import {planetProps} from './planetConfigs'
 import FighterIcon from '../Icons/FighterIcon'
 import Icon from '../Icons/Icon'
 import Info from './Info'
-import {reqPlayAction} from '@actions/game'
+import {reqPlayAction, reqPlayRole} from '@actions/game'
+import {setOptionsModalOpen} from '@actions/ui'
 
 const styles = EStyle.create({
   $planetSize: 60,
@@ -58,7 +59,7 @@ const styles = EStyle.create({
 
 const Explored: React.FC<{}> = () => {
   const {
-    game: {players, id},
+    game: {players, id, activePlayer},
     ui: {activeColonize, activeWarfare},
   } = useSelector<GlobalState, GlobalState>(s => s, shallowEqual)
   const user = useUser()
@@ -72,25 +73,68 @@ const Explored: React.FC<{}> = () => {
     <>
       <View style={styles.root}>
         {player.planets.explored.map((planet, ind) => {
-          const isWarfareActive = activeWarfare !== undefined && player.spaceships >= planet.cost.warfare
-          const isActive = activeColonize !== undefined || isWarfareActive
+          const isWarfareActive =
+            (activeWarfare?.isLeader || activeWarfare?.isAction) && player.spaceships >= planet.cost.warfare
+          const isActive = activeColonize || isWarfareActive
           return (
             <TouchableOpacity
               onPress={() => {
                 if (!isActive) return
-                if (activeColonize !== undefined) {
-                  dispatch(
-                    reqPlayAction({type: Action.colonize, cardIndex: activeColonize, gameId: id, planetIndex: ind}),
-                  )
+                if (activeColonize) {
+                  if (activeColonize.isAction) {
+                    dispatch(
+                      reqPlayAction({
+                        type: Action.colonize,
+                        cardIndex: activeColonize.cardIndex || 0,
+                        gameId: id,
+                        planetIndex: ind,
+                      }),
+                    )
+                  } else {
+                    const isLeader = activePlayer === user.id
+                    if (planet.cost.colonize <= planet.colonies) {
+                      dispatch(reqPlayRole({type: Action.colonize, gameId: id, amount: 1, planetIndex: ind}))
+                    } else {
+                      const colonizeCards = player.cards.hand.filter(c => c === Card.colonize).length
+                      if (!colonizeCards) {
+                        dispatch(
+                          reqPlayRole({type: Action.colonize, amount: Number(isLeader), gameId: id, planetIndex: ind}),
+                        )
+                      } else {
+                        dispatch(
+                          setOptionsModalOpen({
+                            action: Action.colonize,
+                            open: true,
+                            range: {
+                              from: Number(isLeader),
+                              to: Math.min(colonizeCards + Number(isLeader), planet.cost.colonize),
+                            },
+                            planetIndex: ind,
+                          }),
+                        )
+                      }
+                    }
+                  }
                 } else if (isWarfareActive) {
-                  dispatch(
-                    reqPlayAction({
-                      type: Action.warfare,
-                      cardIndex: activeWarfare as number,
-                      gameId: id,
-                      planetIndex: ind,
-                    }),
-                  )
+                  if (activeWarfare?.isAction) {
+                    dispatch(
+                      reqPlayAction({
+                        type: Action.warfare,
+                        cardIndex: activeWarfare.cardIndex || 0,
+                        gameId: id,
+                        planetIndex: ind,
+                      }),
+                    )
+                  } else {
+                    dispatch(
+                      reqPlayRole({
+                        type: Action.warfare,
+                        planetIndex: ind,
+                        gameId: id,
+                        amount: 1,
+                      }),
+                    )
+                  }
                 }
               }}
               key={`explored-planet-${ind}`}

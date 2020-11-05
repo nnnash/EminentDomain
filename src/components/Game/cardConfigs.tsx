@@ -1,6 +1,8 @@
 import {ImageSourcePropType} from 'react-native'
 
-import {Action, Card as TCard, Card} from '@types'
+import {Action} from '@types'
+
+export * from '../../../common/cardProps'
 
 type ActionConfig = {
   icon: ImageSourcePropType
@@ -30,26 +32,5 @@ export const actionProps: Record<Action, ActionConfig> = {
   [Action.sell]: {
     color: '#4B2E79',
     icon: require('../../img/refresh.png'),
-  },
-}
-
-type CardConfiig = {
-  actions: Array<Action>
-}
-export const cardProps: Record<Card, CardConfiig> = {
-  [TCard.envoy]: {
-    actions: [Action.envoy],
-  },
-  [TCard.warfare]: {
-    actions: [Action.warfare],
-  },
-  [TCard.politics]: {
-    actions: [Action.politics],
-  },
-  [TCard.industry]: {
-    actions: [Action.produce, Action.sell],
-  },
-  [TCard.colonize]: {
-    actions: [Action.colonize],
   },
 }

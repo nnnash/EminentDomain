@@ -76,7 +76,7 @@ const Info: React.FC<InfoProps> = ({open, onClose, planet}) => {
     ))
   }
   return (
-    <Modal animationType="fade" visible={open} transparent>
+    <Modal animationType="fade" visible={open}>
       {!!planet && (
         <>
           <View style={styles.mainTitle}>

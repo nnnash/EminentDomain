@@ -1,17 +1,20 @@
 import {v4} from 'uuid'
+import {nativeMath, shuffle} from 'random-js'
 
 import {Action, Card, Game, GameStatus, Phase, Planet, Player} from '@types'
 import {
   createPlayer,
-  playColonizeAction,
+  playColonize,
   playEnvoyAction,
+  playEnvoyRole,
+  playIndustry,
   playPoliticsAction,
-  playProduceAction,
-  playSellAction,
-  playWarfareAction,
+  playWarfare,
 } from './player'
-import {getStartPlanets} from './planets'
-import {ActionPayload} from '@actions/game'
+import {getPlanetsDeck, getStartPlanets, pickPlanet} from './planets'
+import {ActionPayload, RolePayload} from '@actions/game'
+import {getCardByAction, getEmpower} from '../../common/utils'
+import {takeCards} from './decks'
 
 export const createGame = (gameName: string, hostName: string, hostId: string): Game => {
   const startPlanets = getStartPlanets()
@@ -24,6 +27,7 @@ export const createGame = (gameName: string, hostName: string, hostId: string): 
       [player.id]: player,
     },
     startPlanets,
+    planetsDeck: getPlanetsDeck(),
     cards: {
       [Card.warfare]: 15,
       [Card.colonize]: 18,
@@ -53,6 +57,7 @@ export const startGame = (game: Game) => {
   const playersIds = Object.keys(game.players)
   // game.activePlayer = pick(nativeMath, playersIds)
   game.activePlayer = playersIds[1] // TODO return the previous one
+  game.playersOrder = shuffle(nativeMath, playersIds)
 }
 
 export const playAction = (game: Game, payload: ActionPayload) => {
@@ -66,18 +71,60 @@ export const playAction = (game: Game, payload: ActionPayload) => {
       playEnvoyAction(activePlayer, payload.cardIndex)
       break
     case Action.colonize:
-      playColonizeAction(activePlayer, payload.planetIndex, payload.cardIndex)
+      playColonize({player: activePlayer, ...payload})
       break
     case Action.warfare:
-      playWarfareAction(activePlayer, payload.planetIndex, payload.cardIndex)
+      playWarfare({player: activePlayer, ...payload})
       break
     case Action.produce:
-      playProduceAction(activePlayer, payload.cardIndex)
-      break
     case Action.sell:
-      playSellAction(activePlayer, payload.cardIndex)
+      playIndustry({player: activePlayer, cardIndex: payload.cardIndex, isProduction: payload.type === Action.produce})
       break
-    default:
   }
   game.playersPhase = Phase.role
+  game.rolePlayer = game.activePlayer
+}
+
+export const playRole = (game: Game, payload: RolePayload) => {
+  if (!game.rolePlayer) return
+  const rolePlayer = game.players[game.rolePlayer]
+  if (!rolePlayer) return
+  if (game.activePlayer !== game.rolePlayer && payload.amount === 0) {
+    takeCards(rolePlayer.cards, 1)
+  } else {
+    switch (payload.type) {
+      case Action.warfare:
+        playWarfare({player: rolePlayer, fighterAmount: payload.amount, planetIndex: payload.planetIndex})
+        break
+      case Action.colonize:
+        playColonize({player: rolePlayer, coloniesAmount: payload.amount, planetIndex: payload.planetIndex})
+        break
+      case Action.produce:
+      case Action.sell:
+        playIndustry({amount: payload.amount, player: rolePlayer, isProduction: payload.type === Action.produce})
+        break
+      case Action.envoy:
+        playEnvoyRole(
+          rolePlayer,
+          pickPlanet(game, payload.amount - Number(game.activePlayer !== game.rolePlayer), payload.planetIndex),
+          payload.amount,
+        )
+    }
+  }
+  game.cards[getCardByAction(payload.type) as Exclude<Card, Card.politics>]--
+  if (!game.playersOrder) return
+  const activePlayerIndex = game.playersOrder.findIndex(item => item === game.activePlayer)
+  const roleOrder = game.playersOrder.slice(activePlayerIndex).concat(game.playersOrder.slice(0, activePlayerIndex))
+  const roleExecutor = roleOrder.findIndex(item => item === game.rolePlayer)
+  const nextPlayer = roleOrder.slice(roleExecutor + 1).find(playerId => {
+    const player = game.players[playerId]
+    const canPlay = !!getEmpower(player, payload.type)
+    if (!canPlay) takeCards(player.cards, 1)
+    return canPlay
+  })
+  if (nextPlayer) game.rolePlayer = nextPlayer
+  else {
+    game.playersPhase = Phase.cleanup
+    delete game.rolePlayer
+  }
 }

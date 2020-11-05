@@ -97,10 +97,12 @@ export interface Game extends GameBase {
     [key: string]: Player
   }
   startPlanets: Array<Planet>
+  planetsDeck: Array<Planet>
   cards: Record<Exclude<Card, Card.politics>, number>
   activePlayer: Player['id']
   playersPhase: Phase
   rolePlayer?: Player['id']
+  playersOrder?: Array<Player['id']>
 }
 export interface GameShort extends GameBase {
   players: Array<Player['id']>

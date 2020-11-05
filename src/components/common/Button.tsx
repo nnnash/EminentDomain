@@ -8,6 +8,7 @@ const styles = EStyle.create({
     borderRadius: 4,
     borderColor: 'white',
     padding: 10,
+    minWidth: 40,
   },
   buttonText: {
     color: '$textColor',
