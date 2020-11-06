@@ -73,6 +73,7 @@ export interface Player {
     explored: Array<ExploredPlanet>
   }
   spaceships: number
+  coloniesDiscount: number
 }
 
 export enum GameStatus {

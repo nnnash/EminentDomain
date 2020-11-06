@@ -3,7 +3,7 @@ import {times} from 'lodash'
 import {Action, Card, ExploredPlanet, Planet, Player, PlayerStatus} from '@types'
 import {getPlayerDecks, takeCards} from './decks'
 import {getAddedPlanet, setPlanetOccupied} from './planets'
-import {getPlanetEmpower} from '../../common/utils'
+import {getPlanetColonizeCost, getPlanetEmpower} from '../../common/utils'
 
 const CAPACITY = 5
 
@@ -30,6 +30,7 @@ export const createPlayer = (name: string, id: string, planet: Planet): Player =
   },
   // spaceships: 0,
   spaceships: 2, // TODO return previous one
+  coloniesDiscount: 0,
 })
 
 export const playPoliticsAction = (player: Player, card: Card, index: number) => {
@@ -54,6 +55,7 @@ const occupyPlanet = (player: Player, planetIndex: number) => {
   planets.explored.splice(planetIndex, 1)
   player.points += activePlanet.points
   if (activePlanet.cardCapacity) player.capacity++
+  if (activePlanet.action === Action.colonize) player.coloniesDiscount++
 }
 
 interface ColonizeParams {
@@ -68,7 +70,7 @@ export const playColonize = ({cardIndex, coloniesAmount, planetIndex, player}: C
     cards,
   } = player
   const active = explored[planetIndex]
-  if (active.cost.colonize <= active.colonies) {
+  if (getPlanetColonizeCost(active, player) <= active.colonies) {
     occupyPlanet(player, planetIndex)
     cards.pile = cards.pile.concat(times(active.colonies + 1, () => Card.colonize))
   } else {

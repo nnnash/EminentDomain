@@ -11,6 +11,11 @@ export const useUser = () => {
   return useSelector<GlobalState, UserState>(state => state.user, shallowEqual)
 }
 
+export const usePlayer = () => {
+  const {game, user} = useSelector<GlobalState, GlobalState>(s => s, shallowEqual)
+  return game.players[user.id]
+}
+
 export const useYourTurn = () => {
   const user = useUser()
   const {activePlayer, status} = useSelector<GlobalState, GameState>(state => state.game, shallowEqual)

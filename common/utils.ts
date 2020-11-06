@@ -1,4 +1,4 @@
-import {Action, Card, Player} from '@types'
+import {Action, Card, Planet, Player} from '@types'
 import {cardProps} from './cardProps'
 
 export const getPlanetEmpower = (player: Player, type: Action) =>
@@ -17,3 +17,6 @@ const cardByAction: Record<Action, Card> = Object.entries(cardProps).reduce((acc
 }, {} as Record<Action, Card>)
 
 export const getCardByAction = (action: Action): Card => cardByAction[action]
+
+export const getPlanetColonizeCost = ({cost}: Planet, {coloniesDiscount}: Player) =>
+  Math.max(cost.colonize - coloniesDiscount)

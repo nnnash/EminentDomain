@@ -31,7 +31,7 @@ export const getStartPlanets = (): Array<Planet> =>
     createPlanet({resources: [Resource.wheat]}),
   ])
 
-export const getPlanetsDeck = (): Array<Planet> => shuffle(nativeMath, planets)
+export const getPlanetsDeck = (): Array<Planet> => shuffle(nativeMath, [...planets])
 
 export const getAddedPlanet = (planet: Planet): ExploredPlanet => ({
   ...planet,

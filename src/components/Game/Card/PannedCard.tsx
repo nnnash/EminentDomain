@@ -19,6 +19,7 @@ import {GlobalState} from '@reducers/index'
 import {UserState} from '@reducers/user'
 import {getRange, useUser} from '../../../utils'
 import CardContent from './CardContent'
+import {getPlanetColonizeCost} from '../../../../common/utils'
 
 const styles = EStyle.create({
   root: {
@@ -72,7 +73,7 @@ const roleCallbacks = (type: TCard, dispatch: Dispatch<RootAction>, game: Game, 
         dispatch(
           setOptionsModalOpen({
             open: true,
-            range: {from: range.from, to: Math.min(range.to, planet.cost.colonize - planet.colonies)},
+            range: {from: range.from, to: Math.min(range.to, getPlanetColonizeCost(planet, player) - planet.colonies)},
             action: Action.colonize,
             planetIndex: 0,
           }),

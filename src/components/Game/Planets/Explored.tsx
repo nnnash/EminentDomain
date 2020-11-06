@@ -12,6 +12,7 @@ import Icon from '../Icons/Icon'
 import Info from './Info'
 import {reqPlayAction, reqPlayRole} from '@actions/game'
 import {setOptionsModalOpen} from '@actions/ui'
+import {getPlanetColonizeCost} from '../../../../common/utils'
 
 const styles = EStyle.create({
   $planetSize: 60,
@@ -92,7 +93,7 @@ const Explored: React.FC<{}> = () => {
                     )
                   } else {
                     const isLeader = activePlayer === user.id
-                    if (planet.cost.colonize <= planet.colonies) {
+                    if (getPlanetColonizeCost(planet, player) <= planet.colonies) {
                       dispatch(reqPlayRole({type: Action.colonize, gameId: id, amount: 1, planetIndex: ind}))
                     } else {
                       const colonizeCards = player.cards.hand.filter(c => c === Card.colonize).length
@@ -107,7 +108,7 @@ const Explored: React.FC<{}> = () => {
                             open: true,
                             range: {
                               from: Number(isLeader),
-                              to: Math.min(colonizeCards + Number(isLeader), planet.cost.colonize),
+                              to: Math.min(colonizeCards + Number(isLeader), getPlanetColonizeCost(planet, player)),
                             },
                             planetIndex: ind,
                           }),
@@ -144,7 +145,7 @@ const Explored: React.FC<{}> = () => {
                   <FighterIcon /> {planet.cost.warfare}
                 </Text>
                 <Text style={styles.costValue}>
-                  <Icon action={Action.colonize} /> {planet.cost.colonize}
+                  <Icon action={Action.colonize} /> {getPlanetColonizeCost(planet, player)}
                   {!!planet.colonies && (
                     <Text>
                       (<Text style={styles.colonies}>{planet.colonies}</Text>)

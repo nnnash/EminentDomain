@@ -11,6 +11,8 @@ import PointIcon from '../Icons/PointIcon'
 import FighterIcon from '../Icons/FighterIcon'
 import ResourceIcon from '../Icons/ResourceIcon'
 import CapacityIcon from '../Icons/CapacityIcon'
+import {getPlanetColonizeCost} from '../../../../common/utils'
+import {usePlayer} from '../../../utils'
 
 const styles = EStyle.create({
   mainTitle: {
@@ -62,6 +64,7 @@ interface InfoProps {
   planet: Planet | null
 }
 const Info: React.FC<InfoProps> = ({open, onClose, planet}) => {
+  const player = usePlayer()
   const isOccupied = !!planet && getIsOccupied(planet)
   let free: Array<Resource> = [],
     placed: Array<Resource> = []
@@ -89,7 +92,7 @@ const Info: React.FC<InfoProps> = ({open, onClose, planet}) => {
                   <FighterIcon /> {planet.cost.warfare}
                 </Text>
                 <Text style={styles.costValue}>
-                  <Icon action={Action.colonize} /> {planet.cost.colonize}
+                  <Icon action={Action.colonize} /> {getPlanetColonizeCost(planet, player)}
                 </Text>
               </ModalInfoBlock>
               {!!(planet as ExploredPlanet).colonies && (
@@ -110,6 +113,7 @@ const Info: React.FC<InfoProps> = ({open, onClose, planet}) => {
               <ResourceIcon key={`resource-${ind}`} resource={resource} />
             ))}
             {planet.cardCapacity && <CapacityIcon />}
+            {!!planet.action && <Icon action={planet.action} />}
           </ModalInfoBlock>
         </>
       )}
