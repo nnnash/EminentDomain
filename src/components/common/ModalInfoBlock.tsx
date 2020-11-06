@@ -22,6 +22,7 @@ const styles = EStyle.create({
     marginBottom: 10,
     flexDirection: 'row',
     justifyContent: 'space-around',
+    alignItems: 'center',
   },
 })
 

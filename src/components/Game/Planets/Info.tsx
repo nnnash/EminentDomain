@@ -1,5 +1,5 @@
 import React from 'react'
-import {Text, View} from 'react-native'
+import {Text} from 'react-native'
 import EStyle from 'react-native-extended-stylesheet'
 
 import {Action, ExploredPlanet, OccupiedPlanet, Planet, Resource} from '@types'
@@ -15,10 +15,6 @@ import {getPlanetColonizeCost} from '../../../../common/utils'
 import {usePlayer} from '../../../utils'
 
 const styles = EStyle.create({
-  mainTitle: {
-    alignItems: 'center',
-    marginBottom: 10,
-  },
   text: {
     color: '$textColor',
     lineHeight: 28,
@@ -46,7 +42,6 @@ const styles = EStyle.create({
 })
 
 const Txt: React.FC<{}> = ({children}) => <Text style={styles.text}>{children}</Text>
-const Title: React.FC<{}> = ({children}) => <Text style={styles.title}>{children}</Text>
 
 const getIsOccupied = (planet: Planet): planet is OccupiedPlanet => 'production' in planet
 
@@ -56,6 +51,17 @@ const ResourceProduction: React.FC<{title: string; resources: Array<Resource>}> 
       <ResourceIcon key={`${title}-resource-${ind}`} resource={type} />
     ))}
   </ModalInfoBlock>
+)
+
+export const PlanetBonuses: React.FC<{planet: Planet}> = ({planet}) => (
+  <>
+    <PointIcon amount={planet.points} />
+    {planet.resources.map((resource, ind) => (
+      <ResourceIcon key={`resource-${ind}`} resource={resource} />
+    ))}
+    {planet.cardCapacity && <CapacityIcon />}
+    {!!planet.action && <Icon action={planet.action} />}
+  </>
 )
 
 interface InfoProps {
@@ -79,12 +85,9 @@ const Info: React.FC<InfoProps> = ({open, onClose, planet}) => {
     ))
   }
   return (
-    <Modal animationType="fade" visible={open}>
+    <Modal animationType="fade" visible={open} title={`${planet?.type} planet`}>
       {!!planet && (
         <>
-          <View style={styles.mainTitle}>
-            <Title>{planet.type} planet</Title>
-          </View>
           {!isOccupied ? (
             <>
               <ModalInfoBlock title="Cost">

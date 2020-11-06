@@ -10,6 +10,8 @@ import Button from '../common/Button'
 import Icon from './Icons/Icon'
 import {reqPlayAction, reqPlayRole, RolePayload} from '@actions/game'
 import {setEnvoyActive} from '@actions/ui'
+import {ExploredPlanetView} from './Planets/Explored'
+import {PlanetBonuses} from './Planets/Info'
 
 const ICON_WIDTH = 180
 const OptionsModal: React.FC<{}> = () => {
@@ -26,9 +28,10 @@ const OptionsModal: React.FC<{}> = () => {
       optionsModalEnvoyAmount,
     },
   } = useSelector<GlobalState, GlobalState>(s => s, shallowEqual)
+  const title = optionsModalIndustry ? 'select action' : optionsModalRange ? 'empower role' : 'select planet'
 
   return (
-    <Modal visible={optionsModalOpen}>
+    <Modal visible={optionsModalOpen} title={title}>
       {!!optionsModalIndustry && activeIndustry && (
         <ModalInfoBlock title="Select action">
           <TouchableOpacity
@@ -84,7 +87,10 @@ const OptionsModal: React.FC<{}> = () => {
                 reqPlayRole({type: Action.envoy, planetIndex: ind, gameId: game.id, amount: optionsModalEnvoyAmount}),
               )
             }}>
-            <ModalInfoBlock title={`${planet.type} planet`} />
+            <ModalInfoBlock title={`${planet.type} planet`}>
+              <ExploredPlanetView planet={{...planet, colonies: 0}} isActive={false} />
+              <PlanetBonuses planet={planet} />
+            </ModalInfoBlock>
           </TouchableOpacity>
         ))}
     </Modal>
