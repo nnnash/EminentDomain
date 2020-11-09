@@ -90,29 +90,36 @@ export const playRole = (game: Game, payload: RolePayload) => {
   if (!game.rolePlayer) return
   const rolePlayer = game.players[game.rolePlayer]
   if (!rolePlayer) return
-  if (game.activePlayer !== game.rolePlayer && payload.amount === 0) {
+  const isLeader = game.activePlayer === game.rolePlayer
+  if (!isLeader && payload.amount === 0) {
     takeCards(rolePlayer.cards, 1)
   } else {
     switch (payload.type) {
       case Action.warfare:
-        playWarfare({player: rolePlayer, fighterAmount: payload.amount, planetIndex: payload.planetIndex})
+        playWarfare({player: rolePlayer, fighterAmount: payload.amount, planetIndex: payload.planetIndex, isLeader})
         break
       case Action.colonize:
-        playColonize({player: rolePlayer, coloniesAmount: payload.amount, planetIndex: payload.planetIndex})
+        playColonize({player: rolePlayer, coloniesAmount: payload.amount, planetIndex: payload.planetIndex, isLeader})
         break
       case Action.produce:
       case Action.sell:
-        playIndustry({amount: payload.amount, player: rolePlayer, isProduction: payload.type === Action.produce})
+        playIndustry({
+          amount: payload.amount,
+          player: rolePlayer,
+          isProduction: payload.type === Action.produce,
+          isLeader,
+        })
         break
       case Action.envoy:
         playEnvoyRole(
           rolePlayer,
           pickPlanet(game, payload.amount - Number(game.activePlayer !== game.rolePlayer), payload.planetIndex),
           payload.amount,
+          isLeader,
         )
     }
   }
-  game.cards[getCardByAction(payload.type) as Exclude<Card, Card.politics>]--
+  if (isLeader) game.cards[getCardByAction(payload.type) as Exclude<Card, Card.politics>]--
   if (!game.playersOrder) return
   const activePlayerIndex = game.playersOrder.findIndex(item => item === game.activePlayer)
   const roleOrder = game.playersOrder.slice(activePlayerIndex).concat(game.playersOrder.slice(0, activePlayerIndex))

@@ -42,10 +42,10 @@ export const playEnvoyAction = ({cards}: Player, index: number) => {
   takeCards(cards, 2)
 }
 
-export const playEnvoyRole = (player: Player, planet: Planet, amount: number) => {
+export const playEnvoyRole = (player: Player, planet: Planet, amount: number, isLeader: boolean) => {
   player.planets.explored.push(getAddedPlanet(planet))
   const byPlanet = getPlanetEmpower(player, Action.envoy)
-  removePlayedCards(Card.envoy, amount - byPlanet - 1, player.cards)
+  removePlayedCards(Card.envoy, amount - byPlanet - Number(isLeader), player.cards)
   player.cards.pile = player.cards.pile.concat(times(amount - byPlanet, () => Card.envoy))
 }
 
@@ -64,8 +64,9 @@ interface ColonizeParams {
   planetIndex: number
   cardIndex?: number
   coloniesAmount?: number
+  isLeader?: boolean
 }
-export const playColonize = ({cardIndex, coloniesAmount, planetIndex, player}: ColonizeParams) => {
+export const playColonize = ({cardIndex, coloniesAmount, planetIndex, player, isLeader}: ColonizeParams) => {
   const {
     planets: {explored},
     cards,
@@ -78,7 +79,7 @@ export const playColonize = ({cardIndex, coloniesAmount, planetIndex, player}: C
     active.colonies += coloniesAmount || 1
   }
   if (cardIndex !== undefined) cards.hand.splice(cardIndex, 1)
-  else if (coloniesAmount !== undefined) removePlayedCards(Card.colonize, coloniesAmount - 1, cards)
+  else if (coloniesAmount !== undefined) removePlayedCards(Card.colonize, coloniesAmount - Number(isLeader), cards)
 }
 
 interface WarfareParams {
@@ -86,8 +87,9 @@ interface WarfareParams {
   planetIndex?: number
   cardIndex?: number
   fighterAmount?: number
+  isLeader?: boolean
 }
-export const playWarfare = ({cardIndex, fighterAmount, planetIndex, player}: WarfareParams) => {
+export const playWarfare = ({cardIndex, fighterAmount, planetIndex, player, isLeader}: WarfareParams) => {
   if (planetIndex === undefined) {
     player.spaceships += fighterAmount || 1
   } else {
@@ -99,7 +101,7 @@ export const playWarfare = ({cardIndex, fighterAmount, planetIndex, player}: War
   if (cardIndex !== undefined) player.cards.hand.splice(cardIndex, 1)
   else if (fighterAmount) {
     const byPlanet = getPlanetEmpower(player, Action.warfare)
-    removePlayedCards(Card.warfare, fighterAmount - byPlanet - 1, player.cards)
+    removePlayedCards(Card.warfare, fighterAmount - byPlanet - Number(isLeader), player.cards)
   }
 }
 
@@ -108,8 +110,9 @@ interface IndustryParams {
   cardIndex?: number
   amount?: number
   isProduction: boolean
+  isLeader?: boolean
 }
-export const playIndustry = ({amount, cardIndex, player, isProduction}: IndustryParams) => {
+export const playIndustry = ({amount, cardIndex, player, isProduction, isLeader}: IndustryParams) => {
   const planets = player.planets.occupied
   let i = 0,
     actions = amount || 1
@@ -128,7 +131,7 @@ export const playIndustry = ({amount, cardIndex, player, isProduction}: Industry
   if (cardIndex !== undefined) player.cards.hand.splice(cardIndex, 1)
   else if (amount) {
     const byPlanets = getPlanetEmpower(player, isProduction ? Action.produce : Action.sell)
-    removePlayedCards(Card.industry, amount - byPlanets - 1, player.cards)
+    removePlayedCards(Card.industry, amount - byPlanets - Number(isLeader), player.cards)
   }
 }
 
