@@ -46,6 +46,7 @@ export const playEnvoyRole = (player: Player, planet: Planet, amount: number) =>
   player.planets.explored.push(getAddedPlanet(planet))
   const byPlanet = getPlanetEmpower(player, Action.envoy)
   removePlayedCards(Card.envoy, amount - byPlanet - 1, player.cards)
+  player.cards.pile = player.cards.pile.concat(times(amount - byPlanet, () => Card.envoy))
 }
 
 const occupyPlanet = (player: Player, planetIndex: number) => {
@@ -129,4 +130,24 @@ export const playIndustry = ({amount, cardIndex, player, isProduction}: Industry
     const byPlanets = getPlanetEmpower(player, isProduction ? Action.produce : Action.sell)
     removePlayedCards(Card.industry, amount - byPlanets - 1, player.cards)
   }
+}
+
+export const playCleanup = ({cards, capacity}: Player, cardIndexes: Array<number>) => {
+  const {resultHand, resultDiscard} = cards.hand.reduce<{
+    resultHand: Array<Card>
+    resultDiscard: Array<Card>
+  }>(
+    (acc, item, ind) => {
+      if (cardIndexes.includes(ind)) acc.resultDiscard.push(item)
+      else acc.resultHand.push(item)
+      return acc
+    },
+    {
+      resultHand: [],
+      resultDiscard: [],
+    },
+  )
+  cards.pile = cards.pile.concat(resultDiscard)
+  cards.hand = resultHand
+  takeCards(cards, capacity - resultHand.length)
 }

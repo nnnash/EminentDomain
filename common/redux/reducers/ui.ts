@@ -9,6 +9,7 @@ import {
   setIndustryActive,
   setOptionsModalOpen,
   setEnvoyActive,
+  addCardForCleanup,
   ActiveUI,
 } from '@actions/ui'
 import {Action} from '@types'
@@ -18,6 +19,7 @@ export interface UiState {
   activeIndustry?: ActiveUI
   activePolitics?: number
   activeWarfare?: ActiveUI
+  cardsToClean: Array<number>
   clearFlag: boolean
   optionsModalOpen: boolean
   optionsModalIndustry?: boolean
@@ -27,6 +29,7 @@ export interface UiState {
   optionsModalEnvoyAmount?: number
 }
 export const initialUiState: UiState = {
+  cardsToClean: [],
   clearFlag: false,
   optionsModalOpen: false,
 }
@@ -54,5 +57,9 @@ export const ui = createReducer<UiState, RootAction>(initialUiState)
       optionsModalOpen: true,
       optionsModalEnvoyAmount: amount,
     }),
+  )
+  .handleAction(
+    addCardForCleanup,
+    (state, {payload: cardIndex}): UiState => ({...state, cardsToClean: state.cardsToClean.concat(cardIndex)}),
   )
   .handleAction(clearUi, (state): UiState => ({...initialUiState, clearFlag: !state.clearFlag}))

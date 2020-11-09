@@ -74,4 +74,10 @@ export type RolePayload =
   | SellPayloadRole
 export const reqPlayRole = createAction('socket/PLAY_ROLE')<RolePayload>()
 
+export type CleanupPayload = {
+  gameId: Game['id']
+  cards: Array<number>
+}
+export const reqPlayCleanup = createAction('socket/PLAY_CLEANUP')<CleanupPayload>()
+
 export const sendGameError = createAction('resp/GAME_ERROR')<string | undefined>()

@@ -28,7 +28,12 @@ const OptionsModal: React.FC<{}> = () => {
       optionsModalEnvoyAmount,
     },
   } = useSelector<GlobalState, GlobalState>(s => s, shallowEqual)
-  const title = optionsModalIndustry ? 'select action' : optionsModalRange ? 'empower role' : 'select planet'
+  const isLeader = game.rolePlayer === game.activePlayer
+  const title = optionsModalIndustry
+    ? 'select action'
+    : optionsModalRange
+    ? `${isLeader ? 'empower' : `repeat ${optionsModalRole}`} role`
+    : 'select planet'
 
   return (
     <Modal visible={optionsModalOpen} title={title}>
@@ -50,32 +55,33 @@ const OptionsModal: React.FC<{}> = () => {
       )}
       {!!optionsModalRange && (
         <ModalInfoBlock title="Select role amount">
-          {Array.from({length: optionsModalRange.to - optionsModalRange.from + 1}).map((_, ind) => (
-            <Button
-              key={`options-modal-range-${ind}`}
-              title={optionsModalRange.from + ind + ''}
-              onClick={() => {
-                if (optionsModalRole) {
-                  const amount = optionsModalRange.from + ind
-                  if (optionsModalRole === Action.envoy) {
-                    const isLeader = game.activePlayer === game.rolePlayer
-                    if (amount === 2 - Number(isLeader))
-                      dispatch(reqPlayRole({type: Action.envoy, amount, gameId: game.id, planetIndex: 0}))
-                    else dispatch(setEnvoyActive({amount: amount - Number(!isLeader)}))
-                  } else {
-                    dispatch(
-                      reqPlayRole({
-                        type: optionsModalRole as RolePayload['type'],
-                        amount,
-                        gameId: game.id,
-                        planetIndex: optionsModalPlanet as number,
-                      }),
-                    )
+          {Array.from({length: optionsModalRange.to - optionsModalRange.from + 1}).map((_, ind) =>
+            !isLeader && optionsModalRole === Action.envoy && ind === 1 ? null : (
+              <Button
+                key={`options-modal-range-${ind}`}
+                title={optionsModalRange.from + ind + ''}
+                onClick={() => {
+                  if (optionsModalRole) {
+                    const amount = optionsModalRange.from + ind
+                    if (optionsModalRole === Action.envoy) {
+                      if (amount === 2 - Number(isLeader))
+                        dispatch(reqPlayRole({type: Action.envoy, amount, gameId: game.id, planetIndex: 0}))
+                      else dispatch(setEnvoyActive({amount: amount - Number(!isLeader)}))
+                    } else {
+                      dispatch(
+                        reqPlayRole({
+                          type: optionsModalRole as RolePayload['type'],
+                          amount,
+                          gameId: game.id,
+                          planetIndex: optionsModalPlanet as number,
+                        }),
+                      )
+                    }
                   }
-                }
-              }}
-            />
-          ))}
+                }}
+              />
+            ),
+          )}
         </ModalInfoBlock>
       )}
       {!!optionsModalEnvoyAmount &&

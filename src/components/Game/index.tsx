@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react'
-import {Button as RNButton, Text, View} from 'react-native'
+import {Button as RNButton, useWindowDimensions, View} from 'react-native'
 import {RouteProp} from '@react-navigation/native'
-import {StackScreenProps} from '@react-navigation/stack'
+import {StackScreenProps, useHeaderHeight} from '@react-navigation/stack'
 import {shallowEqual, useDispatch, useSelector} from 'react-redux'
 import EStyle from 'react-native-extended-stylesheet'
 
@@ -12,14 +12,16 @@ import {GlobalState} from '@reducers/index'
 import {GameState} from '@reducers/game'
 import PageWrapper from '../common/PageWrapper'
 import {RootStackParamList} from '../../types'
-import {useUser, useYourTurn} from '../../utils'
+import {useUser} from '../../utils'
 
+import ActionsPanel from './ActionsPanel'
 import Players from './Players'
 import Board from './Board'
 import Hand from './Hand'
 import PlayerTokens from './PlayerTokens'
 import Planets from './Planets'
 import OptionsModal from './OptionsModal'
+import {useSafeAreaInsets} from 'react-native-safe-area-context'
 
 const styles = EStyle.create({
   root: {
@@ -30,21 +32,9 @@ const styles = EStyle.create({
     padding: 20,
     paddingBottom: 0,
   },
-  turnText: {
-    color: '$textColor',
-    fontWeight: 'bold',
-    fontSize: 20,
-    textAlign: 'center',
-  },
-  fighters: {
-    borderColor: 'white',
-    borderRadius: 8,
-    padding: 4,
-  },
-  fightersText: {
-    color: '$textColor',
-    fontSize: 20,
-    fontWeight: 'bold',
+  boardSection: {
+    marginTop: 10,
+    marginBottom: 10,
   },
 })
 
@@ -66,26 +56,28 @@ const Game: React.FC<StackScreenProps<RootStackParamList, 'Game'>> = ({route}) =
     }
   }, [dispatch, route.params.id, user.id])
   const game = useSelector<GlobalState, GameState>(state => state.game, shallowEqual)
-  const playersTurn = useYourTurn()
+  const headerHeight = useHeaderHeight()
+  const {top, bottom} = useSafeAreaInsets()
+  const {height} = useWindowDimensions()
   if (!game.id) return null
 
   return (
-    <PageWrapper scrollable={false}>
-      <View style={styles.root}>
-        {game.status === GameStatus.inPlay && (
-          <View style={styles.section}>
-            <Text style={styles.turnText}>
-              {playersTurn ? 'Your' : `${game.players[game.activePlayer].name}'s`} turn ({game.playersPhase})
-            </Text>
-          </View>
-        )}
+    <PageWrapper scrollable>
+      <View
+        style={[
+          styles.root,
+          {
+            minHeight: height - top - bottom - headerHeight,
+          },
+        ]}>
+        <ActionsPanel />
         <View style={styles.section}>
           <Players players={Object.values(game.players)} />
         </View>
-        <View style={styles.section}>
+        <View style={styles.boardSection}>
           <Board />
         </View>
-        <View style={styles.playerSection}>
+        <View>
           <Planets />
           <Hand />
           <PlayerTokens />

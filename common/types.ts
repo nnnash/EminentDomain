@@ -103,6 +103,7 @@ export interface Game extends GameBase {
   activePlayer: Player['id']
   playersPhase: Phase
   rolePlayer?: Player['id']
+  roleType?: Action
   playersOrder?: Array<Player['id']>
 }
 export interface GameShort extends GameBase {

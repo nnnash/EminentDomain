@@ -4,6 +4,7 @@ import {nativeMath, shuffle} from 'random-js'
 import {Action, Card, Game, GameStatus, Phase, Planet, Player} from '@types'
 import {
   createPlayer,
+  playCleanup,
   playColonize,
   playEnvoyAction,
   playEnvoyRole,
@@ -118,13 +119,26 @@ export const playRole = (game: Game, payload: RolePayload) => {
   const roleExecutor = roleOrder.findIndex(item => item === game.rolePlayer)
   const nextPlayer = roleOrder.slice(roleExecutor + 1).find(playerId => {
     const player = game.players[playerId]
-    const canPlay = !!getEmpower(player, payload.type)
+    const empowerAmount = getEmpower(player, payload.type)
+    const canPlay = !!empowerAmount && (payload.type !== Action.envoy || empowerAmount > 1)
     if (!canPlay) takeCards(player.cards, 1)
     return canPlay
   })
-  if (nextPlayer) game.rolePlayer = nextPlayer
-  else {
+  if (nextPlayer) {
+    game.rolePlayer = nextPlayer
+    game.roleType = payload.type
+  } else {
     game.playersPhase = Phase.cleanup
     delete game.rolePlayer
+    delete game.roleType
   }
+}
+
+export const playCleanUp = (game: Game, payload: Array<number>) => {
+  const activePlayer = game.players[game.activePlayer]
+  playCleanup(activePlayer, payload)
+  if (!game.playersOrder) return
+  const nextPlayerIndex = (game.playersOrder.indexOf(game.activePlayer) + 1) % game.playersOrder.length
+  game.activePlayer = game.playersOrder[nextPlayerIndex]
+  game.playersPhase = Phase.action
 }

@@ -6,7 +6,7 @@ import EStyle from 'react-native-extended-stylesheet'
 import {Card as TCard, Phase} from '@types'
 import CardContent from './CardContent'
 import PannedCard from './PannedCard'
-import {useYourTurn} from '../../../utils'
+import {useUser, useYourTurn} from '../../../utils'
 import {GlobalState} from '@reducers/index'
 
 const styles = EStyle.create({
@@ -32,7 +32,7 @@ interface CardProps {
 }
 const Card: React.FC<CardProps> = ({type, index, margin, isBoard}) => {
   const {
-    game: {playersPhase, activePlayer, players},
+    game: {playersPhase, activePlayer, players, rolePlayer},
     ui: {activePolitics},
   } = useSelector<GlobalState, GlobalState>(s => s, shallowEqual)
   const width = isBoard ? 90 : 142
@@ -42,12 +42,13 @@ const Card: React.FC<CardProps> = ({type, index, margin, isBoard}) => {
     height,
     marginLeft: index && !!margin ? margin : 0,
   }
+  const user = useUser()
   const isYourTurn = useYourTurn()
   const getIsActive = () => {
     const player = players[activePlayer]
-    if (!isYourTurn) return false
+    if (!isYourTurn || (isYourTurn && playersPhase === Phase.role && rolePlayer !== user.id)) return false
     if (activePolitics !== undefined) return isBoard || type === TCard.politics
-    if (playersPhase === Phase.action && isBoard) return false
+    if (playersPhase !== Phase.role && isBoard) return false
     if (playersPhase === Phase.role && !isBoard) return false
     switch (type) {
       case TCard.industry:

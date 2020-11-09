@@ -70,6 +70,7 @@ const Modal: React.FC<ModalProps> = ({isOpen, setOpen, gameName, gameId}) => {
           <Button
             title="Create"
             onClick={() => {
+              if (!game || !player) return
               setOpen(false)
               dispatch(reqCreateGame({gameName: game, playerName: player, playerId: user.id}))
             }}
@@ -78,6 +79,7 @@ const Modal: React.FC<ModalProps> = ({isOpen, setOpen, gameName, gameId}) => {
           <Button
             title="Join"
             onClick={() => {
+              if (!player) return
               setOpen(false)
               dispatch(reqJoinGame({gameId: gameId, playerName: player, playerId: user.id}))
             }}

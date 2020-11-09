@@ -7,6 +7,7 @@ import {PanGestureHandler, PanGestureHandlerStateChangeEvent, State} from 'react
 import {Action, BoardCard, Card as TCard, Game, Phase} from '@types'
 import {RootAction} from '@actions/index'
 import {
+  addCardForCleanup,
   setColonizeActive,
   setEnvoyActive,
   setIndustryActive,
@@ -151,6 +152,8 @@ const PannedCard: React.FC<CardProps> = ({type, width, height, isBoard, index}) 
             )
         } else if (game.playersPhase === Phase.role) {
           roleCallbacks(type, dispatch, game, user.id)
+        } else {
+          dispatch(addCardForCleanup(index))
         }
       } else Animated.spring(touchY, {toValue: 0, useNativeDriver: false}).start()
     }

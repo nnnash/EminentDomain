@@ -11,7 +11,7 @@ import Card from './Card'
 const styles = EStyle.create({
   container: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     minWidth: '100%',
   },
   card: {

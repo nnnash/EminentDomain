@@ -2,8 +2,8 @@ import {isActionOf} from 'typesafe-actions'
 import {filter, map} from 'rxjs/operators'
 
 import {CustomEpic} from './types'
-import {setIndustryActive, setOptionsModalOpen} from '@actions/ui'
-import {reqPlayAction, reqPlayRole} from '@actions/game'
+import {confirmCleanup, setIndustryActive, setOptionsModalOpen} from '@actions/ui'
+import {reqPlayAction, reqPlayCleanup, reqPlayRole} from '@actions/game'
 import {Action, Card} from '@types'
 
 export const setIndustryActiveEpic: CustomEpic = (action$, store) =>
@@ -37,4 +37,10 @@ export const setIndustryActiveEpic: CustomEpic = (action$, store) =>
         action: canProduce ? Action.produce : Action.sell,
       })
     }),
+  )
+
+export const confirmCleanupEpic: CustomEpic = (action$, store) =>
+  action$.pipe(
+    filter(isActionOf(confirmCleanup)),
+    map(() => reqPlayCleanup({cards: store.value.ui.cardsToClean, gameId: store.value.game.id})),
   )

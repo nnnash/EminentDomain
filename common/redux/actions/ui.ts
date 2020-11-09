@@ -13,6 +13,9 @@ export const setWarfareActive = createAction('SET_WARFARE_ACTIVE')<ActiveUI>()
 export const setIndustryActive = createAction('SET_INDUSTRY_ACTIVE')<ActiveUI>()
 export const setEnvoyActive = createAction('SET_ENVOY_ACTIVE')<{amount: number}>()
 
+export const addCardForCleanup = createAction('ADD_CARD_TO_CLEANUP')<number>()
+export const confirmCleanup = createAction('CONFIRM_CLEANUP')<undefined>()
+
 interface OptionsModalPayload {
   open: boolean
   industryChoose?: boolean
