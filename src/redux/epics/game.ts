@@ -5,8 +5,8 @@ import {Action, Phase} from '@types'
 import {CustomEpic} from './types'
 import {sendGame} from '@actions/game'
 import {clearUi, setColonizeActive, setOptionsModalOpen} from '@actions/ui'
-import {getRange} from '../../../src/utils'
-import {getCardByAction, getPlanetColonizeCost} from '../../utils'
+import {getRange} from '../../utils'
+import {getCardByAction, getPlanetColonizeCost} from '../../../common/utils'
 
 export const gameReceivedEpic: CustomEpic = (action$, store) =>
   action$.pipe(

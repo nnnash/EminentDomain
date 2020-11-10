@@ -6,8 +6,8 @@ import {composeWithDevTools} from 'redux-devtools-extension'
 import createSocketIoMiddleware from 'redux-socket.io'
 import io from 'socket.io-client'
 
-import epics from '../common/redux/epics'
-import reducers from '../common/redux/reducers/index'
+import epics from './redux/epics'
+import reducers from './redux/reducers/index'
 
 const composeEnhancers = composeWithDevTools({})
 

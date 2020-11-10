@@ -50,6 +50,7 @@ const Card: React.FC<CardProps> = ({type, index, margin, isBoard}) => {
     if (activePolitics !== undefined) return isBoard || type === TCard.politics
     if (playersPhase !== Phase.role && isBoard) return false
     if (playersPhase === Phase.role && !isBoard) return false
+    if (playersPhase === Phase.cleanup) return !isBoard
     switch (type) {
       case TCard.industry:
         return !!player.planets.occupied.length

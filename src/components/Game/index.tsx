@@ -70,10 +70,10 @@ const Game: React.FC<StackScreenProps<RootStackParamList, 'Game'>> = ({route}) =
             minHeight: height - top - bottom - headerHeight,
           },
         ]}>
-        <ActionsPanel />
         <View style={styles.section}>
           <Players players={Object.values(game.players)} />
         </View>
+        <ActionsPanel />
         <View style={styles.boardSection}>
           <Board />
         </View>

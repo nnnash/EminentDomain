@@ -19,6 +19,7 @@ const styles = EStyle.create({
   root: {
     flexDirection: 'row',
     marginTop: 20,
+    marginRight: 30,
   },
   active: {
     borderWidth: 1,

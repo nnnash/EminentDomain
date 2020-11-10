@@ -10,7 +10,10 @@ export interface ActiveUI {
 export const setPoliticsActive = createAction('SET_POLITICS_ACTIVE')<number>()
 export const setColonizeActive = createAction('SET_COLONIZE_ACTIVE')<ActiveUI>()
 export const setWarfareActive = createAction('SET_WARFARE_ACTIVE')<ActiveUI>()
-export const setIndustryActive = createAction('SET_INDUSTRY_ACTIVE')<ActiveUI>()
+export interface IndustryActiveUI extends ActiveUI {
+  type?: Action.produce | Action.sell
+}
+export const setIndustryActive = createAction('SET_INDUSTRY_ACTIVE')<IndustryActiveUI>()
 export const setEnvoyActive = createAction('SET_ENVOY_ACTIVE')<{amount: number}>()
 
 export const addCardForCleanup = createAction('ADD_CARD_TO_CLEANUP')<number>()

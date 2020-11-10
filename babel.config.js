@@ -9,7 +9,7 @@ module.exports = {
         alias: {
           '@types': './common/types.ts',
           '@actions': './common/redux/actions',
-          '@reducers': './common/redux/reducers',
+          '@reducers': './src/redux/reducers',
         },
       },
     ],

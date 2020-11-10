@@ -9,7 +9,7 @@ import ModalInfoBlock from '../common/ModalInfoBlock'
 import Button from '../common/Button'
 import Icon from './Icons/Icon'
 import {reqPlayAction, reqPlayRole, RolePayload} from '@actions/game'
-import {setEnvoyActive} from '@actions/ui'
+import {setEnvoyActive, setIndustryActive} from '@actions/ui'
 import {ExploredPlanetView} from './Planets/Explored'
 import {PlanetBonuses} from './Planets/Info'
 
@@ -37,17 +37,25 @@ const OptionsModal: React.FC<{}> = () => {
 
   return (
     <Modal visible={optionsModalOpen} title={title}>
-      {!!optionsModalIndustry && activeIndustry && (
+      {!!optionsModalIndustry && activeIndustry && !activeIndustry.type && (
         <ModalInfoBlock title="Select action">
           <TouchableOpacity
             onPress={() => {
-              dispatch(reqPlayAction({type: Action.produce, cardIndex: activeIndustry.cardIndex || 0, gameId: game.id}))
+              activeIndustry.isAction
+                ? dispatch(
+                    reqPlayAction({type: Action.produce, cardIndex: activeIndustry.cardIndex || 0, gameId: game.id}),
+                  )
+                : dispatch(setIndustryActive({isAction: false, type: Action.produce}))
             }}>
             <Icon width={ICON_WIDTH} action={Action.produce} />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              dispatch(reqPlayAction({type: Action.produce, cardIndex: activeIndustry.cardIndex || 0, gameId: game.id}))
+              activeIndustry.isAction
+                ? dispatch(
+                    reqPlayAction({type: Action.sell, cardIndex: activeIndustry.cardIndex || 0, gameId: game.id}),
+                  )
+                : dispatch(setIndustryActive({isAction: false, type: Action.sell}))
             }}>
             <Icon width={ICON_WIDTH} action={Action.sell} />
           </TouchableOpacity>

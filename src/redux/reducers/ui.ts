@@ -11,12 +11,13 @@ import {
   setEnvoyActive,
   addCardForCleanup,
   ActiveUI,
+  IndustryActiveUI,
 } from '@actions/ui'
 import {Action} from '@types'
 
 export interface UiState {
   activeColonize?: ActiveUI
-  activeIndustry?: ActiveUI
+  activeIndustry?: IndustryActiveUI
   activePolitics?: number
   activeWarfare?: ActiveUI
   cardsToClean: Array<number>
@@ -38,7 +39,14 @@ export const ui = createReducer<UiState, RootAction>(initialUiState)
   .handleAction(setPoliticsActive, (state, {payload: activePolitics}): UiState => ({...state, activePolitics}))
   .handleAction(setColonizeActive, (state, {payload: activeColonize}): UiState => ({...state, activeColonize}))
   .handleAction(setWarfareActive, (state, {payload: activeWarfare}): UiState => ({...state, activeWarfare}))
-  .handleAction(setIndustryActive, (state, {payload: activeIndustry}): UiState => ({...state, activeIndustry}))
+  .handleAction(
+    setIndustryActive,
+    (state, {payload: activeIndustry}): UiState => ({
+      ...state,
+      optionsModalIndustry: activeIndustry.type ? undefined : state.optionsModalIndustry,
+      activeIndustry,
+    }),
+  )
   .handleAction(
     setOptionsModalOpen,
     (state, {payload: {industryChoose, range, open, action, planetIndex}}): UiState => ({

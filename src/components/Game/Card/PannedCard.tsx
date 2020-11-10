@@ -71,14 +71,21 @@ const roleCallbacks = (type: TCard, dispatch: Dispatch<RootAction>, game: Game, 
     case TCard.colonize:
       if (player.planets.explored.length === 1) {
         const planet = player.planets.explored[0]
-        dispatch(
-          setOptionsModalOpen({
-            open: true,
-            range: {from: range.from, to: Math.min(range.to, getPlanetColonizeCost(planet, player) - planet.colonies)},
-            action: Action.colonize,
-            planetIndex: 0,
-          }),
-        )
+        if (planet.colonies >= planet.cost.colonize) {
+          dispatch(reqPlayRole({type: Action.colonize, gameId: game.id, planetIndex: 0, amount: 1}))
+        } else {
+          dispatch(
+            setOptionsModalOpen({
+              open: true,
+              range: {
+                from: range.from,
+                to: Math.min(range.to, getPlanetColonizeCost(planet, player) - planet.colonies),
+              },
+              action: Action.colonize,
+              planetIndex: 0,
+            }),
+          )
+        }
       } else dispatch(setColonizeActive({isAction: false, isLeader: true}))
       break
     case TCard.warfare:

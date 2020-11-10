@@ -1,5 +1,5 @@
 import {v4} from 'uuid'
-import {nativeMath, shuffle} from 'random-js'
+import {nativeMath, shuffle, pick} from 'random-js'
 
 import {Action, Card, Game, GameStatus, Phase, Planet, Player} from '@types'
 import {
@@ -14,8 +14,9 @@ import {
 } from './player'
 import {getPlanetsDeck, getStartPlanets, pickPlanet} from './planets'
 import {ActionPayload, RolePayload} from '@actions/game'
-import {getCardByAction, getEmpower} from '../../common/utils'
+import {getCardByAction} from '../../common/utils'
 import {takeCards} from './decks'
+import {canRepeatRole} from '../../common/actionsAlowed'
 
 export const createGame = (gameName: string, hostName: string, hostId: string): Game => {
   const startPlanets = getStartPlanets()
@@ -56,8 +57,7 @@ export const addPlayer = (game: Game, player: Player) => {
 export const startGame = (game: Game) => {
   game.status = GameStatus.inPlay
   const playersIds = Object.keys(game.players)
-  // game.activePlayer = pick(nativeMath, playersIds)
-  game.activePlayer = playersIds[1] // TODO return the previous one
+  game.activePlayer = pick(nativeMath, playersIds)
   game.playersOrder = shuffle(nativeMath, playersIds)
 }
 
@@ -126,8 +126,7 @@ export const playRole = (game: Game, payload: RolePayload) => {
   const roleExecutor = roleOrder.findIndex(item => item === game.rolePlayer)
   const nextPlayer = roleOrder.slice(roleExecutor + 1).find(playerId => {
     const player = game.players[playerId]
-    const empowerAmount = getEmpower(player, payload.type)
-    const canPlay = !!empowerAmount && (payload.type !== Action.envoy || empowerAmount > 1)
+    const canPlay = canRepeatRole(player, payload.type, game)
     if (!canPlay) takeCards(player.cards, 1)
     return canPlay
   })

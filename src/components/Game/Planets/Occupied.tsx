@@ -14,6 +14,7 @@ const styles = EStyle.create({
   $planetSize: 60,
   root: {
     flexDirection: 'row',
+    alignItems: 'flex-end',
     marginTop: 20,
   },
   active: {
