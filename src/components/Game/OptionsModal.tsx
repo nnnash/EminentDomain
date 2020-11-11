@@ -74,7 +74,7 @@ const OptionsModal: React.FC<{}> = () => {
                     if (optionsModalRole === Action.envoy) {
                       if (amount === 2 - Number(isLeader))
                         dispatch(reqPlayRole({type: Action.envoy, amount, gameId: game.id, planetIndex: 0}))
-                      else dispatch(setEnvoyActive({amount: amount - Number(!isLeader)}))
+                      else dispatch(setEnvoyActive({amount}))
                     } else {
                       dispatch(
                         reqPlayRole({
@@ -93,7 +93,7 @@ const OptionsModal: React.FC<{}> = () => {
         </ModalInfoBlock>
       )}
       {!!optionsModalEnvoyAmount &&
-        game.planetsDeck.slice(0, optionsModalEnvoyAmount).map((planet, ind) => (
+        game.planetsDeck.slice(0, optionsModalEnvoyAmount - Number(!isLeader)).map((planet, ind) => (
           <TouchableOpacity
             key={`planet-select-${ind}`}
             onPress={() => {

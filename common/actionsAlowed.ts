@@ -21,6 +21,9 @@ export const canAddColonies = ({planets}: Player) =>
   })
 export const canPlayColonize = ({planets}: Player) => !!planets.explored.length
 
+export const canPlayAttack = ({planets, spaceships}: Player) =>
+  spaceships && !!planets.explored.find(p => p.cost.warfare <= spaceships)
+
 export const canEnvoy = (game: Game) => !!game.planetsDeck.length
 
 export const canPlayRole = (player: Player, game: Game, type: Action, playType: PlayType) => {

@@ -1,10 +1,13 @@
 import {createAction} from 'typesafe-actions'
-import {Game, Action, BoardCard} from '@types'
+import {Game, Action, BoardCard, Card} from '@types'
 
 export const reqGetGame = createAction('socket/GET_GAME')<Game['id']>()
 export const reqStartGame = createAction('socket/START_GAME')<Game['id']>()
 
 export const sendGame = createAction('resp/SEND_GAME')<Game>()
+
+export const playCardAction = createAction('PLAY_CARD_ACTION')<{cardType: Card; cardIndex: number}>()
+export const playCardRole = createAction('PLAY_CARD_ROLE')<BoardCard>()
 
 interface ActionPayloadBase {
   gameId: Game['id']

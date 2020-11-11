@@ -1,5 +1,5 @@
 import {v4} from 'uuid'
-import {nativeMath, shuffle, pick} from 'random-js'
+import {nativeMath, pick, shuffle} from 'random-js'
 
 import {Action, Card, Game, GameStatus, Phase, Planet, Player} from '@types'
 import {
@@ -111,9 +111,10 @@ export const playRole = (game: Game, payload: RolePayload) => {
         })
         break
       case Action.envoy:
+        console.log('payload', payload)
         playEnvoyRole(
           rolePlayer,
-          pickPlanet(game, payload.amount - Number(game.activePlayer !== game.rolePlayer), payload.planetIndex),
+          pickPlanet(game, payload.amount - Number(!isLeader), payload.planetIndex),
           payload.amount,
           isLeader,
         )
@@ -146,5 +147,6 @@ export const playCleanUp = (game: Game, payload: Array<number>) => {
   if (!game.playersOrder) return
   const nextPlayerIndex = (game.playersOrder.indexOf(game.activePlayer) + 1) % game.playersOrder.length
   game.activePlayer = game.playersOrder[nextPlayerIndex]
-  game.playersPhase = Phase.action
+  const player = game.players[game.activePlayer]
+  game.playersPhase = player.cards.hand.length ? Phase.action : Phase.role
 }

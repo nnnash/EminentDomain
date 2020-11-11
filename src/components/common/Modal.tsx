@@ -1,5 +1,5 @@
 import React from 'react'
-import {View, SafeAreaView, Modal as RNModal, ModalProps, Text} from 'react-native'
+import {View, SafeAreaView, Modal as RNModal, ModalProps, Text, ScrollView} from 'react-native'
 import EStyle from 'react-native-extended-stylesheet'
 
 const styles = EStyle.create({
@@ -13,6 +13,7 @@ const styles = EStyle.create({
     borderRadius: 6,
     padding: 20,
     width: 300,
+    maxHeight: '80%',
   },
   titleContainer: {
     alignItems: 'center',
@@ -39,7 +40,7 @@ const Modal: React.FC<ModalProps & {title?: React.ReactNode}> = ({children, titl
               <Text style={styles.title}>{title}</Text>
             </View>
           )}
-          {children}
+          <ScrollView>{children}</ScrollView>
         </View>
       </SafeAreaView>
     </RNModal>
