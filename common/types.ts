@@ -105,6 +105,7 @@ export interface Game extends GameBase {
   rolePlayer?: Player['id']
   roleType?: Action
   playersOrder?: Array<Player['id']>
+  winners?: Array<Player>
 }
 export interface GameShort extends GameBase {
   players: Array<Player['id']>

@@ -141,12 +141,36 @@ export const playRole = (game: Game, payload: RolePayload) => {
   }
 }
 
+const checkForEnd = ({cards, playersOrder}: Game) =>
+  Object.values(cards).filter(amount => !amount).length === ((playersOrder || []).length === 4 ? 2 : 1)
+const getResourcesAndFighters = (player: Player) =>
+  player.spaceships +
+  player.planets.occupied.reduce<number>((acc, item) => acc + item.production.filter(pr => pr.produced).length, 0)
+const getWinner = ({players}: Game) =>
+  Object.values(players).reduce<Array<Player>>((acc, item) => {
+    if (!acc.length) return [item]
+    const currentWinner = acc[0]
+    if (currentWinner.points < item.points) return [item]
+    if (currentWinner.points === item.points) {
+      const currentTokens = getResourcesAndFighters(currentWinner)
+      const itemTokens = getResourcesAndFighters(item)
+      if (currentTokens < itemTokens) return [item]
+      if (currentTokens === itemTokens) return [...acc, item]
+    }
+    return acc
+  }, [])
+
 export const playCleanUp = (game: Game, payload: Array<number>) => {
   const activePlayer = game.players[game.activePlayer]
   playCleanup(activePlayer, payload)
   if (!game.playersOrder) return
   const nextPlayerIndex = (game.playersOrder.indexOf(game.activePlayer) + 1) % game.playersOrder.length
-  game.activePlayer = game.playersOrder[nextPlayerIndex]
-  const player = game.players[game.activePlayer]
-  game.playersPhase = player.cards.hand.length ? Phase.action : Phase.role
+  if (!nextPlayerIndex && checkForEnd(game)) {
+    game.winners = getWinner(game)
+    game.status = GameStatus.ended
+  } else {
+    game.activePlayer = game.playersOrder[nextPlayerIndex]
+    const player = game.players[game.activePlayer]
+    game.playersPhase = player.cards.hand.length ? Phase.action : Phase.role
+  }
 }
