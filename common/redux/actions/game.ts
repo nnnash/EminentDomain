@@ -44,6 +44,7 @@ export type ActionPayload =
   | ProducePayload
   | SellPayload
 export const reqPlayAction = createAction('socket/PLAY_ACTION')<ActionPayload>()
+export const reqSkipAction = createAction('socket/SKIP_ACTION')<{gameId: Game['id']}>()
 
 interface RolePayloadBase {
   gameId: Game['id']

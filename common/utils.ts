@@ -3,11 +3,11 @@ import {cardProps} from './cardProps'
 
 export const getPlanetEmpower = (player: Player, type: Action) =>
   player.planets.occupied.filter(p => p.action === type).length
+export const getCardEmpower = (player: Player, type: Action) =>
+  player.cards.hand.filter(c => cardProps[c].actions.includes(type)).length
 
-export const getEmpower = (player: Player, type: Action) => {
-  const typeCards = player.cards.hand.filter(c => cardProps[c].actions.includes(type)).length
-  return typeCards + getPlanetEmpower(player, type)
-}
+export const getEmpower = (player: Player, type: Action) =>
+  getCardEmpower(player, type) + getPlanetEmpower(player, type)
 
 const cardByAction: Record<Action, Card> = Object.entries(cardProps).reduce((acc, [card, item]) => {
   item.actions.forEach(a => {

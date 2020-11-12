@@ -44,10 +44,7 @@ export const setPlanetOccupied = (planet: ExploredPlanet): OccupiedPlanet => ({
 })
 
 export const pickPlanet = (game: Game, amount: number, planetIndex: number) => {
-  console.log('game.planetsDeck', game.planetsDeck.length)
   const planetsToSelect = game.planetsDeck.slice(0, amount)
-  console.log('planetsToSelect', planetsToSelect)
-  console.log('planetIndex', planetIndex)
   game.planetsDeck = game.planetsDeck.slice(amount)
   return planetsToSelect[planetIndex]
 }

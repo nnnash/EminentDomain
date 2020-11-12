@@ -3,7 +3,7 @@ import {shallowEqual, useSelector} from 'react-redux'
 import {Animated, View} from 'react-native'
 import EStyle from 'react-native-extended-stylesheet'
 
-import {Card as TCard, Phase} from '@types'
+import {BoardCard, Card as TCard, Phase} from '@types'
 import CardContent from './CardContent'
 import PannedCard from './PannedCard'
 import {useUser, useYourTurn} from '../../../utils'
@@ -32,7 +32,7 @@ interface CardProps {
 }
 const Card: React.FC<CardProps> = ({type, index, margin, isBoard}) => {
   const {
-    game: {playersPhase, activePlayer, players, rolePlayer},
+    game: {playersPhase, activePlayer, players, rolePlayer, planetsDeck, cards},
     ui: {activePolitics},
   } = useSelector<GlobalState, GlobalState>(s => s, shallowEqual)
   const width = isBoard ? 90 : 142
@@ -56,6 +56,8 @@ const Card: React.FC<CardProps> = ({type, index, margin, isBoard}) => {
         return !!player.planets.occupied.length
       case TCard.colonize:
         return !!player.planets.explored.length
+      case TCard.envoy:
+        return playersPhase !== Phase.role || !!planetsDeck.length
       default:
         return true
     }
@@ -64,7 +66,7 @@ const Card: React.FC<CardProps> = ({type, index, margin, isBoard}) => {
 
   return (
     <Animated.View style={[styles.root, rootStyle]}>
-      {isBoard && (
+      {isBoard && !!cards[type as BoardCard] && (
         <View style={styles.dum}>
           <CardContent type={type} width={width} />
         </View>

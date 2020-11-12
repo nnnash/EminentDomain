@@ -1,7 +1,15 @@
 import {Socket} from 'socket.io'
 
-import {reqGetGame, reqPlayAction, reqPlayCleanup, reqPlayRole, reqStartGame, sendGame} from '@actions/game'
-import {playAction, playCleanUp, playRole, startGame} from '../models'
+import {
+  reqGetGame,
+  reqPlayAction,
+  reqPlayCleanup,
+  reqPlayRole,
+  reqSkipAction,
+  reqStartGame,
+  sendGame,
+} from '@actions/game'
+import {playAction, playCleanUp, playRole, skipAction, startGame} from '../models'
 import {createReducer, safeGameCallback, emitAction, IOType} from './utils'
 
 const gameStateReducers = (io: IOType, socket: Socket) => ({
@@ -19,6 +27,12 @@ const gameStateReducers = (io: IOType, socket: Socket) => ({
   ...createReducer(reqPlayAction, payload => {
     safeGameCallback(socket, payload.gameId, game => {
       playAction(game, payload)
+      emitAction(io.to(payload.gameId), sendGame(game))
+    })
+  }),
+  ...createReducer(reqSkipAction, payload => {
+    safeGameCallback(socket, payload.gameId, game => {
+      skipAction(game)
       emitAction(io.to(payload.gameId), sendGame(game))
     })
   }),

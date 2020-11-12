@@ -1,12 +1,12 @@
 import {isActionOf} from 'typesafe-actions'
 import {filter, map} from 'rxjs/operators'
 
-import {Action, Card} from '@types'
+import {Action} from '@types'
 import {confirmCleanup, setIndustryActive, setOptionsModalOpen} from '@actions/ui'
 import {reqPlayAction, reqPlayCleanup, reqPlayRole} from '@actions/game'
 import {canProduceAmount, canSellAmount} from '../../../common/actionsAlowed'
-import {getPlanetEmpower} from '../../../common/utils'
 import {CustomEpic} from './types'
+import {getRange} from '../../utils'
 
 export const setIndustryActiveEpic: CustomEpic = (action$, store) =>
   action$.pipe(
@@ -28,21 +28,16 @@ export const setIndustryActiveEpic: CustomEpic = (action$, store) =>
         })
       const availableSpots = typeDefined === Action.produce ? availableProduce : availableSell
       if (availableSpots === 1) return reqPlayRole({gameId: game.id, amount: 1, type: typeDefined})
-      const typeCards = player.cards.hand.filter(c => c === Card.industry).length
       const isLeader = game.rolePlayer === game.activePlayer
-      const planetHelpers = getPlanetEmpower(player, typeDefined)
+      const {typeCards, planetSymbols, ...range} = getRange(game, user.id, typeDefined, isLeader)
       if (!typeCards) {
         return reqPlayRole({
-          amount: planetHelpers + Number(isLeader),
+          amount: planetSymbols + Number(isLeader),
           gameId: game.id,
           type: typeDefined,
         })
       }
-      return setOptionsModalOpen({
-        open: true,
-        range: {from: 1 + planetHelpers, to: Math.min(1 + planetHelpers + typeCards, availableSpots)},
-        action: typeDefined,
-      })
+      return setOptionsModalOpen({open: true, range, action: typeDefined})
     }),
   )
 

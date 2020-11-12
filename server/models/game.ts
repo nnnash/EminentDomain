@@ -1,7 +1,7 @@
 import {v4} from 'uuid'
 import {nativeMath, pick, shuffle} from 'random-js'
 
-import {Action, Card, Game, GameStatus, Phase, Planet, Player} from '@types'
+import {Action, BoardCard, Card, Game, GameStatus, Phase, Planet, Player} from '@types'
 import {
   createPlayer,
   playCleanup,
@@ -38,6 +38,7 @@ export const createGame = (gameName: string, hostName: string, hostId: string): 
     },
     activePlayer: player.id,
     playersPhase: Phase.action,
+    lastAction: `You created the game ${gameName}`,
   }
 }
 
@@ -52,6 +53,7 @@ export const addPlayer = (game: Game, player: Player) => {
     [Card.industry]: game.cards[Card.industry] - 2,
     [Card.envoy]: game.cards[Card.envoy] - 2,
   }
+  game.lastAction = `${player.name} has joined`
 }
 
 export const startGame = (game: Game) => {
@@ -59,31 +61,46 @@ export const startGame = (game: Game) => {
   const playersIds = Object.keys(game.players)
   game.activePlayer = pick(nativeMath, playersIds)
   game.playersOrder = shuffle(nativeMath, playersIds)
+  game.lastAction = 'Game started'
+}
+
+export const skipAction = (game: Game) => {
+  game.playersPhase = Phase.role
+  game.rolePlayer = game.activePlayer
+  const activePlayer = game.players[game.activePlayer]
+  game.lastAction = `${activePlayer.name} skipped action phase`
 }
 
 export const playAction = (game: Game, payload: ActionPayload) => {
   const activePlayer = game.players[game.activePlayer]
+  let lastAction = `${activePlayer.name} played ${payload.type} action`
   switch (payload.type) {
     case Action.politics:
       playPoliticsAction(activePlayer, payload.card, payload.cardIndex)
       game.cards[payload.card] -= 1
+      lastAction += ` (took ${payload.card} card)`
       break
     case Action.envoy:
       playEnvoyAction(activePlayer, payload.cardIndex)
       break
     case Action.colonize:
-      playColonize({player: activePlayer, ...payload})
+      lastAction += ` (${playColonize({player: activePlayer, ...payload})})`
       break
     case Action.warfare:
-      playWarfare({player: activePlayer, ...payload})
+      lastAction += ` (${playWarfare({player: activePlayer, ...payload})})`
       break
     case Action.produce:
     case Action.sell:
-      playIndustry({player: activePlayer, cardIndex: payload.cardIndex, isProduction: payload.type === Action.produce})
+      lastAction += ` (${playIndustry({
+        player: activePlayer,
+        cardIndex: payload.cardIndex,
+        isProduction: payload.type === Action.produce,
+      })})`
       break
   }
   game.playersPhase = Phase.role
   game.rolePlayer = game.activePlayer
+  game.lastAction = lastAction
 }
 
 export const playRole = (game: Game, payload: RolePayload) => {
@@ -91,36 +108,51 @@ export const playRole = (game: Game, payload: RolePayload) => {
   const rolePlayer = game.players[game.rolePlayer]
   if (!rolePlayer) return
   const isLeader = game.activePlayer === game.rolePlayer
+  let lastAction: string
   if (!isLeader && payload.amount === 0) {
     takeCards(rolePlayer.cards, 1)
+    lastAction = `${rolePlayer.name} didn't repeat the ${payload.type} role`
   } else {
+    lastAction = `${rolePlayer.name} ${isLeader ? 'played' : 'repeated'} ${payload.type} role`
     switch (payload.type) {
       case Action.warfare:
-        playWarfare({player: rolePlayer, fighterAmount: payload.amount, planetIndex: payload.planetIndex, isLeader})
+        lastAction += ` (${playWarfare({
+          player: rolePlayer,
+          fighterAmount: payload.amount,
+          planetIndex: payload.planetIndex,
+          isLeader,
+        })})`
         break
       case Action.colonize:
-        playColonize({player: rolePlayer, coloniesAmount: payload.amount, planetIndex: payload.planetIndex, isLeader})
+        lastAction += ` (${playColonize({
+          player: rolePlayer,
+          coloniesAmount: payload.amount,
+          planetIndex: payload.planetIndex,
+          isLeader,
+        })})`
         break
       case Action.produce:
       case Action.sell:
-        playIndustry({
+        lastAction += ` (${playIndustry({
           amount: payload.amount,
           player: rolePlayer,
           isProduction: payload.type === Action.produce,
           isLeader,
-        })
+        })})`
         break
       case Action.envoy:
-        console.log('payload', payload)
         playEnvoyRole(
           rolePlayer,
           pickPlanet(game, payload.amount - Number(!isLeader), payload.planetIndex),
           payload.amount,
           isLeader,
         )
+        lastAction += ` (picked one from ${payload.amount - Number(!isLeader)} planet(s)`
     }
   }
-  if (isLeader) game.cards[getCardByAction(payload.type) as Exclude<Card, Card.politics>]--
+  game.lastAction = lastAction
+  const currentBoardDeckSize = game.cards[getCardByAction(payload.type) as BoardCard]
+  if (isLeader && currentBoardDeckSize > 0) game.cards[getCardByAction(payload.type) as BoardCard]--
   if (!game.playersOrder) return
   const activePlayerIndex = game.playersOrder.findIndex(item => item === game.activePlayer)
   const roleOrder = game.playersOrder.slice(activePlayerIndex).concat(game.playersOrder.slice(0, activePlayerIndex))
@@ -165,12 +197,14 @@ export const playCleanUp = (game: Game, payload: Array<number>) => {
   playCleanup(activePlayer, payload)
   if (!game.playersOrder) return
   const nextPlayerIndex = (game.playersOrder.indexOf(game.activePlayer) + 1) % game.playersOrder.length
-  if (!nextPlayerIndex && checkForEnd(game)) {
-    game.winners = getWinner(game)
+  if (nextPlayerIndex === 0 && checkForEnd(game)) {
+    const winners = getWinner(game)
     game.status = GameStatus.ended
+    game.lastAction = `The winner${winners.length > 1 ? 's are' : ' is'} ${winners.map(p => p.name).join(', ')}`
   } else {
     game.activePlayer = game.playersOrder[nextPlayerIndex]
     const player = game.players[game.activePlayer]
     game.playersPhase = player.cards.hand.length ? Phase.action : Phase.role
+    game.lastAction = `${activePlayer.name} has completed his turn`
   }
 }

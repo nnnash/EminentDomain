@@ -93,20 +93,22 @@ const OptionsModal: React.FC<{}> = () => {
         </ModalInfoBlock>
       )}
       {!!optionsModalEnvoyAmount &&
-        game.planetsDeck.slice(0, optionsModalEnvoyAmount - Number(!isLeader)).map((planet, ind) => (
-          <TouchableOpacity
-            key={`planet-select-${ind}`}
-            onPress={() => {
-              dispatch(
-                reqPlayRole({type: Action.envoy, planetIndex: ind, gameId: game.id, amount: optionsModalEnvoyAmount}),
-              )
-            }}>
-            <ModalInfoBlock title={`${planet.type} planet`}>
-              <ExploredPlanetView planet={{...planet, colonies: 0}} isActive={false} />
-              <PlanetBonuses planet={planet} />
-            </ModalInfoBlock>
-          </TouchableOpacity>
-        ))}
+        game.planetsDeck.slice(0, optionsModalEnvoyAmount - Number(!isLeader)).map((planet, ind) =>
+          planet ? (
+            <TouchableOpacity
+              key={`planet-select-${ind}`}
+              onPress={() => {
+                dispatch(
+                  reqPlayRole({type: Action.envoy, planetIndex: ind, gameId: game.id, amount: optionsModalEnvoyAmount}),
+                )
+              }}>
+              <ModalInfoBlock title={`${planet.type} planet`}>
+                <ExploredPlanetView planet={{...planet, colonies: 0}} isActive={false} />
+                <PlanetBonuses planet={planet} />
+              </ModalInfoBlock>
+            </TouchableOpacity>
+          ) : null,
+        )}
     </Modal>
   )
 }

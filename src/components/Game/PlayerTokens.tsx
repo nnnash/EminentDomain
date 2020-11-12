@@ -7,7 +7,7 @@ import {GlobalState} from '@reducers/index'
 import FighterIcon from './Icons/FighterIcon'
 import PointIcon from './Icons/PointIcon'
 import {reqPlayAction} from '@actions/game'
-import {Action, Card} from '@types'
+import {Action} from '@types'
 import {setOptionsModalOpen} from '@actions/ui'
 import {getRange} from '../../utils'
 
@@ -48,7 +48,7 @@ const Fighters: React.FC<{}> = () => {
       dispatch(reqPlayAction({type: Action.warfare, cardIndex: activeWarfare.cardIndex || 0, gameId}))
     else
       dispatch(
-        setOptionsModalOpen({action: Action.warfare, open: true, range: getRange(game, userId, Card.warfare, true)}),
+        setOptionsModalOpen({action: Action.warfare, open: true, range: getRange(game, userId, Action.warfare, true)}),
       )
   }
 

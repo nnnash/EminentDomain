@@ -3,9 +3,9 @@ import {Image, Text, TouchableOpacity, View} from 'react-native'
 import {shallowEqual, useDispatch, useSelector} from 'react-redux'
 import EStyle from 'react-native-extended-stylesheet'
 
-import {Action, Card, ExploredPlanet, Planet} from '@types'
+import {Action, ExploredPlanet, Planet} from '@types'
 import {GlobalState} from '@reducers/index'
-import {usePlayer, useUser} from '../../../utils'
+import {getRange, usePlayer, useUser} from '../../../utils'
 import {planetProps} from './planetConfigs'
 import FighterIcon from '../Icons/FighterIcon'
 import Icon from '../Icons/Icon'
@@ -91,13 +91,14 @@ export const ExploredPlanetView: React.FC<ViewProps> = ({planet, onClick, isActi
 
 const Explored: React.FC<{}> = () => {
   const {
-    game: {players, id, activePlayer},
+    game: {players, id, activePlayer, rolePlayer},
     ui: {activeColonize, activeWarfare},
   } = useSelector<GlobalState, GlobalState>(s => s, shallowEqual)
   const user = useUser()
   const dispatch = useDispatch()
   const player = players[user.id]
   const [openPlanet, setOpenPlanet] = useState<null | Planet>(null)
+  const isLeader = activePlayer === rolePlayer
 
   if (!player) return null
 
@@ -114,25 +115,14 @@ const Explored: React.FC<{}> = () => {
           }),
         )
       } else {
-        const isLeader = activePlayer === user.id
         if (getPlanetColonizeCost(planet, player) <= planet.colonies) {
           dispatch(reqPlayRole({type: Action.colonize, gameId: id, amount: 1, planetIndex: ind}))
         } else {
-          const colonizeCards = player.cards.hand.filter(c => c === Card.colonize).length
-          if (!colonizeCards) {
+          const {typeCards, ...range} = getRange({players}, user.id, Action.colonize, isLeader, planet)
+          if (!typeCards) {
             dispatch(reqPlayRole({type: Action.colonize, amount: Number(isLeader), gameId: id, planetIndex: ind}))
           } else {
-            dispatch(
-              setOptionsModalOpen({
-                action: Action.colonize,
-                open: true,
-                range: {
-                  from: Number(isLeader),
-                  to: Math.min(colonizeCards + Number(isLeader), getPlanetColonizeCost(planet, player)),
-                },
-                planetIndex: ind,
-              }),
-            )
+            dispatch(setOptionsModalOpen({action: Action.colonize, open: true, range, planetIndex: ind}))
           }
         }
       }
@@ -165,7 +155,10 @@ const Explored: React.FC<{}> = () => {
         {player.planets.explored.map((planet, ind) => {
           const isWarfareActive =
             (activeWarfare?.isLeader || activeWarfare?.isAction) && player.spaceships >= planet.cost.warfare
-          const isActive = Boolean(activeColonize || isWarfareActive)
+          const isColonizeActive =
+            activeColonize &&
+            (activeColonize.isAction || isLeader || planet.colonies < getPlanetColonizeCost(planet, player))
+          const isActive = Boolean(isColonizeActive || isWarfareActive)
           return (
             <ExploredPlanetView
               key={`explored-planet-${ind}`}

@@ -14,8 +14,9 @@ import {
   setWarfareActive,
 } from '@actions/ui'
 import {getRange} from '../../utils'
-import {getCardByAction, getPlanetColonizeCost} from '../../../common/utils'
+import {getPlanetColonizeCost} from '../../../common/utils'
 import {canPlayAttack} from '../../../common/actionsAlowed'
+import {cardProps} from '../../../common/cardProps'
 
 export const gameReceivedEpic: CustomEpic = (action$, store) =>
   action$.pipe(
@@ -34,7 +35,7 @@ export const gameReceivedEpic: CustomEpic = (action$, store) =>
             return setOptionsModalOpen({
               open: true,
               action: game.roleType,
-              range: getRange(game, user.id, getCardByAction(game.roleType), false),
+              range: getRange(game, user.id, game.roleType, false),
               planetIndex:
                 game.roleType === Action.colonize
                   ? player.planets.explored.findIndex(pl => pl.colonies < getPlanetColonizeCost(pl, player))
@@ -88,22 +89,20 @@ export const playCardRoleEpic: CustomEpic = (action$, store) =>
       if (cardType === Card.industry) {
         return setIndustryActive({isAction: false, isLeader: true})
       }
-      const {typeCards, planetSymbols, ...range} = getRange(game, player.id, cardType, true)
+      const {typeCards, planetSymbols, ...range} = getRange(
+        game,
+        player.id,
+        cardProps[cardType].actions[0],
+        true,
+        player.planets.explored.length === 1 ? player.planets.explored[0] : undefined,
+      )
       switch (cardType) {
         case Card.colonize:
           if (player.planets.explored.length === 1) {
             const planet = player.planets.explored[0]
             return planet.colonies >= planet.cost.colonize
               ? reqPlayRole({type: Action.colonize, gameId: game.id, planetIndex: 0, amount: 1})
-              : setOptionsModalOpen({
-                  open: true,
-                  range: {
-                    from: range.from,
-                    to: Math.min(range.to, getPlanetColonizeCost(planet, player) - planet.colonies),
-                  },
-                  action: Action.colonize,
-                  planetIndex: 0,
-                })
+              : setOptionsModalOpen({open: true, range, action: Action.colonize, planetIndex: 0})
           } else return setColonizeActive({isAction: false, isLeader: true})
         case Card.warfare:
           if (canPlayAttack(player)) return setWarfareActive({isAction: false, isLeader: true})

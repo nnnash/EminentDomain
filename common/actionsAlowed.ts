@@ -1,5 +1,5 @@
 import {Action, Game, Player} from '@types'
-import {getEmpower} from './utils'
+import {getCardEmpower, getEmpower} from './utils'
 
 enum PlayType {
   action = 'action',
@@ -42,8 +42,8 @@ export const canPlayRole = (player: Player, game: Game, type: Action, playType: 
 }
 
 export const canRepeatRole = (player: Player, type: Action, game: Game) => {
+  const canPlay = canPlayRole(player, game, type, PlayType.repeat)
+  if (type === Action.colonize) return canPlay && !!getCardEmpower(player, type)
   const empowerAmount = getEmpower(player, type)
-  return (
-    !!empowerAmount && (type !== Action.envoy || empowerAmount > 1) && canPlayRole(player, game, type, PlayType.repeat)
-  )
+  return !!empowerAmount && (type !== Action.envoy || empowerAmount > 1) && canPlay
 }
