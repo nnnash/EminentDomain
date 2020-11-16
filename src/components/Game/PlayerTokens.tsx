@@ -6,7 +6,7 @@ import EStyle from 'react-native-extended-stylesheet'
 import {GlobalState} from '@reducers/index'
 import FighterIcon from './Icons/FighterIcon'
 import PointIcon from './Icons/PointIcon'
-import {reqPlayAction} from '@actions/game'
+import {reqPlayAction, reqPlayRole} from '@actions/game'
 import {Action} from '@types'
 import {setOptionsModalOpen} from '@actions/ui'
 import {getRange} from '../../utils'
@@ -46,10 +46,18 @@ const Fighters: React.FC<{}> = () => {
     if (!isActive) return
     if (activeWarfare?.isAction)
       dispatch(reqPlayAction({type: Action.warfare, cardIndex: activeWarfare.cardIndex || 0, gameId}))
-    else
-      dispatch(
-        setOptionsModalOpen({action: Action.warfare, open: true, range: getRange(game, userId, Action.warfare, true)}),
-      )
+    else {
+      const {from, to} = getRange(game, userId, Action.warfare, true)
+      if (from === to) dispatch(reqPlayRole({type: Action.warfare, amount: to, gameId}))
+      else
+        dispatch(
+          setOptionsModalOpen({
+            action: Action.warfare,
+            open: true,
+            range: getRange(game, userId, Action.warfare, true),
+          }),
+        )
+    }
   }
 
   return (

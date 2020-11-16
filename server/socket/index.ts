@@ -1,5 +1,7 @@
 import socketIO from 'socket.io'
 import {Server} from 'http'
+import {writeFileSync} from 'fs'
+import {join} from 'path'
 
 import {State} from '../models'
 import {RootAction} from '@actions/index'
@@ -25,6 +27,7 @@ const socketInit = (server: Server) => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
       // @ts-ignore
       reducers[action.type](action.payload)
+      writeFileSync(join(__dirname, '../../..', 'state.json'), JSON.stringify(State))
     })
   })
 }

@@ -33,8 +33,11 @@ const lobbyStateReducers = (io: IOType, socket: Socket) => ({
   }),
   ...createReducer(reqLeaveGame, ({playerId, gameId}) => {
     safeGameCallback(socket, gameId, game => {
-      game.players[playerId].status = PlayerStatus.away
-      emitAction(io.to(gameId), sendGame(game))
+      const activePlayer = game.players[playerId]
+      if (activePlayer) {
+        activePlayer.status = PlayerStatus.away
+        emitAction(io.to(gameId), sendGame(game))
+      }
       socket.leave(gameId)
     })
   }),

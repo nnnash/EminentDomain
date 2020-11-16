@@ -8,6 +8,7 @@ import CardContent from './CardContent'
 import PannedCard from './PannedCard'
 import {useUser, useYourTurn} from '../../../utils'
 import {GlobalState} from '@reducers/index'
+import {canProduceAmount, canSellAmount} from '../../../../common/actionsAlowed'
 
 const styles = EStyle.create({
   root: {
@@ -53,7 +54,7 @@ const Card: React.FC<CardProps> = ({type, index, margin, isBoard}) => {
     if (playersPhase === Phase.cleanup) return !isBoard
     switch (type) {
       case TCard.industry:
-        return !!player.planets.occupied.length
+        return !!canProduceAmount(player) || !!canSellAmount(player)
       case TCard.colonize:
         return !!player.planets.explored.length
       case TCard.envoy:

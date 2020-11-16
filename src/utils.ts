@@ -44,6 +44,12 @@ export const getRange = (
       if (planet) maxAvailable = getPlanetColonizeCost(planet, player) - planet.colonies
       break
   }
+  console.log({
+    from: planetSymbols + Number(isLeader),
+    to: Math.min(planetSymbols + Number(isLeader) + typeCards, maxAvailable),
+    typeCards,
+    planetSymbols,
+  })
   return {
     from: planetSymbols + Number(isLeader),
     to: Math.min(planetSymbols + Number(isLeader) + typeCards, maxAvailable),

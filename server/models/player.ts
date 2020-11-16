@@ -47,7 +47,7 @@ export const playEnvoyRole = (player: Player, planet: Planet, amount: number, is
   player.cards.pile = player.cards.pile.concat(times(amount - byPlanet, () => Card.envoy))
 }
 
-const occupyPlanet = (player: Player, planetIndex: number) => {
+const occupyPlanet = (player: Player, planetIndex: number, byColonize = false) => {
   const planets = player.planets
   const activePlanet = player.planets.explored[planetIndex]
   planets.occupied.push(setPlanetOccupied(activePlanet))
@@ -56,7 +56,7 @@ const occupyPlanet = (player: Player, planetIndex: number) => {
   if (activePlanet.cardCapacity) player.capacity++
   if (activePlanet.action === Action.colonize) player.coloniesDiscount++
   if (activePlanet.colonies)
-    player.cards.pile = player.cards.pile.concat(times(activePlanet.colonies, () => Card.colonize))
+    player.cards.pile = player.cards.pile.concat(times(activePlanet.colonies + Number(byColonize), () => Card.colonize))
 }
 
 interface ColonizeParams {
@@ -74,7 +74,7 @@ export const playColonize = ({cardIndex, coloniesAmount, planetIndex, player, is
   const active = explored[planetIndex]
   let action: string
   if (getPlanetColonizeCost(active, player) <= active.colonies) {
-    occupyPlanet(player, planetIndex)
+    occupyPlanet(player, planetIndex, true)
     action = 'occupied planet'
   } else {
     active.colonies += coloniesAmount || 1
@@ -103,10 +103,12 @@ export const playWarfare = ({cardIndex, fighterAmount, planetIndex, player, isLe
     player.spaceships -= activePlanet.cost.warfare
     action = 'occupied planet'
   }
-  player.cards.pile = player.cards.pile.concat(times(fighterAmount || 1, () => Card.warfare))
-  if (cardIndex !== undefined) player.cards.hand.splice(cardIndex, 1)
-  else if (fighterAmount) {
+  if (cardIndex !== undefined) {
+    player.cards.hand.splice(cardIndex, 1)
+    player.cards.pile = player.cards.pile.concat(Card.warfare)
+  } else if (fighterAmount) {
     const byPlanet = getPlanetEmpower(player, Action.warfare)
+    player.cards.pile = player.cards.pile.concat(times(fighterAmount - byPlanet, () => Card.warfare))
     removePlayedCards(Card.warfare, fighterAmount - byPlanet - Number(isLeader), player.cards)
   }
   return action
@@ -134,11 +136,14 @@ export const playIndustry = ({amount, cardIndex, player, isProduction, isLeader}
     })
     i++
   }
-  player.cards.pile = player.cards.pile.concat(times(amount || 1, () => Card.industry))
-  if (cardIndex !== undefined) player.cards.hand.splice(cardIndex, 1)
-  else if (amount) {
+  if (cardIndex !== undefined) {
+    player.cards.hand.splice(cardIndex, 1)
+    player.cards.pile = player.cards.pile.concat(Card.industry)
+  } else if (amount) {
     const byPlanets = getPlanetEmpower(player, isProduction ? Action.produce : Action.sell)
-    removePlayedCards(Card.industry, amount - byPlanets - Number(isLeader), player.cards)
+    const cardsPlayedAmount = amount - byPlanets || Number(isLeader)
+    removePlayedCards(Card.industry, cardsPlayedAmount - Number(isLeader), player.cards)
+    player.cards.pile = player.cards.pile.concat(times(cardsPlayedAmount, () => Card.industry))
   }
   return ` ${isProduction ? 'produced' : 'sold'} resources: ${amount || 1}`
 }

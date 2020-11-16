@@ -100,8 +100,10 @@ export const playCardRoleEpic: CustomEpic = (action$, store) =>
         case Card.colonize:
           if (player.planets.explored.length === 1) {
             const planet = player.planets.explored[0]
-            return planet.colonies >= planet.cost.colonize
-              ? reqPlayRole({type: Action.colonize, gameId: game.id, planetIndex: 0, amount: 1})
+            if (planet.colonies >= planet.cost.colonize)
+              return reqPlayRole({type: Action.colonize, gameId: game.id, planetIndex: 0, amount: 1})
+            return range.to <= range.from
+              ? reqPlayRole({type: Action.colonize, gameId: game.id, amount: range.to, planetIndex: 0})
               : setOptionsModalOpen({open: true, range, action: Action.colonize, planetIndex: 0})
           } else return setColonizeActive({isAction: false, isLeader: true})
         case Card.warfare:

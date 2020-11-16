@@ -32,11 +32,17 @@ export const setIndustryActiveEpic: CustomEpic = (action$, store) =>
       const {typeCards, planetSymbols, ...range} = getRange(game, user.id, typeDefined, isLeader)
       if (!typeCards) {
         return reqPlayRole({
-          amount: planetSymbols + Number(isLeader),
+          amount: Math.min(planetSymbols + Number(isLeader), availableSpots),
           gameId: game.id,
           type: typeDefined,
         })
       }
+      if (range.to <= range.from)
+        return reqPlayRole({
+          amount: range.to,
+          gameId: game.id,
+          type: typeDefined,
+        })
       return setOptionsModalOpen({open: true, range, action: typeDefined})
     }),
   )

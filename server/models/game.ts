@@ -1,5 +1,5 @@
 import {v4} from 'uuid'
-import {nativeMath, pick, shuffle} from 'random-js'
+import {nativeMath, shuffle} from 'random-js'
 
 import {Action, BoardCard, Card, Game, GameStatus, Phase, Planet, Player} from '@types'
 import {
@@ -59,8 +59,8 @@ export const addPlayer = (game: Game, player: Player) => {
 export const startGame = (game: Game) => {
   game.status = GameStatus.inPlay
   const playersIds = Object.keys(game.players)
-  game.activePlayer = pick(nativeMath, playersIds)
   game.playersOrder = shuffle(nativeMath, playersIds)
+  game.activePlayer = game.playersOrder[0]
   game.lastAction = 'Game started'
 }
 
@@ -101,8 +101,71 @@ export const playAction = (game: Game, payload: ActionPayload) => {
   game.playersPhase = Phase.role
   game.rolePlayer = game.activePlayer
   game.lastAction = lastAction
+  console.log(
+    activePlayer.name,
+    'action',
+    Object.values(activePlayer.cards).reduce<number>((acc, item) => acc + item.length, 0) +
+      activePlayer.planets.explored.reduce<number>((acc, item) => acc + item.colonies, 0),
+  )
 }
 
+const checkForEnd = ({cards, playersOrder}: Game) =>
+  Object.values(cards).filter(amount => !amount).length === ((playersOrder || []).length === 4 ? 2 : 1)
+const getResourcesAndFighters = (player: Player) =>
+  player.spaceships +
+  player.planets.occupied.reduce<number>((acc, item) => acc + item.production.filter(pr => pr.produced).length, 0)
+const getWinner = ({players}: Game) =>
+  Object.values(players).reduce<Array<Player>>((acc, item) => {
+    if (!acc.length) return [item]
+    const currentWinner = acc[0]
+    if (currentWinner.points < item.points) return [item]
+    if (currentWinner.points === item.points) {
+      const currentTokens = getResourcesAndFighters(currentWinner)
+      const itemTokens = getResourcesAndFighters(item)
+      if (currentTokens < itemTokens) return [item]
+      if (currentTokens === itemTokens) return [...acc, item]
+    }
+    return acc
+  }, [])
+
+export const playCleanUp = (game: Game, payload: Array<number>) => {
+  const activePlayer = game.players[game.activePlayer]
+  playCleanup(activePlayer, payload)
+  if (!game.playersOrder) return
+  const nextPlayerIndex = (game.playersOrder.indexOf(game.activePlayer) + 1) % game.playersOrder.length
+  if (nextPlayerIndex === 0 && checkForEnd(game)) {
+    const winners = getWinner(game)
+    game.status = GameStatus.ended
+    game.lastAction = `The winner${winners.length > 1 ? 's are' : ' is'} ${winners.map(p => p.name).join(', ')}`
+  } else {
+    game.activePlayer = game.playersOrder[nextPlayerIndex]
+    const player = game.players[game.activePlayer]
+    game.playersPhase = player.cards.hand.length ? Phase.action : Phase.role
+    game.lastAction = `${activePlayer.name} has completed his turn`
+  }
+  console.log(
+    activePlayer.name,
+    'cleanup',
+    Object.values(activePlayer.cards).reduce<number>((acc, item) => acc + item.length, 0) +
+      activePlayer.planets.explored.reduce<number>((acc, item) => acc + item.colonies, 0),
+  )
+  console.log('------------------------------------------------------------------')
+}
+
+const getNextRolePlayer = (game: Game, type: Action, isLeader: boolean) => {
+  const currentBoardDeckSize = game.cards[getCardByAction(type) as BoardCard]
+  if (isLeader && currentBoardDeckSize > 0) game.cards[getCardByAction(type) as BoardCard]--
+  if (!game.playersOrder) return
+  const activePlayerIndex = game.playersOrder.findIndex(item => item === game.activePlayer)
+  const roleOrder = game.playersOrder.slice(activePlayerIndex).concat(game.playersOrder.slice(0, activePlayerIndex))
+  const roleExecutor = roleOrder.findIndex(item => item === game.rolePlayer)
+  return roleOrder.slice(roleExecutor + 1).find(playerId => {
+    const player = game.players[playerId]
+    const canPlay = canRepeatRole(player, type, game)
+    if (!canPlay) takeCards(player.cards, 1)
+    return canPlay
+  })
+}
 export const playRole = (game: Game, payload: RolePayload) => {
   if (!game.rolePlayer) return
   const rolePlayer = game.players[game.rolePlayer]
@@ -151,60 +214,24 @@ export const playRole = (game: Game, payload: RolePayload) => {
     }
   }
   game.lastAction = lastAction
-  const currentBoardDeckSize = game.cards[getCardByAction(payload.type) as BoardCard]
-  if (isLeader && currentBoardDeckSize > 0) game.cards[getCardByAction(payload.type) as BoardCard]--
-  if (!game.playersOrder) return
-  const activePlayerIndex = game.playersOrder.findIndex(item => item === game.activePlayer)
-  const roleOrder = game.playersOrder.slice(activePlayerIndex).concat(game.playersOrder.slice(0, activePlayerIndex))
-  const roleExecutor = roleOrder.findIndex(item => item === game.rolePlayer)
-  const nextPlayer = roleOrder.slice(roleExecutor + 1).find(playerId => {
-    const player = game.players[playerId]
-    const canPlay = canRepeatRole(player, payload.type, game)
-    if (!canPlay) takeCards(player.cards, 1)
-    return canPlay
-  })
+  const nextPlayer = getNextRolePlayer(game, payload.type, isLeader)
   if (nextPlayer) {
     game.rolePlayer = nextPlayer
     game.roleType = payload.type
   } else {
-    game.playersPhase = Phase.cleanup
-    delete game.rolePlayer
-    delete game.roleType
-  }
-}
-
-const checkForEnd = ({cards, playersOrder}: Game) =>
-  Object.values(cards).filter(amount => !amount).length === ((playersOrder || []).length === 4 ? 2 : 1)
-const getResourcesAndFighters = (player: Player) =>
-  player.spaceships +
-  player.planets.occupied.reduce<number>((acc, item) => acc + item.production.filter(pr => pr.produced).length, 0)
-const getWinner = ({players}: Game) =>
-  Object.values(players).reduce<Array<Player>>((acc, item) => {
-    if (!acc.length) return [item]
-    const currentWinner = acc[0]
-    if (currentWinner.points < item.points) return [item]
-    if (currentWinner.points === item.points) {
-      const currentTokens = getResourcesAndFighters(currentWinner)
-      const itemTokens = getResourcesAndFighters(item)
-      if (currentTokens < itemTokens) return [item]
-      if (currentTokens === itemTokens) return [...acc, item]
+    const activePlayer = game.players[game.activePlayer]
+    if (!activePlayer.cards.hand.length) {
+      playCleanUp(game, [])
+    } else {
+      game.playersPhase = Phase.cleanup
+      delete game.rolePlayer
+      delete game.roleType
     }
-    return acc
-  }, [])
-
-export const playCleanUp = (game: Game, payload: Array<number>) => {
-  const activePlayer = game.players[game.activePlayer]
-  playCleanup(activePlayer, payload)
-  if (!game.playersOrder) return
-  const nextPlayerIndex = (game.playersOrder.indexOf(game.activePlayer) + 1) % game.playersOrder.length
-  if (nextPlayerIndex === 0 && checkForEnd(game)) {
-    const winners = getWinner(game)
-    game.status = GameStatus.ended
-    game.lastAction = `The winner${winners.length > 1 ? 's are' : ' is'} ${winners.map(p => p.name).join(', ')}`
-  } else {
-    game.activePlayer = game.playersOrder[nextPlayerIndex]
-    const player = game.players[game.activePlayer]
-    game.playersPhase = player.cards.hand.length ? Phase.action : Phase.role
-    game.lastAction = `${activePlayer.name} has completed his turn`
   }
+  console.log(
+    rolePlayer.name,
+    'role',
+    Object.values(rolePlayer.cards).reduce<number>((acc, item) => acc + item.length, 0) +
+      rolePlayer.planets.explored.reduce<number>((acc, item) => acc + item.colonies, 0),
+  )
 }
