@@ -8,6 +8,7 @@ import {GlobalState} from '@reducers/index'
 import {useUser} from '../../../utils'
 import {planetProps} from './planetConfigs'
 import ResourceIcon from '../Icons/ResourceIcon'
+import Icon from '../Icons/Icon'
 import Info from './Info'
 
 const styles = EStyle.create({
@@ -39,6 +40,11 @@ const styles = EStyle.create({
   resources: {
     alignItems: 'center',
   },
+  action: {
+    position: 'absolute',
+    right: 0,
+    bottom: 36,
+  },
 })
 
 const Occupied: React.FC<{}> = () => {
@@ -69,6 +75,7 @@ const Occupied: React.FC<{}> = () => {
               <TouchableOpacity onPress={() => setOpenPlanet(planet)}>
                 <Image source={planetProps[planet.type]} style={styles.image} />
               </TouchableOpacity>
+              {!!planet.action && <Icon style={styles.action} action={planet.action} />}
             </View>
           )
         })}
