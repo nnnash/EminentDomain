@@ -52,7 +52,15 @@ const Confirm: React.FC<{}> = () => {
           setOptionsModalOpen({
             open: true,
             action: game.roleType,
-            range: getRange(game, user.id, roleRepeat, false),
+            range: getRange(
+              game,
+              user.id,
+              roleRepeat,
+              false,
+              game.roleType === Action.colonize
+                ? player.planets.explored.find(pl => pl.colonies < getPlanetColonizeCost(pl, player))
+                : undefined,
+            ),
             planetIndex:
               game.roleType === Action.colonize
                 ? player.planets.explored.findIndex(pl => pl.colonies < getPlanetColonizeCost(pl, player))

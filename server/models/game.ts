@@ -132,7 +132,7 @@ export const playCleanUp = (game: Game, payload: Array<number>) => {
     game.status = GameStatus.ended
     game.lastAction = `The winner${winners.length > 1 ? 's are' : ' is'} ${winners.map(p => p.name).join(', ')}`
   } else {
-    game.activePlayer = game.playersOrder[nextPlayerIndex]
+    game.activePlayer = game.rolePlayer = game.playersOrder[nextPlayerIndex]
     const player = game.players[game.activePlayer]
     game.playersPhase = player.cards.hand.length ? Phase.action : Phase.role
     game.lastAction = `${activePlayer.name} has completed his turn`
