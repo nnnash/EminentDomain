@@ -10,10 +10,12 @@ import {
   setOptionsModalOpen,
   setEnvoyActive,
   addCardForCleanup,
+  setRoleRepeat,
   ActiveUI,
   IndustryActiveUI,
 } from '@actions/ui'
 import {Action} from '@types'
+import {RolePayload} from '@actions/game'
 
 export interface UiState {
   activeColonize?: ActiveUI
@@ -22,6 +24,7 @@ export interface UiState {
   activeWarfare?: ActiveUI
   cardsToClean: Array<number>
   clearFlag: boolean
+  roleRepeat?: RolePayload['type']
   optionsModalOpen: boolean
   optionsModalIndustry?: boolean
   optionsModalRange?: {from: number; to: number}
@@ -37,7 +40,10 @@ export const initialUiState: UiState = {
 
 export const ui = createReducer<UiState, RootAction>(initialUiState)
   .handleAction(setPoliticsActive, (state, {payload: activePolitics}): UiState => ({...state, activePolitics}))
-  .handleAction(setColonizeActive, (state, {payload: activeColonize}): UiState => ({...state, activeColonize}))
+  .handleAction(
+    setColonizeActive,
+    (state, {payload: activeColonize}): UiState => ({...state, activeColonize, roleRepeat: undefined}),
+  )
   .handleAction(setWarfareActive, (state, {payload: activeWarfare}): UiState => ({...state, activeWarfare}))
   .handleAction(
     setIndustryActive,
@@ -56,6 +62,7 @@ export const ui = createReducer<UiState, RootAction>(initialUiState)
       optionsModalRange: range,
       optionsModalRole: action,
       optionsModalPlanet: planetIndex,
+      roleRepeat: undefined,
     }),
   )
   .handleAction(
@@ -69,5 +76,9 @@ export const ui = createReducer<UiState, RootAction>(initialUiState)
   .handleAction(
     addCardForCleanup,
     (state, {payload: cardIndex}): UiState => ({...state, cardsToClean: state.cardsToClean.concat(cardIndex)}),
+  )
+  .handleAction(
+    setRoleRepeat,
+    (state, {payload: roleRepeat}): UiState => ({...state, roleRepeat, optionsModalOpen: true}),
   )
   .handleAction(clearUi, (state): UiState => ({...initialUiState, clearFlag: !state.clearFlag}))

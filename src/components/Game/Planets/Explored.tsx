@@ -118,9 +118,9 @@ const Explored: React.FC<{}> = () => {
         if (getPlanetColonizeCost(planet, player) <= planet.colonies) {
           dispatch(reqPlayRole({type: Action.colonize, gameId: id, amount: 1, planetIndex: ind}))
         } else {
-          const {typeCards, ...range} = getRange({players}, user.id, Action.colonize, isLeader, planet)
-          if (!typeCards) {
-            dispatch(reqPlayRole({type: Action.colonize, amount: Number(isLeader), gameId: id, planetIndex: ind}))
+          const range = getRange({players}, user.id, Action.colonize, isLeader, planet)
+          if (range.to === 1) {
+            dispatch(reqPlayRole({type: Action.colonize, amount: 1, gameId: id, planetIndex: ind}))
           } else {
             dispatch(setOptionsModalOpen({action: Action.colonize, open: true, range, planetIndex: ind}))
           }

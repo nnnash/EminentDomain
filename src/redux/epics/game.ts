@@ -3,7 +3,7 @@ import {filter, map} from 'rxjs/operators'
 
 import {Action, Card, Phase} from '@types'
 import {CustomEpic} from './types'
-import {sendGame, playCardAction, reqPlayAction, playCardRole, reqPlayRole} from '@actions/game'
+import {sendGame, playCardAction, reqPlayAction, playCardRole, reqPlayRole, RolePayload} from '@actions/game'
 import {
   clearUi,
   setColonizeActive,
@@ -11,10 +11,10 @@ import {
   setIndustryActive,
   setOptionsModalOpen,
   setPoliticsActive,
+  setRoleRepeat,
   setWarfareActive,
 } from '@actions/ui'
 import {getRange} from '../../utils'
-import {getPlanetColonizeCost} from '../../../common/utils'
 import {canPlayAttack} from '../../../common/actionsAlowed'
 import {cardProps} from '../../../common/cardProps'
 
@@ -23,25 +23,32 @@ export const gameReceivedEpic: CustomEpic = (action$, store) =>
     filter(isActionOf(sendGame)),
     map(({payload: game}) => {
       const user = store.value.user
-      if (game.roleType && game.rolePlayer) {
-        if (game.playersPhase === Phase.role && game.rolePlayer === user.id) {
-          const player = game.players[user.id]
-          if (
-            game.roleType === Action.colonize &&
-            player.planets.explored.filter(pl => pl.colonies < getPlanetColonizeCost(pl, player)).length > 1
-          )
-            return setColonizeActive({isLeader: false, isAction: false})
-          else
-            return setOptionsModalOpen({
-              open: true,
-              action: game.roleType,
-              range: getRange(game, user.id, game.roleType, false),
-              planetIndex:
-                game.roleType === Action.colonize
-                  ? player.planets.explored.findIndex(pl => pl.colonies < getPlanetColonizeCost(pl, player))
-                  : undefined,
-            })
-        }
+      if (
+        game.roleType &&
+        game.rolePlayer &&
+        game.playersPhase === Phase.role &&
+        game.rolePlayer === user.id &&
+        game.activePlayer !== game.rolePlayer
+      ) {
+        return setRoleRepeat(game.roleType as RolePayload['type'])
+        // if (game.playersPhase === Phase.role && game.rolePlayer === user.id) {
+        //   const player = game.players[user.id]
+        //   if (
+        //     game.roleType === Action.colonize &&
+        //     player.planets.explored.filter(pl => pl.colonies < getPlanetColonizeCost(pl, player)).length > 1
+        //   )
+        //     return setColonizeActive({isLeader: false, isAction: false})
+        //   else
+        //     return setOptionsModalOpen({
+        //       open: true,
+        //       action: game.roleType,
+        //       range: getRange(game, user.id, game.roleType, false),
+        //       planetIndex:
+        //         game.roleType === Action.colonize
+        //           ? player.planets.explored.findIndex(pl => pl.colonies < getPlanetColonizeCost(pl, player))
+        //           : undefined,
+        //     })
+        // }
       }
       return clearUi()
     }),

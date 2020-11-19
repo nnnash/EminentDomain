@@ -1,5 +1,6 @@
 import {createAction} from 'typesafe-actions'
 import {Action} from '@types'
+import {RolePayload} from '@actions/game'
 
 export interface ActiveUI {
   cardIndex?: number
@@ -27,5 +28,7 @@ interface OptionsModalPayload {
   planetIndex?: number
 }
 export const setOptionsModalOpen = createAction('SET_OPTIONS_MODAL_OPEN')<OptionsModalPayload>()
+
+export const setRoleRepeat = createAction('SET_ROLE_REPEAT')<RolePayload['type']>()
 
 export const clearUi = createAction('CLEAR_UI')<undefined>()

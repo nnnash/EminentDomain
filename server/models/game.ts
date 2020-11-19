@@ -101,12 +101,6 @@ export const playAction = (game: Game, payload: ActionPayload) => {
   game.playersPhase = Phase.role
   game.rolePlayer = game.activePlayer
   game.lastAction = lastAction
-  console.log(
-    activePlayer.name,
-    'action',
-    Object.values(activePlayer.cards).reduce<number>((acc, item) => acc + item.length, 0) +
-      activePlayer.planets.explored.reduce<number>((acc, item) => acc + item.colonies, 0),
-  )
 }
 
 const checkForEnd = ({cards, playersOrder}: Game) =>
@@ -143,13 +137,6 @@ export const playCleanUp = (game: Game, payload: Array<number>) => {
     game.playersPhase = player.cards.hand.length ? Phase.action : Phase.role
     game.lastAction = `${activePlayer.name} has completed his turn`
   }
-  console.log(
-    activePlayer.name,
-    'cleanup',
-    Object.values(activePlayer.cards).reduce<number>((acc, item) => acc + item.length, 0) +
-      activePlayer.planets.explored.reduce<number>((acc, item) => acc + item.colonies, 0),
-  )
-  console.log('------------------------------------------------------------------')
 }
 
 const getNextRolePlayer = (game: Game, type: Action, isLeader: boolean) => {
@@ -219,19 +206,8 @@ export const playRole = (game: Game, payload: RolePayload) => {
     game.rolePlayer = nextPlayer
     game.roleType = payload.type
   } else {
-    const activePlayer = game.players[game.activePlayer]
-    if (!activePlayer.cards.hand.length) {
-      playCleanUp(game, [])
-    } else {
-      game.playersPhase = Phase.cleanup
-      delete game.rolePlayer
-      delete game.roleType
-    }
+    game.playersPhase = Phase.cleanup
+    delete game.rolePlayer
+    delete game.roleType
   }
-  console.log(
-    rolePlayer.name,
-    'role',
-    Object.values(rolePlayer.cards).reduce<number>((acc, item) => acc + item.length, 0) +
-      rolePlayer.planets.explored.reduce<number>((acc, item) => acc + item.colonies, 0),
-  )
 }

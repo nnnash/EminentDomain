@@ -1,5 +1,5 @@
 import React from 'react'
-import {Text, TouchableHighlight} from 'react-native'
+import {StyleProp, Text, TouchableHighlight, ViewStyle} from 'react-native'
 import EStyle from 'react-native-extended-stylesheet'
 
 const styles = EStyle.create({
@@ -20,11 +20,12 @@ const styles = EStyle.create({
 interface ButtonProps {
   title: string
   onClick: () => void
+  style?: StyleProp<ViewStyle>
 }
 
-const Button: React.FC<ButtonProps> = ({title, onClick}) => {
+const Button: React.FC<ButtonProps> = ({title, onClick, style}) => {
   return (
-    <TouchableHighlight onPress={onClick} style={styles.button}>
+    <TouchableHighlight onPress={onClick} style={[styles.button, style]}>
       <Text style={styles.buttonText}>{title}</Text>
     </TouchableHighlight>
   )

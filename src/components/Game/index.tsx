@@ -3,6 +3,7 @@ import {Button as RNButton, useWindowDimensions, View} from 'react-native'
 import {RouteProp} from '@react-navigation/native'
 import {StackScreenProps, useHeaderHeight} from '@react-navigation/stack'
 import {shallowEqual, useDispatch, useSelector} from 'react-redux'
+import {useSafeAreaInsets} from 'react-native-safe-area-context'
 import EStyle from 'react-native-extended-stylesheet'
 
 import {GameStatus} from '@types'
@@ -21,7 +22,7 @@ import Hand from './Hand'
 import PlayerTokens from './PlayerTokens'
 import Planets from './Planets'
 import OptionsModal from './OptionsModal'
-import {useSafeAreaInsets} from 'react-native-safe-area-context'
+import RoleModal from './RoleModal'
 
 const styles = EStyle.create({
   root: {
@@ -84,6 +85,7 @@ const Game: React.FC<StackScreenProps<RootStackParamList, 'Game'>> = ({route}) =
         </View>
       </View>
       <OptionsModal />
+      <RoleModal />
     </PageWrapper>
   )
 }

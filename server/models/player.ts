@@ -37,6 +37,7 @@ export const playPoliticsAction = (player: Player, card: Card, index: number) =>
 
 export const playEnvoyAction = ({cards}: Player, index: number) => {
   cards.hand.splice(index, 1)
+  cards.pile.push(Card.envoy)
   takeCards(cards, 2)
 }
 
