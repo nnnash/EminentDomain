@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
-import {useSelector, shallowEqual} from 'react-redux'
-import {View, Text} from 'react-native'
+import {shallowEqual, useSelector} from 'react-redux'
+import {Text, View} from 'react-native'
 import EStyle from 'react-native-extended-stylesheet'
 
 import {GlobalState} from '@reducers/index'
@@ -9,6 +9,8 @@ import PageWrapper from '../common/PageWrapper'
 import Button from '../common/Button'
 import Game from './Game'
 import Modal from './Modal'
+import {GameStatus} from '@types'
+import {useUser} from '../../utils'
 
 const styles = EStyle.create({
   header: {
@@ -50,6 +52,7 @@ const styles = EStyle.create({
 const Lobby = () => {
   const {games} = useSelector<GlobalState, LobbyState>(state => state.lobby, shallowEqual)
   const [modalOpen, setModalOpen] = useState(false)
+  const user = useUser()
 
   return (
     <PageWrapper>
@@ -61,9 +64,11 @@ const Lobby = () => {
         <Button title="+ New game" onClick={() => setModalOpen(true)} />
       </View>
       <View style={styles.gamesContainer}>
-        {games.map((game, ind) => (
-          <Game key={`game-${ind}`} game={game} />
-        ))}
+        {games
+          .filter(game => (game.status === GameStatus.new && game.players.length < 4) || game.players.includes(user.id))
+          .map((game, ind) => (
+            <Game key={`game-${ind}`} game={game} />
+          ))}
       </View>
       <Modal isOpen={modalOpen} setOpen={setModalOpen} />
     </PageWrapper>

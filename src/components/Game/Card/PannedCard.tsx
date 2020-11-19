@@ -56,7 +56,7 @@ const PannedCard: React.FC<CardProps> = ({type, width, height, isBoard, index}) 
     ui: {activePolitics, clearFlag},
     game,
   } = useSelector<GlobalState, GlobalState>(s => s, shallowEqual)
-  const {translate, onPanGestureEvent, touchY, mult} = useCardTranslate(!!isBoard)
+  const {translate, onPanGestureEvent, touchY} = useCardTranslate(!!isBoard)
   const onPanHandlerStateChange = (event: PanGestureHandlerStateChangeEvent) => {
     if (event.nativeEvent.oldState === State.ACTIVE) {
       if (Math.abs(event.nativeEvent.translationY) >= MAX_TRANSLATE) {
@@ -89,7 +89,6 @@ const PannedCard: React.FC<CardProps> = ({type, width, height, isBoard, index}) 
     <PanGestureHandler
       onGestureEvent={onPanGestureEvent}
       onHandlerStateChange={onPanHandlerStateChange}
-      activeOffsetY={mult}
       failOffsetY={isBoard ? [0, 30] : [-30, 0]}
       failOffsetX={0}>
       <Animated.View

@@ -14,6 +14,7 @@ import {getRange} from '../../utils'
 const styles = EStyle.create({
   root: {
     paddingTop: 8,
+    paddingBottom: 4,
     flexDirection: 'row',
     justifyContent: 'space-around',
   },
@@ -70,26 +71,30 @@ const Fighters: React.FC<{}> = () => {
   )
 }
 
-const Points: React.FC<{}> = () => {
-  const {
-    game: {players},
-    user: {id: userId},
-  } = useSelector<GlobalState, GlobalState>(s => s, shallowEqual)
-
+export const Points: React.FC<{amount: number}> = ({amount}) => {
   return (
     <View style={{alignItems: 'center'}}>
       <Text style={styles.token}>
         <PointIcon style={{transform: [{translateY: 5}, {translateX: 5}]}} />
-        <Text style={styles.tokenText}> × {players[userId].points}</Text>
+        <Text style={styles.tokenText}> × {amount}</Text>
       </Text>
     </View>
   )
 }
 
+const UserPoints: React.FC<{}> = () => {
+  const {
+    game: {players},
+    user: {id: userId},
+  } = useSelector<GlobalState, GlobalState>(s => s, shallowEqual)
+
+  return <Points amount={players[userId].points} />
+}
+
 const PlayerTokens: React.FC<{}> = () => (
   <View style={styles.root}>
     <Fighters />
-    <Points />
+    <UserPoints />
   </View>
 )
 

@@ -10,7 +10,7 @@ import {useYourTurn} from '../../utils'
 
 const styles = EStyle.create({
   root: {
-    padding: 20,
+    padding: 10,
     paddingBottom: 0,
     marginBottom: 10,
   },

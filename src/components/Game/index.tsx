@@ -26,16 +26,11 @@ import RoleModal from './RoleModal'
 
 const styles = EStyle.create({
   root: {
-    height: '100%',
     justifyContent: 'space-between',
   },
   section: {
     padding: 20,
     paddingBottom: 0,
-  },
-  boardSection: {
-    marginTop: 10,
-    marginBottom: 10,
   },
 })
 
@@ -58,22 +53,20 @@ const Game: React.FC<StackScreenProps<RootStackParamList, 'Game'>> = ({route}) =
   }, [dispatch, route.params.id, user.id])
   const game = useSelector<GlobalState, GameState>(state => state.game, shallowEqual)
   const headerHeight = useHeaderHeight()
-  const {top, bottom} = useSafeAreaInsets()
+  const {bottom} = useSafeAreaInsets()
   const {height} = useWindowDimensions()
   if (!game.id) return null
 
   return (
-    <PageWrapper scrollable>
+    <PageWrapper scrollable={false}>
       <View
         style={[
           styles.root,
           {
-            minHeight: height - top - bottom - headerHeight,
+            height: height - bottom - headerHeight,
           },
         ]}>
-        <View style={styles.section}>
-          <Players players={Object.values(game.players)} />
-        </View>
+        <Players players={Object.values(game.players)} />
         <ActionsPanel />
         <View style={styles.boardSection}>
           <Board />

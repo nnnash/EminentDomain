@@ -1,14 +1,16 @@
 import React from 'react'
-import {Text, View} from 'react-native'
+import {Text, useWindowDimensions, View} from 'react-native'
 import EStyle from 'react-native-extended-stylesheet'
 
 import {Player} from '@types'
 import {useUser} from '../../utils'
+import {Points} from './PlayerTokens'
 
 const styles = EStyle.create({
   container: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    padding: 10,
   },
   tile: {
     backgroundColor: 'rgba(255, 255, 255, .05)',
@@ -53,24 +55,33 @@ interface PlayersProps {
 }
 const Players: React.FC<PlayersProps> = ({players}) => {
   const user = useUser()
+  const {height} = useWindowDimensions()
+  if (height < 800) return null
+
   return (
     <View style={styles.container}>
       {players.map(player =>
         user.id !== player.id ? (
           <View key={`player-${player.id}`} style={styles.tile}>
             <Text style={styles.name}>{player.name}</Text>
-            <Amount amount={player.points}>
-              <Text style={styles.amountText}>Points</Text>
-            </Amount>
-            <Amount amount={player.spaceships}>
-              <Text style={styles.amountText}>Spaceships</Text>
-            </Amount>
-            <Amount amount={player.planets.explored.length}>
-              <Text style={styles.amountText}>Explored</Text>
-            </Amount>
-            <Amount amount={player.planets.occupied.length}>
-              <Text style={styles.amountText}>Occupied</Text>
-            </Amount>
+            {height > 812 ? (
+              <>
+                <Amount amount={player.points}>
+                  <Text style={styles.amountText}>Points</Text>
+                </Amount>
+                <Amount amount={player.spaceships}>
+                  <Text style={styles.amountText}>Spaceships</Text>
+                </Amount>
+                <Amount amount={player.planets.explored.length}>
+                  <Text style={styles.amountText}>Explored</Text>
+                </Amount>
+                <Amount amount={player.planets.occupied.length}>
+                  <Text style={styles.amountText}>Occupied</Text>
+                </Amount>
+              </>
+            ) : (
+              <Points amount={player.points} />
+            )}
           </View>
         ) : null,
       )}

@@ -6,6 +6,9 @@ import Occupied from './Occupied'
 
 const styles = StyleSheet.create({
   root: {
+    width: '100%',
+  },
+  container: {
     flexDirection: 'row',
     alignItems: 'flex-end',
     justifyContent: 'space-between',
@@ -15,8 +18,8 @@ const styles = StyleSheet.create({
 
 export const Planets: React.FC<{}> = () => {
   return (
-    <ScrollView horizontal style={{width: '100%'}}>
-      <View style={styles.root}>
+    <ScrollView horizontal style={styles.root}>
+      <View style={styles.container}>
         <Explored />
         <Occupied />
       </View>
