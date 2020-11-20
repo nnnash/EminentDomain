@@ -1,5 +1,5 @@
 import React from 'react'
-import {Text, TouchableHighlight, View} from 'react-native'
+import {Animated, Text, TouchableOpacity, View} from 'react-native'
 import {shallowEqual, useDispatch, useSelector} from 'react-redux'
 import EStyle from 'react-native-extended-stylesheet'
 
@@ -9,7 +9,7 @@ import PointIcon from './Icons/PointIcon'
 import {reqPlayAction, reqPlayRole} from '@actions/game'
 import {Action} from '@types'
 import {setOptionsModalOpen} from '@actions/ui'
-import {getRange} from '../../utils'
+import {getRange, useFadeInOut} from '../../utils'
 
 const styles = EStyle.create({
   root: {
@@ -19,13 +19,14 @@ const styles = EStyle.create({
     justifyContent: 'space-around',
   },
   token: {
-    borderWidth: 1,
-    borderRadius: 8,
     padding: 4,
-    borderColor: 'transparent',
   },
-  active: {
-    borderColor: 'white',
+  animatedBackground: {
+    borderRadius: 8,
+    position: 'absolute',
+    height: '100%',
+    width: '100%',
+    backgroundColor: 'white',
   },
   tokenText: {
     color: '$textColor',
@@ -42,6 +43,7 @@ const Fighters: React.FC<{}> = () => {
   } = useSelector<GlobalState, GlobalState>(s => s, shallowEqual)
   const {players, id: gameId} = game
   const dispatch = useDispatch()
+  const opacity = useFadeInOut(0.5, 0.1)
   const isActive = activeWarfare?.isAction || activeWarfare?.isLeader
   const onPress = () => {
     if (!isActive) return
@@ -62,12 +64,13 @@ const Fighters: React.FC<{}> = () => {
   }
 
   return (
-    <TouchableHighlight style={{alignItems: 'center'}} onPress={onPress}>
-      <Text style={[styles.token, isActive ? styles.active : null]}>
+    <TouchableOpacity style={{alignItems: 'center'}} onPress={onPress}>
+      <Animated.View style={isActive ? [styles.animatedBackground, {opacity}] : null} />
+      <Text style={styles.token}>
         <FighterIcon style={{transform: [{translateY: 5}, {translateX: 5}]}} />
         <Text style={styles.tokenText}> × {players[userId].spaceships}</Text>
       </Text>
-    </TouchableHighlight>
+    </TouchableOpacity>
   )
 }
 

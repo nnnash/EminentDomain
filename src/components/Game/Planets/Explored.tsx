@@ -1,11 +1,11 @@
 import React, {useState} from 'react'
-import {Image, Text, TouchableOpacity, View} from 'react-native'
+import {Image, Text, TouchableOpacity, View, Animated} from 'react-native'
 import {shallowEqual, useDispatch, useSelector} from 'react-redux'
 import EStyle from 'react-native-extended-stylesheet'
 
 import {Action, ExploredPlanet, Planet} from '@types'
 import {GlobalState} from '@reducers/index'
-import {getRange, usePlayer, useUser} from '../../../utils'
+import {getRange, useFadeInOut, usePlayer, useUser} from '../../../utils'
 import {planetProps} from './planetConfigs'
 import FighterIcon from '../Icons/FighterIcon'
 import Icon from '../Icons/Icon'
@@ -21,14 +21,16 @@ const styles = EStyle.create({
     marginTop: 20,
     marginRight: 30,
   },
-  active: {
-    borderWidth: 1,
-    borderColor: 'white',
-    borderRadius: 8,
-  },
   container: {
     marginLeft: 20,
     alignItems: 'center',
+  },
+  animatedBackground: {
+    borderRadius: 8,
+    position: 'absolute',
+    height: '100%',
+    width: '100%',
+    backgroundColor: 'white',
   },
   image: {
     height: '$planetSize',
@@ -67,8 +69,10 @@ interface ViewProps {
 }
 export const ExploredPlanetView: React.FC<ViewProps> = ({planet, onClick, isActive, onIconClick}) => {
   const player = usePlayer()
+  const opacity = useFadeInOut(0.5, 0.1)
   return (
-    <TouchableOpacity onPress={onClick} style={[styles.container, isActive ? styles.active : null]}>
+    <TouchableOpacity onPress={onClick} style={styles.container}>
+      <Animated.View style={isActive ? [styles.animatedBackground, {opacity}] : null} />
       <View style={styles.costs}>
         <Text style={styles.costValue}>
           <FighterIcon /> {planet.cost.warfare}

@@ -1,3 +1,5 @@
+import {useRef} from 'react'
+import {Animated} from 'react-native'
 import {shallowEqual, useSelector} from 'react-redux'
 
 import {GlobalState} from '@reducers/index'
@@ -50,4 +52,31 @@ export const getRange = (
     typeCards,
     planetSymbols,
   }
+}
+
+export const useFadeInOut = (start = 0.5, end = 1) => {
+  const value = useRef(new Animated.Value(start)).current
+  Animated.timing(value, {
+    toValue: 10,
+    duration: 4,
+    useNativeDriver: true,
+  }).start()
+  Animated.loop(
+    Animated.sequence([
+      Animated.timing(value, {
+        toValue: end,
+        duration: 1000,
+        useNativeDriver: true,
+      }),
+      Animated.timing(value, {
+        toValue: start,
+        duration: 1000,
+        useNativeDriver: true,
+      }),
+    ]),
+    {
+      iterations: 5,
+    },
+  ).start()
+  return value
 }
