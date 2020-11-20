@@ -2,7 +2,7 @@ import {ImageSourcePropType} from 'react-native'
 
 import {Action} from '@types'
 
-export * from '../../../common/cardProps'
+export * from '@common/cardProps'
 
 type ActionConfig = {
   icon: ImageSourcePropType

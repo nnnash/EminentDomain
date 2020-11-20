@@ -6,8 +6,8 @@ import {GlobalState} from '@reducers/index'
 import {UserState} from '@reducers/user'
 import {GameState} from '@reducers/game'
 import {Action, ExploredPlanet, Game, GameStatus} from '@types'
-import {getCardByAction, getPlanetColonizeCost, getPlanetEmpower} from '../common/utils'
-import {canProduceAmount, canSellAmount} from '../common/actionsAlowed'
+import {getCardByAction, getPlanetColonizeCost, getPlanetEmpower} from '@common/utils'
+import {canProduceAmount, canSellAmount} from '@common/actionsAlowed'
 
 export const useUser = () => {
   return useSelector<GlobalState, UserState>(state => state.user, shallowEqual)

@@ -5,9 +5,9 @@ import EStyle from 'react-native-extended-stylesheet'
 
 import {Game} from '@types'
 import {reqCreateGame, reqJoinGame} from '@actions/lobby'
+import {useUser} from '@clientUtils'
 import Button from '../common/Button'
 import CommonModal from '../common/Modal'
-import {useUser} from '../../utils'
 
 const styles = EStyle.create({
   title: {

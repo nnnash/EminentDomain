@@ -13,7 +13,7 @@ import {GlobalState} from '@reducers/index'
 import {GameState} from '@reducers/game'
 import PageWrapper from '../common/PageWrapper'
 import {RootStackParamList} from '../../types'
-import {useUser} from '../../utils'
+import {useUser} from '@clientUtils'
 
 import ActionsPanel from './ActionsPanel'
 import Players from './Players'

@@ -5,7 +5,7 @@ import EStyle from 'react-native-extended-stylesheet'
 
 import {GameShort} from '@types'
 import Modal from './Modal'
-import {useUser} from '../../utils'
+import {useUser} from '@clientUtils'
 import {reqRejoinGame} from '@actions/lobby'
 
 interface GameProps {

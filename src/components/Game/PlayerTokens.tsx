@@ -9,7 +9,7 @@ import PointIcon from './Icons/PointIcon'
 import {reqPlayAction, reqPlayRole} from '@actions/game'
 import {Action} from '@types'
 import {setOptionsModalOpen} from '@actions/ui'
-import {getRange, useFadeInOut} from '../../utils'
+import {getRange, useFadeInOut} from '@clientUtils'
 
 const styles = EStyle.create({
   root: {

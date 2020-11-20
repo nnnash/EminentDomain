@@ -6,7 +6,7 @@ import {PinchGestureHandler, PinchGestureHandlerStateChangeEvent, State} from 'r
 
 import {GlobalState} from '@reducers/index'
 import {GameState} from '@reducers/game'
-import {useUser} from '../../utils'
+import {useUser} from '@clientUtils'
 import Card from './Card'
 
 const styles = EStyle.create({

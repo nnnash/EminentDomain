@@ -6,10 +6,10 @@ import {Action} from '@types'
 import {GlobalState} from '@reducers/index'
 import {reqPlayRole, RolePayload} from '@actions/game'
 import {setColonizeActive, setOptionsModalOpen} from '@actions/ui'
-import {getRange} from '../../../utils'
+import {getRange} from '@clientUtils'
+import {getPlanetColonizeCost} from '@common/utils'
 import Button from '../../common/Button'
 import Icon from '../Icons/Icon'
-import {getPlanetColonizeCost} from '../../../../common/utils'
 import styles from './styles'
 
 const IconAmount: React.FC<{amount: number; type: Action}> = ({amount, type}) => (

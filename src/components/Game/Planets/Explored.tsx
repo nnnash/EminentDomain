@@ -5,14 +5,14 @@ import EStyle from 'react-native-extended-stylesheet'
 
 import {Action, ExploredPlanet, Planet} from '@types'
 import {GlobalState} from '@reducers/index'
-import {getRange, useFadeInOut, usePlayer, useUser} from '../../../utils'
+import {getRange, useFadeInOut, usePlayer, useUser} from '@clientUtils'
+import {reqPlayAction, reqPlayRole} from '@actions/game'
+import {setOptionsModalOpen} from '@actions/ui'
+import {getPlanetColonizeCost} from '@common/utils'
 import {planetProps} from './planetConfigs'
 import FighterIcon from '../Icons/FighterIcon'
 import Icon from '../Icons/Icon'
 import Info from './Info'
-import {reqPlayAction, reqPlayRole} from '@actions/game'
-import {setOptionsModalOpen} from '@actions/ui'
-import {getPlanetColonizeCost} from '../../../../common/utils'
 
 const styles = EStyle.create({
   $planetSize: 60,

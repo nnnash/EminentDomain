@@ -10,7 +10,7 @@ import Button from '../common/Button'
 import Game from './Game'
 import Modal from './Modal'
 import {GameStatus} from '@types'
-import {useUser} from '../../utils'
+import {useUser} from '@clientUtils'
 
 const styles = EStyle.create({
   header: {

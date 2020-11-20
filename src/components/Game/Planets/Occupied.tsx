@@ -5,7 +5,7 @@ import EStyle from 'react-native-extended-stylesheet'
 
 import {Planet} from '@types'
 import {GlobalState} from '@reducers/index'
-import {useUser} from '../../../utils'
+import {useUser} from '@clientUtils'
 import {planetProps} from './planetConfigs'
 import ResourceIcon from '../Icons/ResourceIcon'
 import Icon from '../Icons/Icon'

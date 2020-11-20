@@ -4,7 +4,7 @@ import {useSelector, shallowEqual, useDispatch} from 'react-redux'
 
 import {GlobalState} from '@reducers/index'
 import styles from './styles'
-import {getRange} from '../../../utils'
+import {getRange} from '@clientUtils'
 import {Action} from '@types'
 import Icon from '../Icons/Icon'
 import {reqPlayRole, RolePayload} from '@actions/game'

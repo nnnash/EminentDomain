@@ -7,8 +7,8 @@ import {BoardCard, Card as TCard, Phase} from '@types'
 import {GlobalState} from '@reducers/index'
 import CardContent from './CardContent'
 import PannedCard from './PannedCard'
-import {useUser, useYourTurn, useFadeInOut} from '../../../utils'
-import {canProduceAmount, canSellAmount} from '../../../../common/actionsAlowed'
+import {useUser, useYourTurn, useFadeInOut} from '@clientUtils'
+import {canProduceAmount, canSellAmount} from '@common/actionsAlowed'
 
 const styles = EStyle.create({
   root: {

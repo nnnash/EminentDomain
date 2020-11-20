@@ -4,9 +4,9 @@ import {filter, map} from 'rxjs/operators'
 import {Action} from '@types'
 import {confirmCleanup, setIndustryActive, setOptionsModalOpen} from '@actions/ui'
 import {reqPlayAction, reqPlayCleanup, reqPlayRole} from '@actions/game'
-import {canProduceAmount, canSellAmount} from '../../../common/actionsAlowed'
+import {canProduceAmount, canSellAmount} from '@common/actionsAlowed'
+import {getRange} from '@clientUtils'
 import {CustomEpic} from './types'
-import {getRange} from '../../utils'
 
 export const setIndustryActiveEpic: CustomEpic = (action$, store) =>
   action$.pipe(

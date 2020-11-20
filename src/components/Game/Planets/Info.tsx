@@ -3,6 +3,8 @@ import {Text} from 'react-native'
 import EStyle from 'react-native-extended-stylesheet'
 
 import {Action, ExploredPlanet, OccupiedPlanet, Planet, Resource} from '@types'
+import {getPlanetColonizeCost} from '@common/utils'
+import {usePlayer} from '@clientUtils'
 import Button from '../../common/Button'
 import Modal from '../../common/Modal'
 import ModalInfoBlock from '../../common/ModalInfoBlock'
@@ -11,8 +13,6 @@ import PointIcon from '../Icons/PointIcon'
 import FighterIcon from '../Icons/FighterIcon'
 import ResourceIcon from '../Icons/ResourceIcon'
 import CapacityIcon from '../Icons/CapacityIcon'
-import {getPlanetColonizeCost} from '../../../../common/utils'
-import {usePlayer} from '../../../utils'
 
 const styles = EStyle.create({
   text: {

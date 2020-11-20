@@ -15,8 +15,8 @@ import {
   setWarfareActive,
 } from '@actions/ui'
 import {getRange} from '../../utils'
-import {canPlayAttack} from '../../../common/actionsAlowed'
-import {cardProps} from '../../../common/cardProps'
+import {canPlayAttack} from '@common/actionsAlowed'
+import {cardProps} from '@common/cardProps'
 
 export const gameReceivedEpic: CustomEpic = (action$, store) =>
   action$.pipe(

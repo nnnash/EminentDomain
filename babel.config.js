@@ -10,6 +10,8 @@ module.exports = {
           '@types': './common/types.ts',
           '@actions': './common/redux/actions',
           '@reducers': './src/redux/reducers',
+          '@clientUtils': './src/utils.ts',
+          '@common': './common',
         },
       },
     ],

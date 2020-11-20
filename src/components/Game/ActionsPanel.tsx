@@ -6,7 +6,7 @@ import EStyle from 'react-native-extended-stylesheet'
 import {GameStatus} from '@types'
 import {GlobalState} from '@reducers/index'
 import {GameState} from '@reducers/game'
-import {useYourTurn} from '../../utils'
+import {useYourTurn} from '@clientUtils'
 
 const styles = EStyle.create({
   root: {

@@ -3,7 +3,7 @@ import {Text, useWindowDimensions, View} from 'react-native'
 import EStyle from 'react-native-extended-stylesheet'
 
 import {Player} from '@types'
-import {useUser} from '../../utils'
+import {useUser} from '@clientUtils'
 import {Points} from './PlayerTokens'
 
 const styles = EStyle.create({
