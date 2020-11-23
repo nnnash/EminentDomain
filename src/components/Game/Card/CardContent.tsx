@@ -1,6 +1,7 @@
 import React from 'react'
 import {View, Text, ImageBackground} from 'react-native'
 import EStyle from 'react-native-extended-stylesheet'
+import LinearGradient from 'react-native-linear-gradient'
 
 import {Card as TCard} from '@types'
 import Icon, {DoubleIcon} from '../Icons/Icon'
@@ -68,20 +69,12 @@ const CardContent: React.FC<CardProps> = ({type, width}) => {
 
   return (
     <>
-      <View style={{...styles.bg, backgroundColor: actionConfigs[0].color}}>
-        {actions.length > 1 &&
-          Array.from({length: 100}).map((_, ind) => (
-            <View
-              key={`grad-${ind}`}
-              style={{
-                height: '100%',
-                width: '1%',
-                backgroundColor: actionConfigs[1].color,
-                opacity: ind / 100,
-              }}
-            />
-          ))}
-      </View>
+      <LinearGradient
+        colors={[actionConfigs[0].color, actionConfigs[actions.length > 1 ? 1 : 0].color]}
+        start={{x: 0, y: 0}}
+        end={{x: 1, y: 0}}
+        style={styles.bg}
+      />
       <ImageBackground source={require('../../../img/card.png')} imageStyle={styles.image} style={styles.imageComp}>
         <View style={styles.titleContainer}>
           <View style={styles.smallIconContainer}>
