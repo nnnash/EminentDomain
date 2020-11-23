@@ -1,4 +1,5 @@
 import {createStore, applyMiddleware} from 'redux'
+import {Platform} from 'react-native'
 import {createEpicMiddleware} from 'redux-observable'
 import {NavigationContainerRef} from '@react-navigation/native'
 import {ajax} from 'rxjs/ajax'
@@ -11,7 +12,7 @@ import reducers from './redux/reducers/index'
 
 const composeEnhancers = composeWithDevTools({})
 
-const location = process.env.HOST || 'http://localhost:8000'
+const location = process.env.HOST || Platform.OS === 'android' ? 'http://10.0.2.2:8000' : 'http://localhost:8000'
 
 const socket = io(location)
 const socketIoMiddleware = createSocketIoMiddleware(socket, 'socket/')
