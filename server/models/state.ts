@@ -8,7 +8,7 @@ const defaultState: TState = {
 
 let state
 try {
-  state = JSON.parse(readFileSync(join(__dirname, '../../..', 'state.json'), 'utf8')) as TState
+  state = JSON.parse(readFileSync(join(__dirname, '../..', 'state.json'), 'utf8')) as TState
 } catch (e) {
   state = defaultState
 }

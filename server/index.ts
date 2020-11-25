@@ -8,7 +8,7 @@ import {getShortGame} from './socket/utils'
 const app = express()
 const PORT = 8000
 
-app.get('/', (req, res) => res.send('Express + TypeScript Server'))
+app.get('/', (req, res) => res.send('Eminent Domain board game backend'))
 
 app.get('/games', (req, res) => {
   const resp: Array<GameShort> = Object.values(State.games).map(getShortGame)

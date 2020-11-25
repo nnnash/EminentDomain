@@ -27,7 +27,7 @@ const socketInit = (server: Server) => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
       // @ts-ignore
       reducers[action.type](action.payload)
-      writeFileSync(join(__dirname, '../../..', 'state.json'), JSON.stringify(State))
+      writeFileSync(join(__dirname, '../..', 'state.json'), JSON.stringify(State))
     })
   })
 }
