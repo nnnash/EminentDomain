@@ -9,7 +9,8 @@
     "redux": "redux-devtools --hostname=localhost --port=8081 --open=browser",
     "server": "nodemon",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "postinstall": "tsc"
   },
   "dependencies": {
     "@react-native-community/async-storage": "1.12.0",
@@ -93,5 +94,6 @@
     ],
     "exec": "node -r tsconfig-paths/register -r ts-node/register ./server/index.ts",
     "ext": "ts, js"
-  }
+  },
+  "engines": { "node": "10.16.3" }
 }
