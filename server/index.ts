@@ -7,7 +7,7 @@ import socketInit from './socket'
 import {getShortGame} from './socket/utils'
 
 const app = express()
-const PORT = 8000
+const PORT = process.env.PORT || 8000
 
 app.get('/', (req, res) => res.send('Eminent Domain board game backend'))
 
