@@ -17,7 +17,7 @@ app.get('/games', (req, res) => {
 })
 
 const server = app.listen(PORT, () => {
-  console.log(`⚡️[server]: Server is running at https://localhost:${PORT}`)
+  console.log(`⚡️[server]: Server is running at ${process.env.HOST || 'https://localhost'}:${PORT}`)
 })
 
 socketInit(server)

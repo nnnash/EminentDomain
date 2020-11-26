@@ -15,5 +15,11 @@ module.exports = {
         },
       },
     ],
+    [
+      'transform-inline-environment-variables',
+      {
+        include: ['NODE_ENV', 'HOST'],
+      },
+    ],
   ],
 }

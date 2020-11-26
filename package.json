@@ -9,6 +9,7 @@
     "redux": "redux-devtools --hostname=localhost --port=8081 --open=browser",
     "server": "nodemon",
     "start": "react-native start",
+    "start:prod": "HOST=\"https://eminent-domain.herokuapp.com\" react-native start",
     "test": "jest",
     "postinstall": "tsc -p tsconfig.prod.json"
   },
@@ -58,6 +59,7 @@
     "@typescript-eslint/parser": "2.34.0",
     "babel-jest": "25.5.1",
     "babel-plugin-module-resolver": "4.0.0",
+    "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "eslint": "6.8.0",
     "jest": "25.5.4",
     "metro-react-native-babel-preset": "0.59.0",
