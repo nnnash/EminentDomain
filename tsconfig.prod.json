@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "commonjs",
+    "lib": ["es6"],
+    "allowJs": true,
+    "jsx": "react-native",
+    "isolatedModules": true,
+    "strict": true,
+    "moduleResolution": "node",
+    "baseUrl": ".",
+    "paths": {
+      "@types": ["./common/types.ts"],
+      "@actions/*": ["./common/redux/actions/*", "./common/redux/actions/index"],
+      "@reducers/*": ["./src/redux/reducers/*"],
+      "@clientUtils": ["./src/utils.ts"],
+      "@common/*": ["./common/*"]
+    },
+    "typeRoots": [
+      "./typings",
+      "./node_modules/@types"
+    ],
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "outDir": "build"
+  },
+  "include": [
+    "common", "server"
+  ],
+  "exclude": [
+    "node_modules", "babel.config.js", "metro.config.js", "jest.config.js"
+  ]
+}

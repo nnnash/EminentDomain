@@ -10,7 +10,7 @@
     "server": "nodemon",
     "start": "react-native start",
     "test": "jest",
-    "postinstall": "tsc"
+    "postinstall": "tsc -p tsconfig.prod.json"
   },
   "dependencies": {
     "@react-native-community/async-storage": "1.12.0",
@@ -95,5 +95,7 @@
     "exec": "node -r tsconfig-paths/register -r ts-node/register ./server/index.ts",
     "ext": "ts, js"
   },
-  "engines": { "node": "10.16.3" }
+  "engines": {
+    "node": "10.16.3"
+  }
 }
