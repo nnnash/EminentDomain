@@ -3,7 +3,7 @@ import {Text, View} from 'react-native'
 import {shallowEqual, useSelector} from 'react-redux'
 import EStyle from 'react-native-extended-stylesheet'
 
-import {GameStatus} from '@types'
+import {GameStatus, Phase} from '@types'
 import {GlobalState} from '@reducers/index'
 import {GameState} from '@reducers/game'
 import {useYourTurn} from '@clientUtils'
@@ -34,7 +34,9 @@ const ActionsPanel: React.FC<{}> = () => {
   if (!game.id) return null
 
   const activePlayer = game.players[game.activePlayer].name
-  const turnText = `${playersTurn ? 'Your' : `${activePlayer}'s`} turn (${game.playersPhase})`
+  let turnText = `${playersTurn ? 'Your' : `${activePlayer}'s`} turn (${game.playersPhase})`
+  if (game.playersPhase === Phase.role && game.rolePlayer && game.activePlayer !== game.rolePlayer)
+    turnText += ` (${game.players[game.rolePlayer]?.name}'s repeat)`
 
   return (
     <View style={styles.root}>

@@ -8,8 +8,8 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "redux": "redux-devtools --hostname=localhost --port=8081 --open=browser",
     "server": "nodemon",
+    "start:local": "HOST=localhost react-native start",
     "start": "react-native start",
-    "start:prod": "HOST=\"https://eminent-domain.herokuapp.com\" react-native start",
     "test": "jest",
     "postinstall": "tsc -p tsconfig.prod.json"
   },

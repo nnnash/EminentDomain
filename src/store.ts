@@ -12,7 +12,11 @@ import reducers from './redux/reducers/index'
 
 const composeEnhancers = composeWithDevTools({})
 
-const location = process.env.HOST || (Platform.OS === 'android' ? 'http://10.0.2.2:8000' : 'http://localhost:8000')
+const location = process.env.HOST
+  ? Platform.OS === 'android'
+    ? 'http://10.0.2.2:8000'
+    : 'http://localhost:8000'
+  : 'https://eminent-domain.herokuapp.com'
 
 const socket = io(location)
 const socketIoMiddleware = createSocketIoMiddleware(socket, 'socket/')
